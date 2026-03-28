@@ -1533,107 +1533,294 @@
             box-shadow: 0 0 8px rgba(105,219,124,0.6);
         }
 
-        /* Analysis Tab - Census Panel */
-        .analysis-census-panel {
-            position: absolute;
-            right: 0;
-            top: 0;
-            bottom: 0;
-            width: 120px;
+        /* Analysis Dashboard - Beautiful Dark Theme */
+        .analysis-dashboard {
             background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
-            border-radius: 0 12px 12px 0;
-            border-left: 1px solid rgba(255,255,255,0.1);
-            overflow: hidden;
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
-        .census-panel-header {
+        .analysis-metrics {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .metric-card {
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 16px;
             text-align: center;
-            font-size: 0.7rem;
-            font-weight: 600;
+            border: 1px solid rgba(255,255,255,0.06);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .metric-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+        }
+
+        .metric-card.red { border-left: 3px solid #ff6b6b; }
+        .metric-card.green { border-left: 3px solid #69db7c; }
+        .metric-card.orange { border-left: 3px solid #ffa94d; }
+        .metric-card.blue { border-left: 3px solid #4dabf7; }
+
+        .metric-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1;
+        }
+
+        .metric-card.red .metric-value { color: #ff6b6b; }
+        .metric-card.green .metric-value { color: #69db7c; }
+        .metric-card.orange .metric-value { color: #ffa94d; }
+        .metric-card.blue .metric-value { color: #4dabf7; }
+
+        .metric-label {
+            font-size: 0.75rem;
             color: rgba(255,255,255,0.7);
-            padding: 8px;
-            background: rgba(0,0,0,0.2);
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            margin-top: 8px;
         }
 
-        .census-panel-scale {
-            position: absolute;
-            right: 8px;
-            top: 35px;
-            bottom: 10px;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-            font-size: 0.55rem;
+        .metric-detail {
+            font-size: 0.7rem;
             color: rgba(255,255,255,0.4);
+            margin-top: 4px;
         }
 
-        .analysis-census-bar {
+        .analysis-timeline-container {
+            background: rgba(0,0,0,0.2);
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .timeline-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            color: rgba(255,255,255,0.8);
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .timeline-subtitle {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.4);
+            font-weight: 400;
+        }
+
+        .horizontal-timeline {
+            position: relative;
+            height: 280px;
+        }
+
+        .timeline-hours {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.4);
+            padding: 0 2px;
+            margin-bottom: 8px;
+        }
+
+        .census-area-chart {
             position: absolute;
-            left: 8px;
-            height: 28px;
-            max-width: 85px;
-            background: linear-gradient(90deg, #4dabf7 0%, #339af0 100%);
-            border-radius: 0 4px 4px 0;
+            top: 25px;
+            left: 0;
+            right: 0;
+            height: 100px;
+            display: flex;
+            align-items: flex-end;
+            gap: 1px;
+        }
+
+        .census-bar {
+            flex: 1;
+            background: linear-gradient(180deg, rgba(77,171,247,0.8) 0%, rgba(77,171,247,0.3) 100%);
+            border-radius: 2px 2px 0 0;
+            transition: all 0.2s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .census-bar:hover {
+            background: linear-gradient(180deg, rgba(77,171,247,1) 0%, rgba(77,171,247,0.5) 100%);
+            filter: brightness(1.2);
+        }
+
+        .census-bar::after {
+            content: attr(data-census);
+            position: absolute;
+            top: -18px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.6rem;
+            color: rgba(255,255,255,0.6);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .census-bar:hover::after {
+            opacity: 1;
+        }
+
+        .shift-swim-lanes {
+            position: absolute;
+            top: 135px;
+            left: 0;
+            right: 0;
+            height: 90px;
+        }
+
+        .swim-lane {
+            position: absolute;
+            height: 18px;
+            border-radius: 4px;
             display: flex;
             align-items: center;
-            justify-content: flex-end;
-            padding-right: 6px;
+            padding: 0 6px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            color: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+
+        .swim-lane:hover {
+            height: 22px;
+            margin-top: -2px;
+            z-index: 10;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        }
+
+        .swim-lane.resident { background: linear-gradient(90deg, var(--bh-purple) 0%, var(--bh-purple-dark) 100%); }
+        .swim-lane.ap { background: linear-gradient(90deg, var(--bh-blue) 0%, var(--bh-blue-dark) 100%); }
+        .swim-lane.attending { background: linear-gradient(90deg, var(--bh-green) 0%, var(--bh-green-dark) 100%); }
+
+        .load-indicator-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 30px;
+            display: flex;
+            gap: 1px;
+            align-items: flex-end;
+        }
+
+        .load-segment {
+            flex: 1;
+            border-radius: 2px 2px 0 0;
             transition: all 0.2s;
             cursor: pointer;
         }
 
-        .analysis-census-bar:hover {
-            filter: brightness(1.2);
-            transform: scaleX(1.05);
-            transform-origin: left;
+        .load-segment:hover {
+            filter: brightness(1.3);
+            transform: scaleY(1.1);
+            transform-origin: bottom;
         }
 
-        .analysis-census-bar.good-load {
-            background: linear-gradient(90deg, #69db7c 0%, #51cf66 100%);
+        .load-segment.good { background: linear-gradient(180deg, #69db7c 0%, #40c057 100%); }
+        .load-segment.moderate { background: linear-gradient(180deg, #ffa94d 0%, #ff922b 100%); }
+        .load-segment.high { background: linear-gradient(180deg, #ff6b6b 0%, #fa5252 100%); }
+
+        .analysis-legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            flex-wrap: wrap;
         }
 
-        .analysis-census-bar.moderate-load {
-            background: linear-gradient(90deg, #ffa94d 0%, #ff922b 100%);
-        }
-
-        .analysis-census-bar.high-load {
-            background: linear-gradient(90deg, #ff6b6b 0%, #fa5252 100%);
-        }
-
-        .census-value {
-            font-size: 0.7rem;
-            font-weight: 700;
-            color: white;
-            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
-        }
-
-        /* Provider Count Indicators */
-        .provider-count-indicator {
-            position: absolute;
-            left: 480px;
-            width: 22px;
-            height: 18px;
-            background: rgba(107, 78, 155, 0.15);
-            border-radius: 4px;
+        .legend-group {
             display: flex;
             align-items: center;
-            justify-content: center;
+            gap: 12px;
+        }
+
+        .legend-title {
             font-size: 0.65rem;
-            font-weight: 700;
-            color: var(--bh-purple);
-            z-index: 5;
+            color: rgba(255,255,255,0.4);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        .provider-count-indicator.low {
-            background: rgba(255, 107, 107, 0.2);
-            color: #e03131;
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.7);
         }
 
-        .provider-count-indicator.high {
-            background: rgba(105, 219, 124, 0.2);
-            color: #2f9e44;
+        .legend-swatch {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        .legend-swatch.census { background: linear-gradient(180deg, rgba(77,171,247,0.8), rgba(77,171,247,0.3)); }
+        .legend-swatch.resident { background: var(--bh-purple); }
+        .legend-swatch.ap { background: var(--bh-blue); }
+        .legend-swatch.attending { background: var(--bh-green); }
+        .legend-swatch.good { background: #69db7c; }
+        .legend-swatch.moderate { background: #ffa94d; }
+        .legend-swatch.high { background: #ff6b6b; }
+
+        .analysis-observations {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+        }
+
+        .observation {
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            padding: 12px;
+            border-left: 3px solid;
+        }
+
+        .observation.warning { border-color: #ffa94d; }
+        .observation.success { border-color: #69db7c; }
+        .observation.info { border-color: #4dabf7; }
+
+        .obs-time {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+
+        .obs-content {
+            font-size: 0.78rem;
+            color: rgba(255,255,255,0.8);
+            line-height: 1.4;
+        }
+
+        .obs-content strong {
+            color: #fff;
+        }
+
+        @media (max-width: 900px) {
+            .analysis-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .analysis-observations {
+                grid-template-columns: 1fr;
+            }
         }
 
         @media (max-width: 768px) {
@@ -2027,87 +2214,100 @@
         </div>
         </div><!-- End Insights Tab (Flow section) -->
 
-        <!-- ANALYSIS TAB - Combined View -->
+        <!-- ANALYSIS TAB - Beautiful Combined View -->
         <div class="tab-content" id="contentAnalysis">
-            <div class="analysis-header" style="background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
-                <span style="font-weight: 600; color: #3949ab;">Coverage Analysis</span>
-                <span style="font-size: 0.8rem; color: #5c6bc0; margin-left: auto;">Schedule + Census Overlay</span>
-            </div>
+            <!-- Dark Theme Analysis Dashboard -->
+            <div class="analysis-dashboard">
+                <!-- Key Metrics - Dark Theme -->
+                <div class="analysis-metrics">
+                    <div class="metric-card red">
+                        <div class="metric-value">15.5</div>
+                        <div class="metric-label">Peak Load</div>
+                        <div class="metric-detail">pts/provider @ 7pm</div>
+                    </div>
+                    <div class="metric-card green">
+                        <div class="metric-value">6.5</div>
+                        <div class="metric-label">Best Coverage</div>
+                        <div class="metric-detail">pts/provider @ 4pm</div>
+                    </div>
+                    <div class="metric-card orange">
+                        <div class="metric-value">10h</div>
+                        <div class="metric-label">Night Gap</div>
+                        <div class="metric-detail">only 2 providers</div>
+                    </div>
+                    <div class="metric-card blue">
+                        <div class="metric-value">7.4</div>
+                        <div class="metric-label">Avg Load</div>
+                        <div class="metric-detail">pts/provider (24h)</div>
+                    </div>
+                </div>
 
-            <!-- Mini Key Metrics Row -->
-            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
-                <div style="flex: 1; min-width: 140px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #c62828;">
-                    <div style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Peak Load</div>
-                    <div style="font-size: 1.4rem; font-weight: 700; color: #c62828;">15.5</div>
-                    <div style="font-size: 0.72rem; color: #666;">pts/provider @ 7pm</div>
-                </div>
-                <div style="flex: 1; min-width: 140px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #2e7d32;">
-                    <div style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Best Coverage</div>
-                    <div style="font-size: 1.4rem; font-weight: 700; color: #2e7d32;">6.5</div>
-                    <div style="font-size: 0.72rem; color: #666;">pts/provider @ 4pm</div>
-                </div>
-                <div style="flex: 1; min-width: 140px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #f57c00;">
-                    <div style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Night Gap</div>
-                    <div style="font-size: 1.4rem; font-weight: 700; color: #f57c00;">10h</div>
-                    <div style="font-size: 0.72rem; color: #666;">with only 2 providers</div>
-                </div>
-                <div style="flex: 1; min-width: 140px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #1565c0;">
-                    <div style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Avg Load</div>
-                    <div style="font-size: 1.4rem; font-weight: 700; color: #1565c0;">7.4</div>
-                    <div style="font-size: 0.72rem; color: #666;">pts/provider (24h avg)</div>
-                </div>
-            </div>
+                <!-- Unified Timeline Visualization -->
+                <div class="analysis-timeline-container">
+                    <div class="timeline-header">
+                        <span>24-Hour Timeline: Shifts + Census + Load</span>
+                        <span class="timeline-subtitle">Hover for details</span>
+                    </div>
 
-            <!-- Combined Chart Container - Shifts + Census -->
-            <div class="chart-container" style="position: relative;">
-                <div class="time-axis" id="timeAxisAnalysis"></div>
-                <div class="chart-area" id="chartAreaAnalysis" style="padding-right: 130px;">
-                    <div class="current-time-line" id="currentTimeLineAnalysis"></div>
-                </div>
-            </div>
-            <div style="display: flex; gap: 16px; margin-top: 8px; justify-content: center; font-size: 0.72rem; color: #666;">
-                <span><span style="display: inline-block; width: 10px; height: 10px; background: linear-gradient(90deg, #69db7c, #51cf66); border-radius: 2px; margin-right: 4px;"></span>Good (&lt;8/provider)</span>
-                <span><span style="display: inline-block; width: 10px; height: 10px; background: linear-gradient(90deg, #ffa94d, #ff922b); border-radius: 2px; margin-right: 4px;"></span>Moderate (8-12)</span>
-                <span><span style="display: inline-block; width: 10px; height: 10px; background: linear-gradient(90deg, #ff6b6b, #fa5252); border-radius: 2px; margin-right: 4px;"></span>High (&gt;12)</span>
-            </div>
+                    <!-- Horizontal Timeline -->
+                    <div class="horizontal-timeline" id="horizontalTimeline">
+                        <!-- Time labels -->
+                        <div class="timeline-hours">
+                            <span>7A</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12P</span>
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+                            <span>7P</span><span>8</span><span>9</span><span>10</span><span>11</span><span>12A</span>
+                            <span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span>
+                        </div>
 
-            <!-- Coverage Ratio Timeline -->
-            <div style="background: white; border-radius: 12px; padding: 16px; margin-top: 16px; box-shadow: 0 4px 20px rgba(107, 78, 155, 0.1);">
-                <div style="font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 12px;">Patients per Provider Throughout Day</div>
-                <div style="display: flex; align-items: flex-end; height: 60px; gap: 2px;" id="ratioTimeline"></div>
-                <div style="display: flex; justify-content: space-between; font-size: 0.6rem; color: #999; margin-top: 4px;">
-                    <span>7A</span><span>12P</span><span>7P</span><span>12A</span><span>6A</span>
-                </div>
-                <div style="display: flex; gap: 12px; justify-content: center; margin-top: 8px; font-size: 0.7rem; color: #666;">
-                    <span><span style="display: inline-block; width: 10px; height: 10px; background: #c8e6c9; border-radius: 2px; margin-right: 4px;"></span>&lt;8 (good)</span>
-                    <span><span style="display: inline-block; width: 10px; height: 10px; background: #ffe0b2; border-radius: 2px; margin-right: 4px;"></span>8-12 (moderate)</span>
-                    <span><span style="display: inline-block; width: 10px; height: 10px; background: #ffcdd2; border-radius: 2px; margin-right: 4px;"></span>&gt;12 (high)</span>
-                </div>
-            </div>
+                        <!-- Census Area Chart -->
+                        <div class="census-area-chart" id="censusAreaChart"></div>
 
-            <!-- Coverage Facts -->
-            <div style="background: white; border-radius: 12px; padding: 16px; margin-top: 16px; box-shadow: 0 4px 20px rgba(107, 78, 155, 0.1);">
-                <div style="font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 12px;">Coverage Observations</div>
-                <div style="display: grid; gap: 8px;">
-                    <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #fff3e0; border-radius: 6px;">
-                        <div style="width: 6px; height: 6px; background: #e65100; border-radius: 50%; margin-top: 5px; flex-shrink: 0;"></div>
-                        <div>
-                            <div style="font-weight: 600; font-size: 0.82rem; color: #e65100;">10pm–7am: 2 Providers</div>
-                            <div style="font-size: 0.75rem; color: #666;">Night crew clears department from 20 to 11 patients with minimum staffing.</div>
+                        <!-- Shift Swim Lanes -->
+                        <div class="shift-swim-lanes" id="shiftSwimLanes"></div>
+
+                        <!-- Load Indicator Bar -->
+                        <div class="load-indicator-bar" id="loadIndicatorBar"></div>
+                    </div>
+
+                    <!-- Legend -->
+                    <div class="analysis-legend">
+                        <div class="legend-group">
+                            <span class="legend-title">Census</span>
+                            <div class="legend-item"><div class="legend-swatch census"></div>Patients in ED</div>
+                        </div>
+                        <div class="legend-group">
+                            <span class="legend-title">Providers</span>
+                            <div class="legend-item"><div class="legend-swatch resident"></div>Resident</div>
+                            <div class="legend-item"><div class="legend-swatch ap"></div>AP</div>
+                            <div class="legend-item"><div class="legend-swatch attending"></div>Attending</div>
+                        </div>
+                        <div class="legend-group">
+                            <span class="legend-title">Load (pts/provider)</span>
+                            <div class="legend-item"><div class="legend-swatch good"></div>&lt;8 Good</div>
+                            <div class="legend-item"><div class="legend-swatch moderate"></div>8-12</div>
+                            <div class="legend-item"><div class="legend-swatch high"></div>&gt;12 High</div>
                         </div>
                     </div>
-                    <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #e8f5e9; border-radius: 6px;">
-                        <div style="width: 6px; height: 6px; background: #2e7d32; border-radius: 50%; margin-top: 5px; flex-shrink: 0;"></div>
-                        <div>
-                            <div style="font-weight: 600; font-size: 0.82rem; color: #2e7d32;">3pm–6pm: 4 Providers</div>
-                            <div style="font-size: 0.75rem; color: #666;">Maximum coverage during census plateau (26-31 patients, 6.5-7.8 pts/provider).</div>
+                </div>
+
+                <!-- Observations -->
+                <div class="analysis-observations">
+                    <div class="observation warning">
+                        <div class="obs-time">10PM - 7AM</div>
+                        <div class="obs-content">
+                            <strong>2 providers</strong> clear 20 to 11 patients overnight
                         </div>
                     </div>
-                    <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #e3f2fd; border-radius: 6px;">
-                        <div style="width: 6px; height: 6px; background: #1565c0; border-radius: 50%; margin-top: 5px; flex-shrink: 0;"></div>
-                        <div>
-                            <div style="font-weight: 600; font-size: 0.82rem; color: #1565c0;">7pm Handoff: Peak Census</div>
-                            <div style="font-size: 0.75rem; color: #666;">Night shift inherits 31 patients. Resident #2 ends at midnight, AP #2 at 2am.</div>
+                    <div class="observation success">
+                        <div class="obs-time">3PM - 6PM</div>
+                        <div class="obs-content">
+                            <strong>4 providers</strong> handle plateau (26-31 pts)
+                        </div>
+                    </div>
+                    <div class="observation info">
+                        <div class="obs-time">7PM Handoff</div>
+                        <div class="obs-content">
+                            Night inherits <strong>31 patients</strong> at peak
                         </div>
                     </div>
                 </div>
@@ -3187,138 +3387,64 @@
             }
         }
 
-        // Build Analysis tab content
+        // Build Analysis tab content - Horizontal Timeline
         let analysisBuilt = false;
         function buildAnalysisTab() {
             if (analysisBuilt) return;
             analysisBuilt = true;
 
-            // Census data matching hourlyData (7am start)
             const censusData = [11,13,17,20,23,25,26,26,27,28,29,30,31,31,30,28,26,23,20,17,15,13,12,11];
             const maxCensus = 35;
 
-            // Build time axis for analysis chart
-            const timeAxisAnalysis = document.getElementById('timeAxisAnalysis');
-            const chartAreaAnalysis = document.getElementById('chartAreaAnalysis');
-
-            if (timeAxisAnalysis && chartAreaAnalysis) {
-                // Clone time axis with census values
-                for (let h = 0; h < 24; h++) {
-                    const hour = (START_HOUR + h) % 24;
-                    const label = document.createElement('div');
-                    label.className = 'time-label' + (hour % 6 === 0 ? ' major' : '');
-                    label.style.top = `${h * HOUR_HEIGHT}px`;
-                    label.textContent = formatHourShort(hour);
-                    timeAxisAnalysis.appendChild(label);
-
-                    const line = document.createElement('div');
-                    line.className = 'hour-line' + (hour % 6 === 0 ? ' major' : '');
-                    line.style.top = `${h * HOUR_HEIGHT}px`;
-                    chartAreaAnalysis.appendChild(line);
-                }
-
-                // Build shifts for analysis view (narrower to make room for census)
-                const ANALYSIS_LANE_WIDTH = 85;
-                allShifts.forEach(shift => {
-                    if (shift.isPeds) return;
-
-                    const block = document.createElement('div');
-                    block.className = `shift-block ${shift.type}`;
-
-                    let startY = hourToY(shift.startHour);
-                    let endY = hourToY(shift.endHour);
-                    let height = endY - startY;
-                    if (height < 0) height = (24 * HOUR_HEIGHT) - startY + endY;
-
-                    block.style.top = `${startY}px`;
-                    block.style.height = `${height}px`;
-                    block.style.left = `${shift.lane * (ANALYSIS_LANE_WIDTH + 8) + 10}px`;
-                    block.style.width = `${ANALYSIS_LANE_WIDTH}px`;
-
-                    block.innerHTML = `
-                        <div class="shift-content">
-                            <div class="shift-header">${shift.label}</div>
-                            <div class="shift-time">${formatHour(shift.startHour)} - ${formatHour(shift.endHour % 24)}</div>
-                            <div class="shift-patients">${shift.patients} pts</div>
-                        </div>
-                    `;
-                    chartAreaAnalysis.appendChild(block);
-                });
-
-                // Add census overlay panel on the right
-                const censusPanel = document.createElement('div');
-                censusPanel.className = 'analysis-census-panel';
-                censusPanel.innerHTML = `
-                    <div class="census-panel-header">Census</div>
-                    <div class="census-panel-scale">
-                        <span>35</span>
-                        <span>20</span>
-                        <span>0</span>
-                    </div>
-                `;
-                chartAreaAnalysis.appendChild(censusPanel);
-
-                // Add census bars for each hour
+            // Build Census Area Chart
+            const censusChart = document.getElementById('censusAreaChart');
+            if (censusChart) {
                 censusData.forEach((census, i) => {
-                    const hour = (7 + i) % 24;
-                    let providers = 0;
-                    emShifts.forEach(shift => {
-                        let start = shift.startHour;
-                        let end = shift.endHour;
-                        if (end > 24) {
-                            if (hour >= start || hour < (end - 24)) providers++;
-                        } else {
-                            if (hour >= start && hour < end) providers++;
-                        }
-                    });
-                    const ratio = census / Math.max(providers, 1);
-
                     const bar = document.createElement('div');
-                    bar.className = 'analysis-census-bar';
-                    bar.style.top = `${i * HOUR_HEIGHT}px`;
-                    bar.style.width = `${(census / maxCensus) * 100}%`;
-
-                    // Color based on ratio (load per provider)
-                    if (ratio > 12) bar.classList.add('high-load');
-                    else if (ratio > 8) bar.classList.add('moderate-load');
-                    else bar.classList.add('good-load');
-
-                    bar.innerHTML = `<span class="census-value">${census}</span>`;
-                    bar.title = `${formatHourShort(hour)}: ${census} pts, ${providers} providers (${ratio.toFixed(1)}/provider)`;
-
-                    censusPanel.appendChild(bar);
+                    bar.className = 'census-bar';
+                    bar.style.height = `${(census / maxCensus) * 100}%`;
+                    bar.setAttribute('data-census', census);
+                    bar.title = `${formatHourShort((7 + i) % 24)}: ${census} patients`;
+                    censusChart.appendChild(bar);
                 });
-
-                // Add provider count indicators on shift timeline
-                for (let h = 0; h < 24; h++) {
-                    const hour = (7 + h) % 24;
-                    let providers = 0;
-                    emShifts.forEach(shift => {
-                        let start = shift.startHour;
-                        let end = shift.endHour;
-                        if (end > 24) {
-                            if (hour >= start || hour < (end - 24)) providers++;
-                        } else {
-                            if (hour >= start && hour < end) providers++;
-                        }
-                    });
-
-                    const indicator = document.createElement('div');
-                    indicator.className = 'provider-count-indicator';
-                    indicator.style.top = `${h * HOUR_HEIGHT + 8}px`;
-                    indicator.textContent = providers;
-                    if (providers <= 2) indicator.classList.add('low');
-                    else if (providers >= 4) indicator.classList.add('high');
-                    chartAreaAnalysis.appendChild(indicator);
-                }
             }
 
-            // Build ratio timeline
-            const ratioTimeline = document.getElementById('ratioTimeline');
-            if (ratioTimeline) {
+            // Build Shift Swim Lanes (horizontal bars)
+            const swimLanes = document.getElementById('shiftSwimLanes');
+            if (swimLanes) {
+                const laneHeight = 20;
+                const laneGap = 2;
+                const hourWidth = 100 / 24; // percentage per hour
+
+                emShifts.forEach((shift, idx) => {
+                    const lane = document.createElement('div');
+                    lane.className = `swim-lane ${shift.type}`;
+
+                    // Calculate position (hours from 7am)
+                    let startOffset = shift.startHour - 7;
+                    if (startOffset < 0) startOffset += 24;
+
+                    let duration = shift.endHour - shift.startHour;
+                    if (duration < 0) duration += 24;
+
+                    lane.style.left = `${startOffset * hourWidth}%`;
+                    lane.style.width = `${duration * hourWidth}%`;
+                    lane.style.top = `${idx * (laneHeight + laneGap)}px`;
+
+                    lane.textContent = `${shift.label} (${shift.patients} pts)`;
+                    lane.title = `${shift.label}: ${formatHour(shift.startHour)} - ${formatHour(shift.endHour % 24)}, ${shift.patients} patients`;
+
+                    swimLanes.appendChild(lane);
+                });
+            }
+
+            // Build Load Indicator Bar
+            const loadBar = document.getElementById('loadIndicatorBar');
+            if (loadBar) {
                 censusData.forEach((census, i) => {
                     const hour = (7 + i) % 24;
                     let providers = 0;
+
                     emShifts.forEach(shift => {
                         let start = shift.startHour;
                         let end = shift.endHour;
@@ -3330,18 +3456,18 @@
                     });
 
                     const ratio = census / Math.max(providers, 1);
-                    const bar = document.createElement('div');
-                    bar.style.flex = '1';
-                    bar.style.height = `${Math.min(ratio / 16 * 100, 100)}%`;
-                    bar.style.borderRadius = '2px 2px 0 0';
-                    bar.style.minWidth = '8px';
+                    const segment = document.createElement('div');
+                    segment.className = 'load-segment';
 
-                    if (ratio < 8) bar.style.background = 'linear-gradient(180deg, #a5d6a7 0%, #66bb6a 100%)';
-                    else if (ratio < 12) bar.style.background = 'linear-gradient(180deg, #ffcc80 0%, #ffa726 100%)';
-                    else bar.style.background = 'linear-gradient(180deg, #ef9a9a 0%, #ef5350 100%)';
+                    if (ratio < 8) segment.classList.add('good');
+                    else if (ratio < 12) segment.classList.add('moderate');
+                    else segment.classList.add('high');
 
-                    bar.title = `${formatHourShort(hour)}: ${ratio.toFixed(1)} pts/provider (${census} pts, ${providers} providers)`;
-                    ratioTimeline.appendChild(bar);
+                    // Height based on ratio (max ~16)
+                    segment.style.height = `${Math.min(ratio / 16 * 100, 100)}%`;
+                    segment.title = `${formatHourShort(hour)}: ${ratio.toFixed(1)} pts/provider (${providers} on)`;
+
+                    loadBar.appendChild(segment);
                 });
             }
         }
