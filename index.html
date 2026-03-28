@@ -856,101 +856,154 @@
             line-height: 1.4;
         }
 
+        /* Beautiful Flow Charts - Data is Beautiful Inspired */
         .flow-chart {
             width: 100%;
-            margin-top: 12px;
-            padding-top: 12px;
-            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+
+        .flow-chart-inner {
+            display: flex;
+            gap: 30px;
+            flex-wrap: wrap;
+        }
+
+        .flow-chart-panel {
+            flex: 1;
+            min-width: 280px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .flow-chart-title {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 16px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .flow-bars {
             display: flex;
             align-items: flex-end;
-            gap: 2px;
-            height: 50px;
-            padding: 0 4px;
+            gap: 3px;
+            height: 80px;
+            padding: 0;
         }
 
         .flow-bar {
             flex: 1;
-            background: linear-gradient(180deg, #81c784 0%, #43a047 100%);
-            border-radius: 2px 2px 0 0;
+            background: linear-gradient(180deg, #00d9ff 0%, #0099cc 50%, #006688 100%);
+            border-radius: 4px 4px 0 0;
             position: relative;
-            min-width: 8px;
+            min-width: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(0,217,255,0.3);
+        }
+
+        .flow-bar:hover {
+            transform: scaleY(1.05);
+            box-shadow: 0 0 20px rgba(0,217,255,0.5);
         }
 
         .flow-bar.peak-bar {
-            background: linear-gradient(180deg, #ef5350 0%, #c62828 100%);
+            background: linear-gradient(180deg, #ff6b6b 0%, #ee5a5a 50%, #c92a2a 100%);
+            box-shadow: 0 0 10px rgba(255,107,107,0.4);
+        }
+
+        .flow-bar.peak-bar:hover {
+            box-shadow: 0 0 20px rgba(255,107,107,0.6);
         }
 
         .flow-bar.low-bar {
-            background: linear-gradient(180deg, #90caf9 0%, #42a5f5 100%);
+            background: linear-gradient(180deg, #69db7c 0%, #51cf66 50%, #37b24d 100%);
+            box-shadow: 0 0 10px rgba(105,219,124,0.3);
+        }
+
+        .flow-bar.low-bar:hover {
+            box-shadow: 0 0 20px rgba(105,219,124,0.5);
         }
 
         .flow-labels {
             display: flex;
             justify-content: space-between;
             font-size: 0.65rem;
-            color: #999;
-            margin-top: 4px;
-            padding: 0 4px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 8px;
+            font-weight: 500;
         }
 
         .flow-legend {
             display: flex;
-            gap: 15px;
+            gap: 20px;
             justify-content: center;
-            margin-top: 8px;
-            font-size: 0.7rem;
-            color: #666;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.72rem;
+            color: rgba(255,255,255,0.7);
         }
 
         .flow-legend-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         .flow-legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            box-shadow: 0 0 8px currentColor;
         }
 
-        .flow-legend-dot.low { background: #42a5f5; }
-        .flow-legend-dot.normal { background: #43a047; }
-        .flow-legend-dot.peak { background: #c62828; }
+        .flow-legend-dot.low { background: #69db7c; color: #69db7c; }
+        .flow-legend-dot.normal { background: #00d9ff; color: #00d9ff; }
+        .flow-legend-dot.peak { background: #ff6b6b; color: #ff6b6b; }
 
-        /* Percentile Range Chart */
+        /* Beautiful Percentile Range Chart */
         .percentile-chart {
             width: 100%;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #0f0f1a 0%, #1a1a2e 100%);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
 
         .percentile-chart-title {
-            font-size: 0.75rem;
-            color: #666;
-            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 16px;
             font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .percentile-container {
             position: relative;
-            height: 120px;
-            background: #fafafa;
-            border-radius: 6px;
+            height: 140px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
             overflow: hidden;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .percentile-grid {
             position: absolute;
-            top: 0;
-            left: 40px;
-            right: 0;
-            bottom: 20px;
+            top: 10px;
+            left: 45px;
+            right: 10px;
+            bottom: 25px;
             display: flex;
+            gap: 2px;
         }
 
         .percentile-bar-group {
@@ -960,81 +1013,111 @@
             justify-content: flex-end;
             align-items: center;
             position: relative;
+            transition: transform 0.2s ease;
+        }
+
+        .percentile-bar-group:hover {
+            transform: scaleX(1.1);
         }
 
         .percentile-stack {
-            width: 70%;
+            width: 85%;
             display: flex;
             flex-direction: column;
             justify-content: flex-end;
+            border-radius: 3px 3px 0 0;
+            overflow: hidden;
         }
 
         .p95-band {
-            background: rgba(198, 40, 40, 0.15);
-            border-top: 1px dashed #c62828;
+            background: linear-gradient(180deg, rgba(255,107,107,0.6) 0%, rgba(255,107,107,0.3) 100%);
+            border-top: 2px solid #ff6b6b;
+            box-shadow: 0 -2px 10px rgba(255,107,107,0.3);
         }
 
         .p75-band {
-            background: rgba(255, 152, 0, 0.2);
+            background: linear-gradient(180deg, rgba(255,190,92,0.5) 0%, rgba(255,190,92,0.25) 100%);
         }
 
         .mean-band {
-            background: rgba(67, 160, 71, 0.4);
+            background: linear-gradient(180deg, rgba(105,219,124,0.6) 0%, rgba(105,219,124,0.3) 100%);
             position: relative;
         }
 
         .p25-band {
-            background: rgba(33, 150, 243, 0.2);
+            background: linear-gradient(180deg, rgba(77,171,247,0.5) 0%, rgba(77,171,247,0.25) 100%);
         }
 
         .percentile-y-axis {
             position: absolute;
             left: 0;
-            top: 0;
-            bottom: 20px;
-            width: 35px;
+            top: 10px;
+            bottom: 25px;
+            width: 40px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             font-size: 0.6rem;
-            color: #999;
+            color: rgba(255,255,255,0.4);
             text-align: right;
-            padding-right: 4px;
+            padding-right: 8px;
+            font-weight: 500;
         }
 
         .percentile-x-axis {
             position: absolute;
-            bottom: 0;
-            left: 40px;
-            right: 0;
+            bottom: 5px;
+            left: 45px;
+            right: 10px;
             height: 20px;
             display: flex;
             justify-content: space-between;
             font-size: 0.6rem;
-            color: #999;
-            padding: 0 5px;
+            color: rgba(255,255,255,0.4);
+            font-weight: 500;
         }
 
         .percentile-legend {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin-top: 8px;
-            font-size: 0.68rem;
-            color: #666;
+            gap: 16px;
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.7);
             flex-wrap: wrap;
         }
 
         .percentile-legend-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         .percentile-legend-box {
-            width: 12px;
-            height: 12px;
-            border-radius: 2px;
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
+        }
+
+        .percentile-legend-box.p95 {
+            background: linear-gradient(180deg, rgba(255,107,107,0.6) 0%, rgba(255,107,107,0.3) 100%);
+            border-top: 2px solid #ff6b6b;
+            box-shadow: 0 0 6px rgba(255,107,107,0.4);
+        }
+
+        .percentile-legend-box.p75 {
+            background: linear-gradient(180deg, rgba(255,190,92,0.5) 0%, rgba(255,190,92,0.25) 100%);
+            box-shadow: 0 0 6px rgba(255,190,92,0.3);
+        }
+
+        .percentile-legend-box.median {
+            background: linear-gradient(180deg, rgba(105,219,124,0.6) 0%, rgba(105,219,124,0.3) 100%);
+            box-shadow: 0 0 6px rgba(105,219,124,0.4);
+        }
+
+        .percentile-legend-box.p25 {
+            background: linear-gradient(180deg, rgba(77,171,247,0.5) 0%, rgba(77,171,247,0.25) 100%);
+            box-shadow: 0 0 6px rgba(77,171,247,0.3);
         }
 
         /* Responsive Design */
@@ -1212,98 +1295,131 @@
         .finding-bullet.good { background: #2e7d32; }
         .finding-bullet.info { background: #1565c0; }
 
-        /* Provider Coverage Chart */
+        /* Beautiful Provider Coverage Chart */
         .coverage-chart {
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 1px solid #eee;
+            margin-top: 20px;
+            padding: 20px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 16px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
 
         .coverage-chart-title {
-            font-size: 0.75rem;
-            color: #666;
-            margin-bottom: 10px;
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-bottom: 16px;
             font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
         }
 
         .coverage-container {
             position: relative;
-            height: 80px;
-            background: #fafafa;
-            border-radius: 6px;
-            padding: 10px 10px 20px 35px;
+            height: 100px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            padding: 15px 15px 25px 45px;
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
         .coverage-bars {
             display: flex;
             align-items: flex-end;
-            height: 50px;
-            gap: 2px;
+            height: 60px;
+            gap: 3px;
         }
 
         .coverage-bar {
             flex: 1;
-            background: linear-gradient(180deg, var(--bh-purple-light) 0%, var(--bh-purple) 100%);
-            border-radius: 2px 2px 0 0;
+            background: linear-gradient(180deg, #a855f7 0%, #7c3aed 50%, #5b21b6 100%);
+            border-radius: 4px 4px 0 0;
             position: relative;
-            min-width: 8px;
-            transition: opacity 0.2s;
+            min-width: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 10px rgba(168,85,247,0.4);
         }
 
         .coverage-bar:hover {
-            opacity: 0.8;
+            transform: scaleY(1.1);
+            box-shadow: 0 0 20px rgba(168,85,247,0.6);
         }
 
         .coverage-bar.low-coverage {
-            background: linear-gradient(180deg, #ffcdd2 0%, #e57373 100%);
+            background: linear-gradient(180deg, #ff6b6b 0%, #fa5252 50%, #e03131 100%);
+            box-shadow: 0 0 15px rgba(255,107,107,0.5);
+            animation: pulse-warning 2s ease-in-out infinite;
         }
 
         .coverage-bar.high-coverage {
-            background: linear-gradient(180deg, #c8e6c9 0%, #66bb6a 100%);
+            background: linear-gradient(180deg, #69db7c 0%, #51cf66 50%, #40c057 100%);
+            box-shadow: 0 0 10px rgba(105,219,124,0.4);
+        }
+
+        @keyframes pulse-warning {
+            0%, 100% { box-shadow: 0 0 15px rgba(255,107,107,0.5); }
+            50% { box-shadow: 0 0 25px rgba(255,107,107,0.8); }
         }
 
         .coverage-y-axis {
             position: absolute;
             left: 0;
-            top: 10px;
-            bottom: 20px;
-            width: 30px;
+            top: 15px;
+            bottom: 25px;
+            width: 40px;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             font-size: 0.6rem;
-            color: #999;
+            color: rgba(255,255,255,0.4);
             text-align: right;
-            padding-right: 4px;
+            padding-right: 8px;
+            font-weight: 500;
         }
 
         .coverage-x-axis {
             display: flex;
             justify-content: space-between;
             font-size: 0.6rem;
-            color: #999;
-            margin-top: 4px;
+            color: rgba(255,255,255,0.4);
+            margin-top: 8px;
+            font-weight: 500;
         }
 
         .coverage-legend {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin-top: 8px;
-            font-size: 0.68rem;
-            color: #666;
+            gap: 20px;
+            margin-top: 12px;
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.7);
         }
 
         .coverage-legend-item {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 6px;
         }
 
         .coverage-legend-dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            box-shadow: 0 0 8px currentColor;
+        }
+
+        .coverage-legend-dot.low {
+            background: linear-gradient(180deg, #ff6b6b 0%, #e03131 100%);
+            box-shadow: 0 0 8px rgba(255,107,107,0.6);
+        }
+
+        .coverage-legend-dot.normal {
+            background: linear-gradient(180deg, #a855f7 0%, #7c3aed 100%);
+            box-shadow: 0 0 8px rgba(168,85,247,0.6);
+        }
+
+        .coverage-legend-dot.high {
+            background: linear-gradient(180deg, #69db7c 0%, #40c057 100%);
+            box-shadow: 0 0 8px rgba(105,219,124,0.6);
         }
 
         @media (max-width: 768px) {
@@ -1402,15 +1518,12 @@
         <div class="tab-container">
             <div class="tab-nav">
                 <button class="tab-btn active" onclick="switchTab('schedule')" id="tabSchedule">
-                    <span class="tab-icon">📅</span>
                     <span>Schedule</span>
                 </button>
                 <button class="tab-btn" onclick="switchTab('insights')" id="tabInsights">
-                    <span class="tab-icon">📊</span>
                     <span>Insights</span>
                 </button>
                 <button class="tab-btn" onclick="switchTab('analysis')" id="tabAnalysis">
-                    <span class="tab-icon">🔬</span>
                     <span>Analysis</span>
                 </button>
             </div>
@@ -1421,7 +1534,6 @@
         <!-- Key Findings Executive Summary -->
         <div class="key-findings">
             <div class="key-findings-header">
-                <span class="key-findings-icon">📋</span>
                 <span>Key Findings</span>
             </div>
             <div class="key-findings-content">
@@ -1555,7 +1667,6 @@
         <!-- Patient Flow Insights -->
         <div class="insights-section">
             <div class="insights-header">
-                <span>📊</span>
                 <span>Patient Flow Insights</span>
                 <span style="font-weight: 400; font-size: 0.8rem; color: #558b2f; margin-left: auto;">FY24/25 Peds ED Data <span style="background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 6px;">Winter (Oct–Mar)</span></span>
             </div>
@@ -1610,9 +1721,9 @@
                 </div>
 
                 <div class="flow-chart" style="flex-basis: 100%;">
-                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 280px;">
-                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">ED Census (hover for net flow)</div>
+                    <div class="flow-chart-inner">
+                        <div class="flow-chart-panel">
+                            <div class="flow-chart-title">ED Census (hover for net flow)</div>
                             <div class="flow-bars" id="censusBars"></div>
                             <div class="flow-labels">
                                 <span>7A</span>
@@ -1622,8 +1733,8 @@
                                 <span>6A</span>
                             </div>
                         </div>
-                        <div style="flex: 1; min-width: 280px;">
-                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">Arrivals vs Dispositions (hover for detail)</div>
+                        <div class="flow-chart-panel">
+                            <div class="flow-chart-title">Arrivals vs Dispositions (hover for detail)</div>
                             <div class="flow-bars" id="flowBars"></div>
                             <div class="flow-labels">
                                 <span>7A</span>
@@ -1634,11 +1745,11 @@
                             </div>
                         </div>
                     </div>
-                    <div class="flow-legend" style="margin-top: 12px;">
+                    <div class="flow-legend">
                         <div class="flow-legend-item"><div class="flow-legend-dot low"></div> Low</div>
                         <div class="flow-legend-item"><div class="flow-legend-dot normal"></div> Moderate</div>
                         <div class="flow-legend-item"><div class="flow-legend-dot peak"></div> High</div>
-                        <div class="flow-legend-item" style="margin-left: 10px; padding-left: 10px; border-left: 1px solid #ddd;"><span style="font-size: 0.7rem; color: #888;">Night clears; Day builds</span></div>
+                        <div class="flow-legend-item" style="margin-left: 10px; padding-left: 10px; border-left: 1px solid rgba(255,255,255,0.2);"><span style="font-size: 0.7rem;">Night clears; Day builds</span></div>
                     </div>
                 </div>
 
@@ -1664,10 +1775,10 @@
                         </div>
                     </div>
                     <div class="percentile-legend">
-                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(198, 40, 40, 0.15); border-top: 1px dashed #c62828;"></div> Surge (top 5%)</div>
-                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(255, 152, 0, 0.2);"></div> Busy (top 25%)</div>
-                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(67, 160, 71, 0.4);"></div> Typical (median)</div>
-                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(33, 150, 243, 0.2);"></div> Quiet (bottom 25%)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box p95"></div> Surge (top 5%)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box p75"></div> Busy (top 25%)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box median"></div> Typical (median)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box p25"></div> Quiet (bottom 25%)</div>
                     </div>
                 </div>
 
@@ -1692,9 +1803,9 @@
                         </div>
                     </div>
                     <div class="coverage-legend">
-                        <div class="coverage-legend-item"><div class="coverage-legend-dot" style="background: #e57373;"></div> 2 providers (gap)</div>
-                        <div class="coverage-legend-item"><div class="coverage-legend-dot" style="background: var(--bh-purple);"></div> 3 providers</div>
-                        <div class="coverage-legend-item"><div class="coverage-legend-dot" style="background: #66bb6a;"></div> 4 providers (peak)</div>
+                        <div class="coverage-legend-item"><div class="coverage-legend-dot low"></div> 2 providers (gap)</div>
+                        <div class="coverage-legend-item"><div class="coverage-legend-dot normal"></div> 3 providers</div>
+                        <div class="coverage-legend-item"><div class="coverage-legend-dot high"></div> 4 providers (peak)</div>
                     </div>
                 </div>
             </div>
@@ -1704,7 +1815,6 @@
         <!-- ANALYSIS TAB - Combined View -->
         <div class="tab-content" id="contentAnalysis">
             <div class="analysis-header" style="background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 1.2rem;">🔬</span>
                 <span style="font-weight: 600; color: #3949ab;">Coverage Analysis</span>
                 <span style="font-size: 0.8rem; color: #5c6bc0; margin-left: auto;">Schedule + Census Overlay</span>
             </div>
@@ -1757,29 +1867,29 @@
                 </div>
             </div>
 
-            <!-- Recommendations -->
+            <!-- Coverage Facts -->
             <div style="background: white; border-radius: 12px; padding: 16px; margin-top: 16px; box-shadow: 0 4px 20px rgba(107, 78, 155, 0.1);">
-                <div style="font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 12px;">💡 Coverage Optimization Opportunities</div>
+                <div style="font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 12px;">Coverage Observations</div>
                 <div style="display: grid; gap: 8px;">
                     <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #fff3e0; border-radius: 6px;">
-                        <span style="color: #e65100;">⚠️</span>
+                        <div style="width: 6px; height: 6px; background: #e65100; border-radius: 50%; margin-top: 5px; flex-shrink: 0;"></div>
                         <div>
-                            <div style="font-weight: 600; font-size: 0.82rem; color: #e65100;">10pm–7am Gap</div>
-                            <div style="font-size: 0.75rem; color: #666;">Only 2 providers clearing 20 patients. Consider extending AP #2 or adding overnight support.</div>
+                            <div style="font-weight: 600; font-size: 0.82rem; color: #e65100;">10pm–7am: 2 Providers</div>
+                            <div style="font-size: 0.75rem; color: #666;">Night crew clears department from 20 to 11 patients with minimum staffing.</div>
                         </div>
                     </div>
                     <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #e8f5e9; border-radius: 6px;">
-                        <span style="color: #2e7d32;">✓</span>
+                        <div style="width: 6px; height: 6px; background: #2e7d32; border-radius: 50%; margin-top: 5px; flex-shrink: 0;"></div>
                         <div>
-                            <div style="font-weight: 600; font-size: 0.82rem; color: #2e7d32;">3pm–6pm Peak Staffed</div>
-                            <div style="font-size: 0.75rem; color: #666;">4-provider overlap handles plateau well (26-31 pts at 6.5-7.8 ratio).</div>
+                            <div style="font-weight: 600; font-size: 0.82rem; color: #2e7d32;">3pm–6pm: 4 Providers</div>
+                            <div style="font-size: 0.75rem; color: #666;">Maximum coverage during census plateau (26-31 patients, 6.5-7.8 pts/provider).</div>
                         </div>
                     </div>
                     <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #e3f2fd; border-radius: 6px;">
-                        <span style="color: #1565c0;">💭</span>
+                        <div style="width: 6px; height: 6px; background: #1565c0; border-radius: 50%; margin-top: 5px; flex-shrink: 0;"></div>
                         <div>
-                            <div style="font-weight: 600; font-size: 0.82rem; color: #1565c0;">7pm Handoff Timing</div>
-                            <div style="font-size: 0.75rem; color: #666;">Night inherits peak census (31 pts). Res #2 ends at midnight—consider staggering handoff.</div>
+                            <div style="font-weight: 600; font-size: 0.82rem; color: #1565c0;">7pm Handoff: Peak Census</div>
+                            <div style="font-size: 0.75rem; color: #666;">Night shift inherits 31 patients. Resident #2 ends at midnight, AP #2 at 2am.</div>
                         </div>
                     </div>
                 </div>
@@ -2326,18 +2436,18 @@
 
             // Actionable insights based on shift timing and patient flow data
             const shiftInsights = {
-                1: { icon: '🌅', text: 'Starts at daily low (11 pts). Volume builds steadily—front-load pickups before noon rush.' },
-                2: { icon: '📈', text: 'Arrives as volume climbing. Peak arrivals 11am-12pm. Overlap with Res #1 until 4pm.' },
-                3: { icon: '🔥', text: 'Covers evening peak + 7pm handoff (31 pts). Critical overlap with day team ending.' },
-                4: { icon: '⚡', text: 'Peak coverage role. Highest census hours (28-31). Support night handoff transition.' },
-                5: { icon: '🌙', text: 'Bridges peak to overnight. Census drops from 31→20 during shift. WR clears after 10pm.' },
-                6: { icon: '🌃', text: 'Overnight: census 26→11. Lowest arrivals 3-6am. Prep clean handoff at 7am.' },
-                101: { icon: '☀️', text: 'Afternoon peds coverage. Census building toward evening peak.' },
-                102: { icon: '🎯', text: 'Covers peds evening surge. Overlaps with Intern #1 until 8pm.' },
-                103: { icon: '🦉', text: 'Overnight peds. Low volume but critical coverage. Hands off at morning transition.' }
+                1: { text: 'Starts at daily low (11 pts). Volume builds steadily—front-load pickups before noon rush.' },
+                2: { text: 'Arrives as volume climbing. Peak arrivals 11am-12pm. Overlap with Res #1 until 4pm.' },
+                3: { text: 'Covers evening peak + 7pm handoff (31 pts). Critical overlap with day team ending.' },
+                4: { text: 'Peak coverage role. Highest census hours (28-31). Support night handoff transition.' },
+                5: { text: 'Bridges peak to overnight. Census drops from 31 to 20 during shift. WR clears after 10pm.' },
+                6: { text: 'Overnight: census 26 to 11. Lowest arrivals 3-6am. Prep clean handoff at 7am.' },
+                101: { text: 'Afternoon peds coverage. Census building toward evening peak.' },
+                102: { text: 'Covers peds evening surge. Overlaps with Intern #1 until 8pm.' },
+                103: { text: 'Overnight peds. Low volume but critical coverage. Hands off at morning transition.' }
             };
 
-            const insight = shiftInsights[shift.id] || { icon: '📋', text: 'Standard shift coverage.' };
+            const insight = shiftInsights[shift.id] || { text: 'Standard shift coverage.' };
 
             tooltip.innerHTML = `
                 <div class="tooltip-title ${shift.type}">
@@ -2351,7 +2461,7 @@
 
                 <div style="background: #fffde7; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #ffc107;">
                     <div style="font-size: 0.78rem; color: #5d4e37; line-height: 1.4;">
-                        ${insight.icon} ${insight.text}
+                        ${insight.text}
                     </div>
                 </div>
 
@@ -2527,11 +2637,11 @@
                         <div class="math-line">Final ${zeroLabel} = <span style="color: #888;">0/hr</span> (winding down)</div>
                     </div>
                     <div class="math-verify">
-                        <div class="math-step-title">✓ Verify (should equal ${shift.patients})</div>
+                        <div class="math-step-title">Verify (should equal ${shift.patients})</div>
                         <div class="math-line">First 6h: 6 × ${dist.highRate.toFixed(2)} = ${highTotal} pts</div>
                         <div class="math-line">Middle ${lowHours}h: ${lowHours} × ${dist.lowRate.toFixed(2)} = ${lowTotal} pts</div>
                         <div class="math-line">Final ${zeroLabel}: 0 pts</div>
-                        <div class="math-line"><strong>Total: ${verifyTotal} pts ✓</strong></div>
+                        <div class="math-line"><strong>Total: ${verifyTotal} pts</strong></div>
                     </div>
                 </div>
             `;
@@ -2783,7 +2893,7 @@
                         </div>
                     </div>
                     <div style="font-size: 0.72rem; color: ${ratioColor}; border-top: 1px solid #eee; padding-top: 6px;">
-                        ${ratioLabel} - ${d.providers <= 2 ? '⚠️ Coverage gap' : d.providers >= 4 ? '✓ Peak coverage' : 'Standard staffing'}
+                        ${ratioLabel} - ${d.providers <= 2 ? 'Coverage gap' : d.providers >= 4 ? 'Peak coverage' : 'Standard staffing'}
                     </div>
                 `;
             } else if (type === 'census') {
