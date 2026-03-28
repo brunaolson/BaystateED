@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ER Shift Coverage | Baystate Health</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bh-purple: #6B4E9B;
+            --bh-purple-dark: #553C7B;
+            --bh-purple-light: #8B6EBB;
+            --bh-blue: #2B7CB3;
+            --bh-blue-dark: #1B6CA3;
+            --bh-blue-light: #4B9CD3;
+            --bh-green: #43A047;
+            --bh-green-dark: #2E7D32;
+            --bh-green-light: #66BB6A;
+            --bh-orange: #F57C00;
+            --bh-orange-dark: #E65100;
+            --bh-orange-light: #FFB74D;
+            --bh-brown: #5D4E37;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(180deg, #f5f7fa 0%, #e8ecf1 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            padding: 15px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 4px 20px rgba(107, 78, 155, 0.15);
+            border-bottom: 3px solid var(--bh-purple);
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .bh-logo {
+            height: 45px;
+            width: auto;
+        }
+
+        .header-title {
+            color: var(--bh-purple);
+            font-size: 1.1rem;
+            font-weight: 600;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 25px;
+        }
+
+        .page-title {
+            text-align: center;
+            margin-bottom: 8px;
+            font-weight: 600;
+            font-size: 1.8rem;
+            color: var(--bh-brown);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 20px;
+            font-size: 0.95rem;
+        }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 18px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .toggle-btn:hover {
+            border-color: var(--bh-orange);
+            background: #fff8f0;
+        }
+
+        .toggle-btn.active {
+            border-color: var(--bh-orange);
+            background: linear-gradient(135deg, #fff8f0 0%, #ffe0b2 100%);
+            color: var(--bh-orange-dark);
+        }
+
+        .toggle-btn .toggle-indicator {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            border: 2px solid #ccc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .toggle-btn.active .toggle-indicator {
+            background: var(--bh-orange);
+            border-color: var(--bh-orange);
+        }
+
+        .toggle-btn.active .toggle-indicator::after {
+            content: '✓';
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: #444;
+        }
+
+        .legend-color {
+            width: 18px;
+            height: 18px;
+            border-radius: 4px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+        }
+
+        .legend-color.resident {
+            background: linear-gradient(135deg, var(--bh-purple) 0%, var(--bh-purple-dark) 100%);
+        }
+
+        .legend-color.ap {
+            background: linear-gradient(135deg, var(--bh-blue) 0%, var(--bh-blue-dark) 100%);
+        }
+
+        .legend-color.attending {
+            background: linear-gradient(135deg, var(--bh-green) 0%, var(--bh-green-dark) 100%);
+        }
+
+        .legend-color.peds {
+            background: linear-gradient(135deg, var(--bh-orange) 0%, var(--bh-orange-dark) 100%);
+        }
+
+        .legend-group {
+            display: flex;
+            gap: 20px;
+            padding: 8px 12px;
+            background: rgba(245, 124, 0, 0.08);
+            border-radius: 6px;
+            border: 1px dashed var(--bh-orange);
+        }
+
+        .legend-group.hidden {
+            display: none;
+        }
+
+        .chart-container {
+            display: flex;
+            background: white;
+            border-radius: 16px;
+            padding: 25px;
+            box-shadow: 0 8px 40px rgba(107, 78, 155, 0.12);
+            border: 1px solid rgba(107, 78, 155, 0.1);
+        }
+
+        .time-axis {
+            width: 75px;
+            flex-shrink: 0;
+            position: relative;
+        }
+
+        .time-label {
+            position: absolute;
+            right: 8px;
+            font-size: 0.72rem;
+            color: #999;
+            transform: translateY(-50%);
+            font-weight: 500;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .time-label:hover {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .time-label.major {
+            color: #555;
+            font-weight: 600;
+            font-size: 0.78rem;
+        }
+
+        .chart-area {
+            flex: 1;
+            position: relative;
+            min-height: 800px;
+            border-left: 2px solid #e0e0e0;
+        }
+
+        .hour-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: #f0f0f0;
+        }
+
+        .hour-line.major {
+            background: #e0e0e0;
+        }
+
+        .time-hover-zone {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 33.33px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .time-hover-zone:hover {
+            background: rgba(107, 78, 155, 0.05);
+        }
+
+        .shift-block {
+            position: absolute;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.3s;
+            overflow: hidden;
+            box-shadow: 0 3px 12px rgba(0,0,0,0.1);
+        }
+
+        .shift-block:hover {
+            transform: translateY(-2px) scale(1.03);
+            box-shadow: 0 8px 25px rgba(107, 78, 155, 0.3);
+            z-index: 100;
+        }
+
+        .shift-block.resident {
+            background: linear-gradient(180deg, var(--bh-purple-light) 0%, var(--bh-purple) 40%, var(--bh-purple-dark) 100%);
+        }
+
+        .shift-block.ap {
+            background: linear-gradient(180deg, var(--bh-blue-light) 0%, var(--bh-blue) 40%, var(--bh-blue-dark) 100%);
+        }
+
+        .shift-block.attending {
+            background: linear-gradient(180deg, var(--bh-green-light) 0%, var(--bh-green) 40%, var(--bh-green-dark) 100%);
+        }
+
+        .shift-block.peds-intern,
+        .shift-block.peds-senior {
+            background: linear-gradient(180deg, var(--bh-orange-light) 0%, var(--bh-orange) 40%, var(--bh-orange-dark) 100%);
+            border: 2px dashed rgba(255,255,255,0.5);
+        }
+
+        .shift-block.peds-overlay {
+            display: none;
+        }
+
+        .shift-block.peds-overlay.visible {
+            display: block;
+        }
+
+        .shift-content {
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            padding: 8px 10px;
+            color: white;
+        }
+
+        .shift-header {
+            font-weight: 700;
+            font-size: 0.78rem;
+            margin-bottom: 2px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .shift-time {
+            font-size: 0.62rem;
+            opacity: 0.9;
+        }
+
+        .shift-patients {
+            font-size: 0.68rem;
+            margin-top: auto;
+            opacity: 0.95;
+            font-weight: 500;
+        }
+
+        .intensity-bar {
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 5px;
+            height: 100%;
+            background: rgba(255,255,255,0.1);
+        }
+
+        .intensity-segment {
+            position: absolute;
+            left: 0;
+            width: 100%;
+        }
+
+        .intensity-segment.high {
+            background: rgba(255,255,255,0.4);
+        }
+
+        .intensity-segment.low {
+            background: rgba(255,255,255,0.1);
+        }
+
+        /* Tooltip */
+        .tooltip {
+            position: fixed;
+            background: white;
+            border-radius: 12px;
+            padding: 16px;
+            box-shadow: 0 15px 50px rgba(107, 78, 155, 0.25);
+            border: 1px solid rgba(107, 78, 155, 0.12);
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            z-index: 1000;
+            min-width: 280px;
+            max-width: 340px;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        .tooltip-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .tooltip-title.resident { color: var(--bh-purple); }
+        .tooltip-title.ap { color: var(--bh-blue); }
+        .tooltip-title.attending { color: var(--bh-green); }
+        .tooltip-title.peds-intern, .tooltip-title.peds-senior { color: var(--bh-orange); }
+        .tooltip-title.time-tooltip { color: #333; }
+
+        .tooltip-row {
+            display: flex;
+            justify-content: space-between;
+            margin: 6px 0;
+            font-size: 0.85rem;
+        }
+
+        .tooltip-label {
+            color: #888;
+        }
+
+        .tooltip-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .tooltip-distribution {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 2px solid #f0f0f0;
+        }
+
+        .tooltip-distribution-title {
+            font-size: 0.8rem;
+            color: #666;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .distribution-bar {
+            display: flex;
+            height: 28px;
+            border-radius: 5px;
+            overflow: hidden;
+            background: #f5f5f5;
+        }
+
+        .distribution-segment {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .distribution-segment.high.resident { background: var(--bh-purple); }
+        .distribution-segment.low.resident { background: #D4C8E8; color: var(--bh-purple-dark); }
+        .distribution-segment.high.ap { background: var(--bh-blue); }
+        .distribution-segment.low.ap { background: #B8D4E8; color: var(--bh-blue-dark); }
+        .distribution-segment.high.attending { background: var(--bh-green); }
+        .distribution-segment.low.attending { background: #C8E6C9; color: var(--bh-green-dark); }
+        .distribution-segment.high.peds-intern,
+        .distribution-segment.high.peds-senior { background: var(--bh-orange); }
+        .distribution-segment.low.peds-intern,
+        .distribution-segment.low.peds-senior { background: #FFE0B2; color: var(--bh-orange-dark); }
+
+        /* Weight explanation */
+        .weight-explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 0.8rem;
+        }
+
+        .weight-calc {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: #555;
+        }
+
+        .weight-calc strong {
+            color: #333;
+        }
+
+        /* Time tooltip patient breakdown */
+        .patient-breakdown {
+            margin-top: 10px;
+        }
+
+        .breakdown-section-title {
+            font-size: 0.75rem;
+            color: #999;
+            margin: 10px 0 6px 0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .breakdown-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin: 5px 0;
+            font-size: 0.82rem;
+        }
+
+        .breakdown-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+
+        .breakdown-dot.resident { background: var(--bh-purple); }
+        .breakdown-dot.ap { background: var(--bh-blue); }
+        .breakdown-dot.attending { background: var(--bh-green); }
+        .breakdown-dot.peds-intern,
+        .breakdown-dot.peds-senior { background: var(--bh-orange); }
+
+        .breakdown-label {
+            flex: 1;
+            color: #555;
+        }
+
+        .breakdown-value {
+            font-weight: 600;
+            color: #333;
+            white-space: nowrap;
+        }
+
+        .breakdown-total {
+            margin-top: 10px;
+            padding-top: 10px;
+            border-top: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 0.9rem;
+        }
+
+        .breakdown-note {
+            font-size: 0.72rem;
+            color: #888;
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: center;
+            gap: 35px;
+            margin-top: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(107, 78, 155, 0.1);
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--bh-purple);
+        }
+
+        .stat-value.peds {
+            color: var(--bh-orange);
+        }
+
+        .stat-label {
+            font-size: 0.72rem;
+            color: #888;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+
+        .peds-stats {
+            display: none;
+            gap: 35px;
+        }
+
+        .peds-stats.visible {
+            display: flex;
+        }
+
+        .stats-divider {
+            width: 1px;
+            background: #e0e0e0;
+            margin: 0 5px;
+            display: none;
+        }
+
+        .stats-divider.visible {
+            display: block;
+        }
+
+        .current-time-line {
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #e53935, #ff5252);
+            z-index: 50;
+            display: none;
+            box-shadow: 0 0 10px rgba(229, 57, 53, 0.5);
+        }
+
+        .current-time-line::before {
+            content: 'NOW';
+            position: absolute;
+            left: -45px;
+            top: -9px;
+            font-size: 0.65rem;
+            color: #e53935;
+            font-weight: 700;
+            background: white;
+            padding: 2px 5px;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        .current-time-line::after {
+            content: '';
+            position: absolute;
+            right: 0;
+            top: -4px;
+            width: 10px;
+            height: 10px;
+            background: #e53935;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(229, 57, 53, 0.5);
+        }
+
+        /* Math Section Styles */
+        .math-section {
+            margin-top: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(107, 78, 155, 0.1);
+            overflow: hidden;
+        }
+
+        .math-toggle {
+            width: 100%;
+            padding: 16px 20px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            transition: background 0.2s;
+        }
+
+        .math-toggle:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+
+        .math-toggle-icon {
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+
+        .math-toggle-icon.expanded {
+            transform: rotate(90deg);
+        }
+
+        .math-content {
+            display: none;
+            padding: 20px;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .math-content.visible {
+            display: block;
+        }
+
+        .math-intro {
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .math-intro p {
+            margin: 0 0 12px 0;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .math-formula {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .formula-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 14px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            font-size: 0.85rem;
+        }
+
+        .formula-label {
+            color: #666;
+        }
+
+        .formula-value {
+            font-weight: 700;
+            font-family: 'Monaco', 'Consolas', monospace;
+        }
+
+        .highlight-green {
+            color: #2e7d32;
+        }
+
+        .highlight-red {
+            color: #c62828;
+        }
+
+        .math-groups {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 16px;
+        }
+
+        .math-group {
+            border: 1px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .math-group-header {
+            padding: 12px 16px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .math-group-header.resident { background: var(--bh-purple); }
+        .math-group-header.ap { background: var(--bh-blue); }
+        .math-group-header.attending { background: var(--bh-green); }
+        .math-group-header.peds { background: var(--bh-orange); }
+
+        .math-group-body {
+            padding: 14px 16px;
+            font-family: 'Monaco', 'Consolas', monospace;
+            font-size: 0.75rem;
+            line-height: 1.7;
+            background: #fafafa;
+        }
+
+        .math-step {
+            margin-bottom: 12px;
+        }
+
+        .math-step-title {
+            font-weight: 700;
+            color: #333;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin-bottom: 4px;
+            font-size: 0.78rem;
+        }
+
+        .math-line {
+            color: #555;
+            padding-left: 8px;
+        }
+
+        .math-result {
+            color: #2e7d32;
+            font-weight: 600;
+        }
+
+        .math-verify {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px dashed #ddd;
+        }
+
+        .peds-math-group {
+            display: none;
+        }
+
+        .peds-math-group.visible {
+            display: block;
+        }
+
+        @media (max-width: 1000px) {
+            .chart-container {
+                overflow-x: auto;
+            }
+            .chart-area {
+                min-width: 900px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo-container">
+            <img src="baystate-logo.png" alt="Baystate Health" class="bh-logo">
+        </div>
+        <div class="header-title">Pediatric Emergency Department Staffing</div>
+    </div>
+
+    <div class="container">
+        <h1 class="page-title">Shift Coverage Visualization</h1>
+        <p class="subtitle">24-Hour Waterfall View | Hover over any time slot to see expected patients that hour</p>
+
+        <div class="controls">
+            <button class="toggle-btn" id="pedsToggle" onclick="togglePeds()">
+                <span class="toggle-indicator"></span>
+                <span>Show Pediatric Residents</span>
+            </button>
+        </div>
+
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-color resident"></div>
+                <span>Resident (13 pts)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color ap"></div>
+                <span>AP (16 pts)</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-color attending"></div>
+                <span>Flex Attending (18 pts)</span>
+            </div>
+            <div class="legend-group hidden" id="pedsLegend">
+                <div class="legend-item">
+                    <div class="legend-color peds"></div>
+                    <span>Peds Intern (4 pts)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color peds"></div>
+                    <span>Peds Senior (6 pts)</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="chart-container">
+            <div class="time-axis" id="timeAxis"></div>
+            <div class="chart-area" id="chartArea">
+                <div class="current-time-line" id="currentTimeLine"></div>
+            </div>
+        </div>
+
+        <!-- How Rates are Calculated Section -->
+        <div class="math-section">
+            <button class="math-toggle" onclick="toggleMathSection()">
+                <span class="math-toggle-icon" id="mathIcon">▶</span>
+                <span>How are rates calculated?</span>
+            </button>
+            <div class="math-content" id="mathContent">
+                <div class="math-intro">
+                    <p><strong>Three-Phase Model:</strong> Providers see more patients early when fresh, taper in middle hours, and wind down at end (no new patients in final hour).</p>
+                    <div class="math-formula">
+                        <div class="formula-item">
+                            <span class="formula-label">First 6 hours:</span>
+                            <span class="formula-value highlight-green">1.5× base rate</span>
+                        </div>
+                        <div class="formula-item">
+                            <span class="formula-label">Middle hours:</span>
+                            <span class="formula-value highlight-red">0.5× base rate</span>
+                        </div>
+                        <div class="formula-item">
+                            <span class="formula-label">Final hour(s):</span>
+                            <span class="formula-value" style="color: #888;">0 patients</span>
+                        </div>
+                    </div>
+                    <p style="font-size: 0.85rem; color: #666; margin-top: 10px;"><em>Note: Flex Attending has 1.5h wind-down; all others have 1h.</em></p>
+                </div>
+                <div class="math-groups" id="mathGroups"></div>
+            </div>
+        </div>
+
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-value" id="totalShiftsVal">6</div>
+                <div class="stat-label" id="totalShiftsLabel">Total Shifts</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">3</div>
+                <div class="stat-label">EM Resident</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">2</div>
+                <div class="stat-label">AP</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value">1</div>
+                <div class="stat-label">Attending</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-value" id="totalPatientsVal">89</div>
+                <div class="stat-label" id="totalPatientsLabel">Total Patients/Day</div>
+            </div>
+            <div class="stats-divider" id="statsDivider"></div>
+            <div class="peds-stats" id="pedsStats">
+                <div class="stat-item">
+                    <div class="stat-value peds">3</div>
+                    <div class="stat-label">Peds Shifts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value peds">14</div>
+                    <div class="stat-label">Peds Patients</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="tooltip" id="tooltip"></div>
+
+    <script>
+        // Configuration
+        const HOUR_HEIGHT = 33.33;
+        const START_HOUR = 7;
+        const LANE_WIDTH = 105;
+        const LANE_GAP = 10;
+
+        let showPeds = false;
+
+        // Main EM Shifts
+        const emShifts = [
+            {
+                id: 1,
+                type: 'resident',
+                label: 'Resident #1',
+                startHour: 7,
+                endHour: 16,
+                patients: 13,
+                lane: 0,
+                isPeds: false
+            },
+            {
+                id: 2,
+                type: 'ap',
+                label: 'AP #1',
+                startHour: 9,
+                endHour: 18,
+                patients: 16,
+                lane: 1,
+                isPeds: false
+            },
+            {
+                id: 3,
+                type: 'resident',
+                label: 'Resident #2',
+                startHour: 15,
+                endHour: 24,
+                patients: 13,
+                lane: 2,
+                isPeds: false
+            },
+            {
+                id: 4,
+                type: 'attending',
+                label: 'Flex Attending',
+                startHour: 15.5,
+                endHour: 24,
+                patients: 18,
+                lane: 3,
+                isPeds: false
+            },
+            {
+                id: 5,
+                type: 'ap',
+                label: 'AP #2',
+                startHour: 17,
+                endHour: 26,
+                patients: 16,
+                lane: 4,
+                isPeds: false
+            },
+            {
+                id: 6,
+                type: 'resident',
+                label: 'Resident #3',
+                startHour: 22,
+                endHour: 31,
+                patients: 13,
+                lane: 5,
+                isPeds: false
+            }
+        ];
+
+        // Pediatric Shifts (overlay)
+        // Peds Intern #1: 11am-8pm (9h), 4 patients
+        // Peds Intern #2: 1pm-10pm (9h), 4 patients
+        // Peds Senior: 11pm-8am (9h), 6 patients
+        const pedsShifts = [
+            {
+                id: 101,
+                type: 'peds-intern',
+                label: 'Peds Intern #1',
+                startHour: 11,        // 11am
+                endHour: 20,          // 8pm
+                patients: 4,
+                lane: 6,
+                isPeds: true
+            },
+            {
+                id: 102,
+                type: 'peds-intern',
+                label: 'Peds Intern #2',
+                startHour: 13,        // 1pm
+                endHour: 22,          // 10pm
+                patients: 4,
+                lane: 7,
+                isPeds: true
+            },
+            {
+                id: 103,
+                type: 'peds-senior',
+                label: 'Peds Senior',
+                startHour: 23,        // 11pm
+                endHour: 32,          // 8am next day (wraps)
+                patients: 6,
+                lane: 8,
+                isPeds: true,
+                wraps: true
+            }
+        ];
+
+        const allShifts = [...emShifts, ...pedsShifts];
+
+        // Helper functions
+        function formatHour(hour) {
+            const h = ((hour % 24) + 24) % 24;
+            const minutes = Math.round((hour % 1) * 60);
+            const minStr = minutes > 0 ? `:${minutes.toString().padStart(2, '0')}` : '';
+            if (h === 0) return `12${minStr} AM`;
+            if (h === 12) return `12${minStr} PM`;
+            if (h < 12) return `${h}${minStr} AM`;
+            return `${h - 12}${minStr} PM`;
+        }
+
+        function formatHourShort(hour) {
+            const h = ((hour % 24) + 24) % 24;
+            if (h === 0) return '12A';
+            if (h === 12) return '12P';
+            if (h < 12) return `${h}A`;
+            return `${h - 12}P`;
+        }
+
+        function hourToY(hour) {
+            let adjustedHour = hour - START_HOUR;
+            if (adjustedHour < 0) adjustedHour += 24;
+            return adjustedHour * HOUR_HEIGHT;
+        }
+
+        function calculateDistribution(patients, durationHours, isFlexAttending = false) {
+            // Three-phase model:
+            // - First 6 hours: 1.5x base rate (high phase)
+            // - Middle hours: 0.5x base rate (low phase)
+            // - Last hour(s): 0 patients (zero phase - winding down)
+            const highHours = 6;
+            const zeroHours = isFlexAttending ? 1.5 : 1;  // Flex gets 1.5h of zero, others get 1h
+            const lowHours = Math.max(0, durationHours - highHours - zeroHours);
+
+            // Total = 6(1.5X) + lowHours(0.5X) + zeroHours(0)
+            // patients = 9X + 0.5*lowHours*X
+            // patients = X(9 + 0.5*lowHours)
+            const baseRate = patients / (9 + 0.5 * lowHours);
+            const highRate = 1.5 * baseRate;
+            const lowRate = 0.5 * baseRate;
+            const zeroRate = 0;
+
+            const highPatients = Math.round(highRate * highHours * 100) / 100;
+            const lowPatients = Math.round(lowRate * lowHours * 100) / 100;
+            const zeroPatients = 0;
+
+            return {
+                highHours,
+                lowHours,
+                zeroHours,
+                highPatients,
+                lowPatients,
+                zeroPatients,
+                highRate: Math.round(highRate * 100) / 100,
+                lowRate: Math.round(lowRate * 100) / 100,
+                zeroRate: 0,
+                baseRate: Math.round(baseRate * 1000) / 1000,
+                isFlexAttending
+            };
+        }
+
+        // Calculate patients at a specific hour
+        function getPatientsAtHour(targetHour) {
+            const results = {
+                em: { shifts: [], total: 0 },
+                peds: { shifts: [], total: 0 }
+            };
+
+            const shiftsToCheck = showPeds ? allShifts : emShifts;
+
+            shiftsToCheck.forEach(shift => {
+                const duration = shift.endHour - shift.startHour;
+                const isFlexAttending = shift.type === 'attending';
+                const dist = calculateDistribution(shift.patients, duration, isFlexAttending);
+
+                let shiftStart = shift.startHour;
+                let shiftEnd = shift.endHour;
+                let checkHour = targetHour;
+
+                if (shiftEnd > 24) {
+                    if (checkHour < shiftStart && checkHour < shiftEnd - 24) {
+                        checkHour += 24;
+                    }
+                }
+
+                if (checkHour >= shiftStart && checkHour < shiftEnd) {
+                    const hoursIntoShift = Math.floor(checkHour - shiftStart);
+                    const hoursRemaining = duration - hoursIntoShift;
+
+                    // Determine which phase we're in
+                    let phase, patientsThisHour;
+                    if (hoursIntoShift < dist.highHours) {
+                        phase = 'high';
+                        patientsThisHour = dist.highRate;
+                    } else if (hoursRemaining <= dist.zeroHours) {
+                        phase = 'zero';
+                        patientsThisHour = 0;
+                    } else {
+                        phase = 'low';
+                        patientsThisHour = dist.lowRate;
+                    }
+
+                    const shiftInfo = {
+                        label: shift.label,
+                        type: shift.type,
+                        patientsThisHour: patientsThisHour,
+                        totalPatients: shift.patients,
+                        duration: duration,
+                        hoursIntoShift: hoursIntoShift,
+                        phase: phase,
+                        isHighPhase: phase === 'high',
+                        isZeroPhase: phase === 'zero',
+                        highRate: dist.highRate,
+                        lowRate: dist.lowRate,
+                        zeroHours: dist.zeroHours,
+                        lowHours: dist.lowHours
+                    };
+
+                    if (shift.isPeds) {
+                        results.peds.shifts.push(shiftInfo);
+                        results.peds.total += patientsThisHour;
+                    } else {
+                        results.em.shifts.push(shiftInfo);
+                        results.em.total += patientsThisHour;
+                    }
+                }
+            });
+
+            return results;
+        }
+
+        // Toggle pediatrics
+        function togglePeds() {
+            showPeds = !showPeds;
+            const btn = document.getElementById('pedsToggle');
+            const legend = document.getElementById('pedsLegend');
+            const stats = document.getElementById('pedsStats');
+            const divider = document.getElementById('statsDivider');
+
+            btn.classList.toggle('active', showPeds);
+            legend.classList.toggle('hidden', !showPeds);
+            stats.classList.toggle('visible', showPeds);
+            divider.classList.toggle('visible', showPeds);
+
+            document.querySelectorAll('.peds-overlay').forEach(el => {
+                el.classList.toggle('visible', showPeds);
+            });
+
+            // Update totals to include Peds when toggled
+            const totalShiftsVal = document.getElementById('totalShiftsVal');
+            const totalPatientsVal = document.getElementById('totalPatientsVal');
+            const totalPatientsLabel = document.getElementById('totalPatientsLabel');
+
+            if (showPeds) {
+                totalShiftsVal.textContent = '9'; // 6 EM + 3 Peds
+                totalPatientsVal.textContent = '103'; // 89 EM + 14 Peds
+                totalPatientsLabel.textContent = 'Peds ER Patients/Day';
+            } else {
+                totalShiftsVal.textContent = '6';
+                totalPatientsVal.textContent = '89';
+                totalPatientsLabel.textContent = 'Total Patients/Day';
+            }
+        }
+
+        // Build time axis
+        function buildTimeAxis() {
+            const axis = document.getElementById('timeAxis');
+            const chartArea = document.getElementById('chartArea');
+
+            for (let i = 0; i <= 24; i++) {
+                const hour = (START_HOUR + i) % 24;
+                const y = i * HOUR_HEIGHT;
+
+                const label = document.createElement('div');
+                label.className = `time-label ${i % 3 === 0 ? 'major' : ''}`;
+                label.style.top = `${y}px`;
+                label.textContent = formatHourShort(START_HOUR + i);
+                label.dataset.hour = (START_HOUR + i) % 24;
+                label.addEventListener('mouseenter', showTimeTooltip);
+                label.addEventListener('mousemove', moveTooltip);
+                label.addEventListener('mouseleave', hideTooltip);
+                axis.appendChild(label);
+
+                const line = document.createElement('div');
+                line.className = `hour-line ${i % 3 === 0 ? 'major' : ''}`;
+                line.style.top = `${y}px`;
+                chartArea.appendChild(line);
+
+                if (i < 24) {
+                    const hoverZone = document.createElement('div');
+                    hoverZone.className = 'time-hover-zone';
+                    hoverZone.style.top = `${y}px`;
+                    hoverZone.dataset.hour = (START_HOUR + i) % 24;
+                    hoverZone.addEventListener('mouseenter', showTimeTooltip);
+                    hoverZone.addEventListener('mousemove', moveTooltip);
+                    hoverZone.addEventListener('mouseleave', hideTooltip);
+                    chartArea.appendChild(hoverZone);
+                }
+            }
+        }
+
+        // Build shift blocks
+        function buildShifts() {
+            const chartArea = document.getElementById('chartArea');
+
+            allShifts.forEach(shift => {
+                const duration = shift.endHour - shift.startHour;
+                const isFlexAttending = shift.type === 'attending';
+                const dist = calculateDistribution(shift.patients, duration, isFlexAttending);
+                const shiftData = {...shift, distribution: dist};
+
+                // Check if shift wraps past 7am (hour 31)
+                const chartEndHour = START_HOUR + 24; // 31 (7am next day)
+                const needsWrap = shift.endHour > chartEndHour;
+
+                if (needsWrap) {
+                    // Create two blocks: one for bottom (11pm-7am), one for top (7am-8am)
+                    const bottomDuration = chartEndHour - shift.startHour; // 11pm to 7am = 8 hours
+                    const topDuration = shift.endHour - chartEndHour; // 7am to 8am = 1 hour
+
+                    // Bottom block (main portion: 11pm - 7am)
+                    const bottomBlock = document.createElement('div');
+                    bottomBlock.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : ''}`;
+                    bottomBlock.style.left = `${15 + shift.lane * (LANE_WIDTH + LANE_GAP)}px`;
+                    bottomBlock.style.width = `${LANE_WIDTH}px`;
+                    bottomBlock.style.top = `${hourToY(shift.startHour)}px`;
+                    bottomBlock.style.height = `${bottomDuration * HOUR_HEIGHT}px`;
+                    bottomBlock.style.borderBottomLeftRadius = '0';
+                    bottomBlock.style.borderBottomRightRadius = '0';
+
+                    const highHeight = (dist.highHours / duration) * 100;
+                    const lowHeight = (dist.lowHours / duration) * 100;
+                    const zeroHeight = (dist.zeroHours / duration) * 100;
+                    bottomBlock.innerHTML = `
+                        <div class="intensity-bar">
+                            <div class="intensity-segment high" style="height: ${highHeight}%; top: 0;"></div>
+                            <div class="intensity-segment low" style="top: ${highHeight}%; height: ${lowHeight}%;"></div>
+                            <div class="intensity-segment zero" style="top: ${highHeight + lowHeight}%; height: ${zeroHeight}%; background: rgba(0,0,0,0.15);"></div>
+                        </div>
+                        <div class="shift-content">
+                            <div class="shift-header">${shift.label}</div>
+                            <div class="shift-time">${formatHour(shift.startHour)} – ${formatHour(shift.endHour % 24)}</div>
+                            <div class="shift-patients">${shift.patients} pts total</div>
+                        </div>
+                    `;
+                    bottomBlock.dataset.shift = JSON.stringify(shiftData);
+                    bottomBlock.addEventListener('mouseenter', showShiftTooltip);
+                    bottomBlock.addEventListener('mousemove', moveTooltip);
+                    bottomBlock.addEventListener('mouseleave', hideTooltip);
+                    chartArea.appendChild(bottomBlock);
+
+                    // Top block (wrap portion: 7am - 8am at top of chart)
+                    // Determine if the wrap portion is in the zero phase
+                    const hoursBeforeWrap = bottomDuration; // hours from shift start to 7am
+                    const isWrapInZeroPhase = (duration - topDuration) >= (duration - dist.zeroHours);
+
+                    const topBlock = document.createElement('div');
+                    topBlock.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : ''}`;
+                    topBlock.style.left = `${15 + shift.lane * (LANE_WIDTH + LANE_GAP)}px`;
+                    topBlock.style.width = `${LANE_WIDTH}px`;
+                    topBlock.style.top = '0px';
+                    topBlock.style.height = `${topDuration * HOUR_HEIGHT}px`;
+                    topBlock.style.borderTopLeftRadius = '0';
+                    topBlock.style.borderTopRightRadius = '0';
+                    topBlock.style.borderTop = '2px dashed rgba(255,255,255,0.7)';
+
+                    const wrapSegmentStyle = isWrapInZeroPhase ?
+                        'background: rgba(0,0,0,0.15);' :
+                        'background: rgba(255,255,255,0.1);';
+                    const wrapNote = isWrapInZeroPhase ? ' (winding down)' : '';
+
+                    topBlock.innerHTML = `
+                        <div class="intensity-bar">
+                            <div class="intensity-segment" style="height: 100%; top: 0; ${wrapSegmentStyle}"></div>
+                        </div>
+                        <div class="shift-content" style="padding: 4px 8px;">
+                            <div class="shift-header" style="font-size: 0.7rem;">↩ ${shift.label}</div>
+                            <div class="shift-time" style="font-size: 0.58rem;">wraps to ${formatHour(shift.endHour % 24)}${wrapNote}</div>
+                        </div>
+                    `;
+                    topBlock.dataset.shift = JSON.stringify(shiftData);
+                    topBlock.addEventListener('mouseenter', showShiftTooltip);
+                    topBlock.addEventListener('mousemove', moveTooltip);
+                    topBlock.addEventListener('mouseleave', hideTooltip);
+                    chartArea.appendChild(topBlock);
+
+                } else {
+                    // Normal single block
+                    const block = document.createElement('div');
+                    block.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : ''}`;
+                    block.style.left = `${15 + shift.lane * (LANE_WIDTH + LANE_GAP)}px`;
+                    block.style.width = `${LANE_WIDTH}px`;
+                    block.style.top = `${hourToY(shift.startHour)}px`;
+                    block.style.height = `${duration * HOUR_HEIGHT}px`;
+
+                    const highHeight = (dist.highHours / duration) * 100;
+                    const lowHeight = (dist.lowHours / duration) * 100;
+                    const zeroHeight = (dist.zeroHours / duration) * 100;
+                    block.innerHTML = `
+                        <div class="intensity-bar">
+                            <div class="intensity-segment high" style="height: ${highHeight}%; top: 0;"></div>
+                            <div class="intensity-segment low" style="top: ${highHeight}%; height: ${lowHeight}%;"></div>
+                            <div class="intensity-segment zero" style="top: ${highHeight + lowHeight}%; height: ${zeroHeight}%; background: rgba(0,0,0,0.15);"></div>
+                        </div>
+                        <div class="shift-content">
+                            <div class="shift-header">${shift.label}</div>
+                            <div class="shift-time">${formatHour(shift.startHour)} – ${formatHour(shift.endHour % 24)}</div>
+                            <div class="shift-patients">${shift.patients} pts total</div>
+                        </div>
+                    `;
+
+                    block.dataset.shift = JSON.stringify(shiftData);
+                    block.addEventListener('mouseenter', showShiftTooltip);
+                    block.addEventListener('mousemove', moveTooltip);
+                    block.addEventListener('mouseleave', hideTooltip);
+
+                    chartArea.appendChild(block);
+                }
+            });
+        }
+
+        // Show tooltip for time hover
+        function showTimeTooltip(e) {
+            const tooltip = document.getElementById('tooltip');
+            const hour = parseInt(e.target.dataset.hour);
+            const patients = getPatientsAtHour(hour);
+
+            let emHtml = '';
+            if (patients.em.shifts.length > 0) {
+                patients.em.shifts.forEach(s => {
+                    // Determine phase label
+                    let phaseLabel;
+                    if (s.phase === 'high') {
+                        phaseLabel = '<span style="color: #2e7d32;">●</span> high';
+                    } else if (s.phase === 'zero') {
+                        phaseLabel = '<span style="color: #888;">○</span> winding down';
+                    } else {
+                        phaseLabel = '<span style="color: #c62828;">●</span> tapering';
+                    }
+
+                    emHtml += `
+                        <div class="breakdown-row">
+                            <div class="breakdown-dot ${s.type}"></div>
+                            <span class="breakdown-label">${s.label}</span>
+                            <span class="breakdown-value" style="font-size: 1rem;">${s.patientsThisHour.toFixed(2)} pts</span>
+                        </div>
+                        <div style="font-size: 0.7rem; color: #888; margin-left: 18px; margin-bottom: 6px;">
+                            Hour ${s.hoursIntoShift + 1} of ${s.duration} · ${phaseLabel}
+                        </div>
+                    `;
+                });
+            } else {
+                emHtml = '<div style="color: #999; font-size: 0.82rem;">No active shifts</div>';
+            }
+
+            let pedsHtml = '';
+            if (showPeds && patients.peds.shifts.length > 0) {
+                pedsHtml = '<div class="breakdown-section-title">Pediatrics</div>';
+                patients.peds.shifts.forEach(s => {
+                    // Determine phase label
+                    let phaseLabel;
+                    if (s.phase === 'high') {
+                        phaseLabel = '<span style="color: #2e7d32;">●</span> high';
+                    } else if (s.phase === 'zero') {
+                        phaseLabel = '<span style="color: #888;">○</span> winding down';
+                    } else {
+                        phaseLabel = '<span style="color: #c62828;">●</span> tapering';
+                    }
+
+                    pedsHtml += `
+                        <div class="breakdown-row">
+                            <div class="breakdown-dot ${s.type}"></div>
+                            <span class="breakdown-label">${s.label}</span>
+                            <span class="breakdown-value" style="font-size: 1rem;">${s.patientsThisHour.toFixed(2)} pts</span>
+                        </div>
+                        <div style="font-size: 0.7rem; color: #888; margin-left: 18px; margin-bottom: 6px;">
+                            Hour ${s.hoursIntoShift + 1} of ${s.duration} · ${phaseLabel}
+                        </div>
+                    `;
+                });
+            }
+
+            const totalPatients = patients.em.total + (showPeds ? patients.peds.total : 0);
+            const activeCount = patients.em.shifts.length + (showPeds ? patients.peds.shifts.length : 0);
+
+            tooltip.innerHTML = `
+                <div class="tooltip-title time-tooltip">
+                    ${formatHour(hour)} – ${formatHour((hour + 1) % 24)}
+                </div>
+                <div style="background: #f0f4f8; padding: 10px; border-radius: 6px; margin-bottom: 12px;">
+                    <div style="font-size: 1.4rem; font-weight: 700; color: #333;">${totalPatients.toFixed(1)} patients</div>
+                    <div style="font-size: 0.75rem; color: #666;">expected this hour across ${activeCount} active provider${activeCount !== 1 ? 's' : ''}</div>
+                </div>
+                <div class="patient-breakdown">
+                    ${patients.em.shifts.length > 0 ? '<div class="breakdown-section-title">Breakdown by Provider</div>' : ''}
+                    ${emHtml}
+                    ${pedsHtml}
+                </div>
+                <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.7rem; color: #999; text-align: center;">
+                    See "How are rates calculated?" below for details
+                </div>
+            `;
+
+            tooltip.classList.add('visible');
+            moveTooltip(e);
+        }
+
+        // Show tooltip for shift hover
+        function showShiftTooltip(e) {
+            const tooltip = document.getElementById('tooltip');
+            const shift = JSON.parse(e.target.closest('.shift-block').dataset.shift);
+            const dist = shift.distribution;
+            const duration = shift.endHour - shift.startHour;
+
+            const typeLabels = {
+                'resident': 'EM Resident',
+                'ap': 'Advanced Practitioner',
+                'attending': 'Flex Attending',
+                'peds-intern': 'Pediatric Intern',
+                'peds-senior': 'Pediatric Senior Resident'
+            };
+
+            tooltip.innerHTML = `
+                <div class="tooltip-title ${shift.type}">
+                    ${shift.label} <span style="font-weight: 400; font-size: 0.8rem;">(${typeLabels[shift.type]})</span>
+                </div>
+
+                <div style="background: #f0f4f8; padding: 12px; border-radius: 8px; margin: 12px 0;">
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #333;">${shift.patients} patients</div>
+                    <div style="font-size: 0.8rem; color: #666; margin-top: 4px;">${formatHour(shift.startHour)} – ${formatHour(shift.endHour % 24)} (${duration} hours)</div>
+                </div>
+
+                <div style="display: flex; gap: 12px; text-align: center; margin-bottom: 12px;">
+                    <div style="flex: 1; padding: 8px; background: ${getTypeColor(shift.type)}22; border-radius: 6px;">
+                        <div style="font-size: 1.1rem; font-weight: 700; color: ${getTypeColor(shift.type)};">${dist.highRate.toFixed(1)}/hr</div>
+                        <div style="font-size: 0.7rem; color: #666;">First 6h</div>
+                    </div>
+                    <div style="flex: 1; padding: 8px; background: #f0f0f0; border-radius: 6px;">
+                        <div style="font-size: 1.1rem; font-weight: 700; color: #666;">${dist.lowRate.toFixed(1)}/hr</div>
+                        <div style="font-size: 0.7rem; color: #888;">Middle ${dist.lowHours}h</div>
+                    </div>
+                    <div style="flex: 1; padding: 8px; background: #fafafa; border-radius: 6px; border: 1px dashed #ddd;">
+                        <div style="font-size: 1.1rem; font-weight: 700; color: #aaa;">0/hr</div>
+                        <div style="font-size: 0.7rem; color: #999;">Final ${dist.zeroHours}h</div>
+                    </div>
+                </div>
+
+                <div style="font-size: 0.72rem; color: #999; text-align: center; padding-top: 8px; border-top: 1px solid #eee;">
+                    See "How are rates calculated?" below for details
+                </div>
+            `;
+
+            tooltip.classList.add('visible');
+            moveTooltip(e);
+        }
+
+        function getTypeColor(type) {
+            const colors = {
+                'resident': '#6B4E9B',
+                'ap': '#2B7CB3',
+                'attending': '#43A047',
+                'peds-intern': '#F57C00',
+                'peds-senior': '#F57C00'
+            };
+            return colors[type] || '#666';
+        }
+
+        function getTypeColorDark(type) {
+            const colors = {
+                'resident': '#553C7B',
+                'ap': '#1B6CA3',
+                'attending': '#2E7D32',
+                'peds-intern': '#E65100',
+                'peds-senior': '#E65100'
+            };
+            return colors[type] || '#444';
+        }
+
+        function moveTooltip(e) {
+            const tooltip = document.getElementById('tooltip');
+            const padding = 15;
+            let x = e.clientX + padding;
+            let y = e.clientY + padding;
+
+            const rect = tooltip.getBoundingClientRect();
+            if (x + rect.width > window.innerWidth) {
+                x = e.clientX - rect.width - padding;
+            }
+            if (y + rect.height > window.innerHeight) {
+                y = e.clientY - rect.height - padding;
+            }
+
+            tooltip.style.left = `${x}px`;
+            tooltip.style.top = `${y}px`;
+        }
+
+        function hideTooltip() {
+            document.getElementById('tooltip').classList.remove('visible');
+        }
+
+        function updateCurrentTimeLine() {
+            const now = new Date();
+            const currentHour = now.getHours() + now.getMinutes() / 60;
+            const line = document.getElementById('currentTimeLine');
+
+            let hoursFromStart = currentHour - START_HOUR;
+            if (hoursFromStart < 0) hoursFromStart += 24;
+
+            if (hoursFromStart >= 0 && hoursFromStart <= 24) {
+                line.style.display = 'block';
+                line.style.top = `${hoursFromStart * HOUR_HEIGHT}px`;
+            }
+        }
+
+        // Toggle math section
+        function toggleMathSection() {
+            const content = document.getElementById('mathContent');
+            const icon = document.getElementById('mathIcon');
+            content.classList.toggle('visible');
+            icon.classList.toggle('expanded');
+
+            if (content.classList.contains('visible')) {
+                buildMathExplanations();
+            }
+        }
+
+        // Build math explanations for each group
+        function buildMathExplanations() {
+            const container = document.getElementById('mathGroups');
+            container.innerHTML = '';
+
+            // Group shifts by type for explanation
+            const groups = [
+                { type: 'resident', label: 'EM Residents', shifts: emShifts.filter(s => s.type === 'resident'), color: 'resident' },
+                { type: 'ap', label: 'Advanced Practitioners', shifts: emShifts.filter(s => s.type === 'ap'), color: 'ap' },
+                { type: 'attending', label: 'Flex Attending', shifts: emShifts.filter(s => s.type === 'attending'), color: 'attending' }
+            ];
+
+            // Add peds groups
+            const pedsGroups = [
+                { type: 'peds-intern', label: 'Peds Interns', shifts: pedsShifts.filter(s => s.type === 'peds-intern'), color: 'peds', isPeds: true },
+                { type: 'peds-senior', label: 'Peds Senior', shifts: pedsShifts.filter(s => s.type === 'peds-senior'), color: 'peds', isPeds: true }
+            ];
+
+            groups.forEach(group => {
+                if (group.shifts.length > 0) {
+                    container.appendChild(createMathGroup(group));
+                }
+            });
+
+            pedsGroups.forEach(group => {
+                if (group.shifts.length > 0) {
+                    const el = createMathGroup(group);
+                    el.classList.add('peds-math-group');
+                    if (showPeds) el.classList.add('visible');
+                    container.appendChild(el);
+                }
+            });
+        }
+
+        function createMathGroup(group) {
+            const shift = group.shifts[0]; // Use first shift as example
+            const duration = shift.endHour - shift.startHour;
+            const isFlexAttending = shift.type === 'attending';
+            const dist = calculateDistribution(shift.patients, duration, isFlexAttending);
+            const zeroHours = dist.zeroHours;
+            const lowHours = dist.lowHours;
+            const zeroLabel = zeroHours === 1.5 ? '1.5h' : '1h';
+
+            // Calculate base rate
+            const baseRate = shift.patients / (9 + 0.5 * lowHours);
+            const avgRate = shift.patients / duration;
+
+            // Verify totals
+            const highTotal = (6 * dist.highRate).toFixed(2);
+            const lowTotal = (lowHours * dist.lowRate).toFixed(2);
+            const verifyTotal = (parseFloat(highTotal) + parseFloat(lowTotal)).toFixed(1);
+
+            const div = document.createElement('div');
+            div.className = 'math-group';
+            div.innerHTML = `
+                <div class="math-group-header ${group.color}">
+                    <span>${group.label}</span>
+                    <span style="opacity: 0.8; font-weight: 400; font-size: 0.8rem;">(${shift.patients} pts / ${duration}h shift)</span>
+                </div>
+                <div class="math-group-body">
+                    <div class="math-step">
+                        <div class="math-step-title">Step 1: Set up equation (3 phases)</div>
+                        <div class="math-line">Let X = base rate</div>
+                        <div class="math-line">Total = (6h × 1.5X) + (${lowHours}h × 0.5X) + (${zeroLabel} × 0)</div>
+                        <div class="math-line">${shift.patients} = 9X + ${(0.5 * lowHours).toFixed(1)}X + 0</div>
+                        <div class="math-line">${shift.patients} = ${(9 + 0.5 * lowHours).toFixed(1)}X</div>
+                    </div>
+                    <div class="math-step">
+                        <div class="math-step-title">Step 2: Solve for base rate</div>
+                        <div class="math-line">X = ${shift.patients} ÷ ${(9 + 0.5 * lowHours).toFixed(1)} = <strong>${baseRate.toFixed(3)}</strong></div>
+                    </div>
+                    <div class="math-step">
+                        <div class="math-step-title">Step 3: Calculate hourly rates</div>
+                        <div class="math-line">First 6h = 1.5 × ${baseRate.toFixed(3)} = <span class="math-result">${dist.highRate.toFixed(2)}/hr</span></div>
+                        <div class="math-line">Middle ${lowHours}h = 0.5 × ${baseRate.toFixed(3)} = <span class="highlight-red">${dist.lowRate.toFixed(2)}/hr</span></div>
+                        <div class="math-line">Final ${zeroLabel} = <span style="color: #888;">0/hr</span> (winding down)</div>
+                    </div>
+                    <div class="math-verify">
+                        <div class="math-step-title">✓ Verify (should equal ${shift.patients})</div>
+                        <div class="math-line">First 6h: 6 × ${dist.highRate.toFixed(2)} = ${highTotal} pts</div>
+                        <div class="math-line">Middle ${lowHours}h: ${lowHours} × ${dist.lowRate.toFixed(2)} = ${lowTotal} pts</div>
+                        <div class="math-line">Final ${zeroLabel}: 0 pts</div>
+                        <div class="math-line"><strong>Total: ${verifyTotal} pts ✓</strong></div>
+                    </div>
+                </div>
+            `;
+            return div;
+        }
+
+        // Update peds math visibility when toggling
+        const originalTogglePeds = togglePeds;
+        togglePeds = function() {
+            originalTogglePeds();
+            document.querySelectorAll('.peds-math-group').forEach(el => {
+                el.classList.toggle('visible', showPeds);
+            });
+        };
+
+        // Initialize
+        buildTimeAxis();
+        buildShifts();
+        updateCurrentTimeLine();
+        setInterval(updateCurrentTimeLine, 60000);
+    </script>
+</body>
+</html>
