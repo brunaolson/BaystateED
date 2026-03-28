@@ -1037,6 +1037,7 @@
             border-radius: 2px;
         }
 
+        /* Responsive Design */
         @media (max-width: 1000px) {
             .chart-container {
                 overflow-x: auto;
@@ -1044,6 +1045,117 @@
             .chart-area {
                 min-width: 900px;
             }
+            .container {
+                padding: 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                padding: 12px 15px;
+                flex-wrap: wrap;
+                gap: 8px;
+            }
+            .header-title {
+                font-size: 0.9rem;
+            }
+            .bh-logo {
+                height: 35px;
+            }
+            .page-title {
+                font-size: 1.4rem;
+            }
+            .subtitle {
+                font-size: 0.85rem;
+            }
+            .legend {
+                gap: 12px;
+            }
+            .legend-item {
+                font-size: 0.75rem;
+            }
+            .stats-bar {
+                gap: 15px;
+                padding: 15px;
+            }
+            .stat-value {
+                font-size: 1.3rem;
+            }
+            .stat-label {
+                font-size: 0.65rem;
+            }
+            .insights-content {
+                padding: 12px;
+                gap: 12px;
+            }
+            .insight-card {
+                min-width: 150px;
+                padding: 10px;
+            }
+            .insight-value {
+                font-size: 1rem;
+            }
+            .percentile-container {
+                height: 100px;
+            }
+            .percentile-legend {
+                gap: 8px;
+                font-size: 0.6rem;
+            }
+            .flow-bars {
+                height: 40px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 10px;
+            }
+            .page-title {
+                font-size: 1.2rem;
+            }
+            .controls {
+                margin-bottom: 15px;
+            }
+            .toggle-btn {
+                padding: 8px 12px;
+                font-size: 0.8rem;
+            }
+            .insights-header {
+                padding: 10px 12px;
+                font-size: 0.85rem;
+                flex-wrap: wrap;
+            }
+            .insights-header > span:last-child {
+                width: 100%;
+                margin-left: 0 !important;
+                margin-top: 6px;
+            }
+            .math-toggle {
+                padding: 12px 15px;
+                font-size: 0.85rem;
+            }
+        }
+
+        /* Subtle hover improvements */
+        .insight-card {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+        .insight-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+
+        /* Better focus states for accessibility */
+        .toggle-btn:focus,
+        .math-toggle:focus {
+            outline: 2px solid var(--bh-purple);
+            outline-offset: 2px;
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
         }
     </style>
 </head>
@@ -1166,7 +1278,7 @@
             <div class="insights-header">
                 <span>📊</span>
                 <span>Patient Flow Insights</span>
-                <span style="font-weight: 400; font-size: 0.8rem; color: #558b2f; margin-left: auto;">FY24/25 Peds ED Data</span>
+                <span style="font-weight: 400; font-size: 0.8rem; color: #558b2f; margin-left: auto;">FY24/25 Peds ED Data <span style="background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 6px;">Winter (Oct–Mar)</span></span>
             </div>
             <div class="insights-content">
                 <!-- Daily Summary Row -->
@@ -1245,7 +1357,7 @@
 
                 <!-- Percentile Range Chart -->
                 <div class="percentile-chart" style="flex-basis: 100%;">
-                    <div class="percentile-chart-title">Census Range by Percentile (hover for details)</div>
+                    <div class="percentile-chart-title">Daily Variability: How Census Ranges Across Different Days (hover for details)</div>
                     <div class="percentile-container">
                         <div class="percentile-y-axis">
                             <span>50</span>
@@ -1265,10 +1377,10 @@
                         </div>
                     </div>
                     <div class="percentile-legend">
-                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(198, 40, 40, 0.15); border-top: 1px dashed #c62828;"></div> p95 (busy day)</div>
-                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(255, 152, 0, 0.2);"></div> p75</div>
-                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(67, 160, 71, 0.4);"></div> Median</div>
-                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(33, 150, 243, 0.2);"></div> p25 (light day)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(198, 40, 40, 0.15); border-top: 1px dashed #c62828;"></div> Surge (top 5%)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(255, 152, 0, 0.2);"></div> Busy (top 25%)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(67, 160, 71, 0.4);"></div> Typical (median)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(33, 150, 243, 0.2);"></div> Quiet (bottom 25%)</div>
                     </div>
                 </div>
             </div>
@@ -2042,7 +2154,8 @@
             const percentileContainer = document.getElementById('percentileGrid');
 
             // FY24/25 Peds ED data ordered 7am-6am (matching chart)
-            // From ped_ed_stacked_area_data.json - includes pre-calculated band heights for stacking
+            // From ped_ed_stacked_area_data.json - WINTER DATA (October - March)
+            // Includes pre-calculated band heights for stacking
             // Index 0 = 7am, Index 23 = 6am next day
             const hourlyData = [
                 // 7am-6pm (Day shift hours - from sequence 13-24 in source data)
@@ -2185,17 +2298,17 @@
                 tooltip.innerHTML = `
                     <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: #333;">${hourLabel} Census Range</div>
                     <div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin-bottom: 10px;">
-                        <div style="font-size: 0.75rem; color: #c62828;">p95 (busy):</div>
+                        <div style="font-size: 0.75rem; color: #c62828;">Surge day:</div>
                         <div style="font-size: 0.9rem; font-weight: 600;">${d.p95} patients</div>
-                        <div style="font-size: 0.75rem; color: #ff9800;">p75:</div>
+                        <div style="font-size: 0.75rem; color: #ff9800;">Busy day:</div>
                         <div style="font-size: 0.9rem; font-weight: 600;">${d.p75} patients</div>
-                        <div style="font-size: 0.75rem; color: #43a047;">Median:</div>
+                        <div style="font-size: 0.75rem; color: #43a047;">Typical day:</div>
                         <div style="font-size: 0.9rem; font-weight: 700; color: #2e7d32;">${d.median} patients</div>
-                        <div style="font-size: 0.75rem; color: #2196f3;">p25 (light):</div>
+                        <div style="font-size: 0.75rem; color: #2196f3;">Quiet day:</div>
                         <div style="font-size: 0.9rem; font-weight: 600;">${d.p25} patients</div>
                     </div>
                     <div style="font-size: 0.72rem; color: #888; border-top: 1px solid #eee; padding-top: 6px;">
-                        Range: ${d.p25} – ${d.p95} (spread of ${d.p95 - d.p25})
+                        Day-to-day range: ${d.p25} – ${d.p95} (${d.p95 - d.p25} patient spread)
                     </div>
                 `;
             } else if (type === 'census') {
