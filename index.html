@@ -921,6 +921,122 @@
         .flow-legend-dot.normal { background: #43a047; }
         .flow-legend-dot.peak { background: #c62828; }
 
+        /* Percentile Range Chart */
+        .percentile-chart {
+            width: 100%;
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+
+        .percentile-chart-title {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .percentile-container {
+            position: relative;
+            height: 120px;
+            background: #fafafa;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .percentile-grid {
+            position: absolute;
+            top: 0;
+            left: 40px;
+            right: 0;
+            bottom: 20px;
+            display: flex;
+        }
+
+        .percentile-bar-group {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            align-items: center;
+            position: relative;
+        }
+
+        .percentile-stack {
+            width: 70%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .p95-band {
+            background: rgba(198, 40, 40, 0.15);
+            border-top: 1px dashed #c62828;
+        }
+
+        .p75-band {
+            background: rgba(255, 152, 0, 0.2);
+        }
+
+        .mean-band {
+            background: rgba(67, 160, 71, 0.4);
+            position: relative;
+        }
+
+        .p25-band {
+            background: rgba(33, 150, 243, 0.2);
+        }
+
+        .percentile-y-axis {
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 20px;
+            width: 35px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: #999;
+            text-align: right;
+            padding-right: 4px;
+        }
+
+        .percentile-x-axis {
+            position: absolute;
+            bottom: 0;
+            left: 40px;
+            right: 0;
+            height: 20px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: #999;
+            padding: 0 5px;
+        }
+
+        .percentile-legend {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 8px;
+            font-size: 0.68rem;
+            color: #666;
+            flex-wrap: wrap;
+        }
+
+        .percentile-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .percentile-legend-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 2px;
+        }
+
         @media (max-width: 1000px) {
             .chart-container {
                 overflow-x: auto;
@@ -1053,31 +1169,51 @@
                 <span style="font-weight: 400; font-size: 0.8rem; color: #558b2f; margin-left: auto;">FY24/25 Peds ED Data</span>
             </div>
             <div class="insights-content">
+                <!-- Daily Summary Row -->
+                <div style="flex-basis: 100%; display: flex; gap: 12px; flex-wrap: wrap; padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px;">
+                    <div style="flex: 1; min-width: 100px; text-align: center; padding: 8px; background: white; border-radius: 6px;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #2e7d32;">96</div>
+                        <div style="font-size: 0.68rem; color: #666;">Arrivals/Day</div>
+                    </div>
+                    <div style="flex: 1; min-width: 100px; text-align: center; padding: 8px; background: white; border-radius: 6px;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #1565c0;">84</div>
+                        <div style="font-size: 0.68rem; color: #666;">Discharges</div>
+                    </div>
+                    <div style="flex: 1; min-width: 100px; text-align: center; padding: 8px; background: white; border-radius: 6px;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #6a1b9a;">12</div>
+                        <div style="font-size: 0.68rem; color: #666;">Admits (12%)</div>
+                    </div>
+                    <div style="flex: 1; min-width: 100px; text-align: center; padding: 8px; background: white; border-radius: 6px;">
+                        <div style="font-size: 1.3rem; font-weight: 700; color: #e65100;">3</div>
+                        <div style="font-size: 0.68rem; color: #666;">LWBS (3%)</div>
+                    </div>
+                </div>
+
                 <div class="insight-card" style="border-left-color: #1565c0; background: #f5f9ff;">
                     <div class="insight-title">7 AM Handoff (Day Inherits)</div>
                     <div class="insight-value">11 patients</div>
-                    <div class="insight-detail">Census at shift change. Day team starts with manageable load, ~3 in waiting room. Lowest point of 24hr cycle.</div>
+                    <div class="insight-detail">Lowest census. Day team builds dept: net flow +0.9 to +2.7/hr until 1pm.</div>
                 </div>
                 <div class="insight-card" style="border-left-color: #6a1b9a; background: #faf5ff;">
                     <div class="insight-title">7 PM Handoff (Night Inherits)</div>
                     <div class="insight-value">31 patients</div>
-                    <div class="insight-detail">Peak census at shift change. Night team inherits full department, ~11 in waiting room. Critical staffing moment.</div>
+                    <div class="insight-detail">Peak census. Night team clears dept: net flow -0.9 to -2.6/hr overnight.</div>
                 </div>
                 <div class="insight-card peak">
-                    <div class="insight-title">Peak Volume</div>
-                    <div class="insight-value">5 PM – 9 PM</div>
-                    <div class="insight-detail">Census 28-31, arrivals ~6/hr, WR 10-11. Four providers overlap (Res #2, Flex, AP #2 + late AP #1).</div>
+                    <div class="insight-title">Peak + Plateau</div>
+                    <div class="insight-value">1 PM – 9 PM</div>
+                    <div class="insight-detail">Census 26-31, net flow near zero (+0.3 to +0.6). Arrivals ≈ Discharges. Holding pattern.</div>
                 </div>
-                <div class="insight-card note">
-                    <div class="insight-title">Overnight Nadir</div>
-                    <div class="insight-value">3 AM – 6 AM</div>
-                    <div class="insight-detail">Census drops to 11-15, arrivals ~1/hr, WR 2-3. Res #3 + AP #2 wind down before 7 AM handoff.</div>
+                <div class="insight-card good">
+                    <div class="insight-title">Night Drain</div>
+                    <div class="insight-value">9 PM – 7 AM</div>
+                    <div class="insight-detail">Discharges outpace arrivals. Census drops 31→11. Midnight has steepest drain (-2.6/hr).</div>
                 </div>
 
                 <div class="flow-chart" style="flex-basis: 100%;">
                     <div style="display: flex; gap: 20px; flex-wrap: wrap;">
                         <div style="flex: 1; min-width: 280px;">
-                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">ED Census (patients in department)</div>
+                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">ED Census (hover for net flow)</div>
                             <div class="flow-bars" id="censusBars"></div>
                             <div class="flow-labels">
                                 <span>7A</span>
@@ -1088,7 +1224,7 @@
                             </div>
                         </div>
                         <div style="flex: 1; min-width: 280px;">
-                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">New Arrivals (patients/hour)</div>
+                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">Arrivals vs Dispositions (hover for detail)</div>
                             <div class="flow-bars" id="flowBars"></div>
                             <div class="flow-labels">
                                 <span>7A</span>
@@ -1103,7 +1239,36 @@
                         <div class="flow-legend-item"><div class="flow-legend-dot low"></div> Low</div>
                         <div class="flow-legend-item"><div class="flow-legend-dot normal"></div> Moderate</div>
                         <div class="flow-legend-item"><div class="flow-legend-dot peak"></div> High</div>
-                        <div class="flow-legend-item" style="margin-left: 10px; padding-left: 10px; border-left: 1px solid #ddd;"><span style="font-size: 0.7rem; color: #888;">Winter avg ~15% higher than summer</span></div>
+                        <div class="flow-legend-item" style="margin-left: 10px; padding-left: 10px; border-left: 1px solid #ddd;"><span style="font-size: 0.7rem; color: #888;">Night clears; Day builds</span></div>
+                    </div>
+                </div>
+
+                <!-- Percentile Range Chart -->
+                <div class="percentile-chart" style="flex-basis: 100%;">
+                    <div class="percentile-chart-title">Census Range by Percentile (hover for details)</div>
+                    <div class="percentile-container">
+                        <div class="percentile-y-axis">
+                            <span>50</span>
+                            <span>40</span>
+                            <span>30</span>
+                            <span>20</span>
+                            <span>10</span>
+                            <span>0</span>
+                        </div>
+                        <div class="percentile-grid" id="percentileGrid"></div>
+                        <div class="percentile-x-axis">
+                            <span>7A</span>
+                            <span>12P</span>
+                            <span>7P</span>
+                            <span>12A</span>
+                            <span>6A</span>
+                        </div>
+                    </div>
+                    <div class="percentile-legend">
+                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(198, 40, 40, 0.15); border-top: 1px dashed #c62828;"></div> p95 (busy day)</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(255, 152, 0, 0.2);"></div> p75</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(67, 160, 71, 0.4);"></div> Median</div>
+                        <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(33, 150, 243, 0.2);"></div> p25 (light day)</div>
                     </div>
                 </div>
             </div>
@@ -1874,34 +2039,38 @@
         function buildFlowChart() {
             const arrivalsContainer = document.getElementById('flowBars');
             const censusContainer = document.getElementById('censusBars');
+            const percentileContainer = document.getElementById('percentileGrid');
 
             // FY24/25 Peds ED data ordered 7am-6am (matching chart)
+            // From ped_ed_stacked_area_data.json - includes pre-calculated band heights for stacking
             // Index 0 = 7am, Index 23 = 6am next day
             const hourlyData = [
-                { hour: 7, census: 11, arrivals: 2, wr: 3 },
-                { hour: 8, census: 13, arrivals: 4, wr: 4 },
-                { hour: 9, census: 17, arrivals: 5, wr: 7 },
-                { hour: 10, census: 20, arrivals: 5, wr: 8 },
-                { hour: 11, census: 23, arrivals: 6, wr: 9 },
-                { hour: 12, census: 25, arrivals: 6, wr: 9 },
-                { hour: 13, census: 26, arrivals: 5, wr: 9 },
-                { hour: 14, census: 26, arrivals: 5, wr: 9 },
-                { hour: 15, census: 27, arrivals: 6, wr: 9 },
-                { hour: 16, census: 28, arrivals: 6, wr: 10 },
-                { hour: 17, census: 29, arrivals: 6, wr: 11 },
-                { hour: 18, census: 30, arrivals: 6, wr: 11 },
-                { hour: 19, census: 31, arrivals: 6, wr: 11 },
-                { hour: 20, census: 31, arrivals: 6, wr: 11 },
-                { hour: 21, census: 30, arrivals: 5, wr: 10 },
-                { hour: 22, census: 28, arrivals: 4, wr: 9 },
-                { hour: 23, census: 26, arrivals: 3, wr: 7 },
-                { hour: 0, census: 23, arrivals: 2, wr: 6 },
-                { hour: 1, census: 20, arrivals: 2, wr: 4 },
-                { hour: 2, census: 17, arrivals: 2, wr: 3 },
-                { hour: 3, census: 15, arrivals: 1, wr: 3 },
-                { hour: 4, census: 13, arrivals: 1, wr: 2 },
-                { hour: 5, census: 12, arrivals: 1, wr: 2 },
-                { hour: 6, census: 11, arrivals: 1, wr: 2 }
+                // 7am-6pm (Day shift hours - from sequence 13-24 in source data)
+                { hour: 7, census: 11, p25: 8, median: 10, p75: 14, p95: 20, arrivals: 2, wr: 3, discharge: 1, admit: 0.1, lwbs: 0, netFlow: 0.9, census_band_low: 8, census_band_lower_mid: 2, census_band_upper_mid: 4, census_band_high: 6 },
+                { hour: 8, census: 13, p25: 10, median: 13, p75: 16, p95: 23, arrivals: 4, wr: 4, discharge: 1, admit: 0.3, lwbs: 0, netFlow: 2.7, census_band_low: 10, census_band_lower_mid: 3, census_band_upper_mid: 3, census_band_high: 7 },
+                { hour: 9, census: 17, p25: 13, median: 16, p75: 20, p95: 29, arrivals: 5, wr: 7, discharge: 2, admit: 0.4, lwbs: 0.1, netFlow: 2.6, census_band_low: 13, census_band_lower_mid: 3, census_band_upper_mid: 4, census_band_high: 9 },
+                { hour: 10, census: 20, p25: 15, median: 20, p75: 24, p95: 32, arrivals: 5, wr: 8, discharge: 3, admit: 0.3, lwbs: 0.1, netFlow: 1.7, census_band_low: 15, census_band_lower_mid: 5, census_band_upper_mid: 4, census_band_high: 8 },
+                { hour: 11, census: 23, p25: 18, median: 22, p75: 28, p95: 36, arrivals: 6, wr: 9, discharge: 3, admit: 0.4, lwbs: 0.1, netFlow: 2.6, census_band_low: 18, census_band_lower_mid: 4, census_band_upper_mid: 6, census_band_high: 8 },
+                { hour: 12, census: 25, p25: 20, median: 25, p75: 29, p95: 40, arrivals: 6, wr: 9, discharge: 4, admit: 0.4, lwbs: 0.1, netFlow: 1.6, census_band_low: 20, census_band_lower_mid: 5, census_band_upper_mid: 4, census_band_high: 11 },
+                { hour: 13, census: 26, p25: 20, median: 25, p75: 31, p95: 41, arrivals: 5, wr: 9, discharge: 4, admit: 0.4, lwbs: 0.1, netFlow: 0.6, census_band_low: 20, census_band_lower_mid: 5, census_band_upper_mid: 6, census_band_high: 10 },
+                { hour: 14, census: 26, p25: 20, median: 25, p75: 31, p95: 41, arrivals: 5, wr: 9, discharge: 4, admit: 0.5, lwbs: 0.1, netFlow: 0.5, census_band_low: 20, census_band_lower_mid: 5, census_band_upper_mid: 6, census_band_high: 10 },
+                { hour: 15, census: 27, p25: 21, median: 26, p75: 31, p95: 42, arrivals: 6, wr: 9, discharge: 5, admit: 0.6, lwbs: 0.1, netFlow: 0.4, census_band_low: 21, census_band_lower_mid: 5, census_band_upper_mid: 5, census_band_high: 11 },
+                { hour: 16, census: 28, p25: 22, median: 27, p75: 32, p95: 44, arrivals: 6, wr: 10, discharge: 5, admit: 0.6, lwbs: 0.2, netFlow: 0.4, census_band_low: 22, census_band_lower_mid: 5, census_band_upper_mid: 5, census_band_high: 12 },
+                { hour: 17, census: 29, p25: 23, median: 28, p75: 34, p95: 47, arrivals: 6, wr: 11, discharge: 5, admit: 0.7, lwbs: 0.2, netFlow: 0.3, census_band_low: 23, census_band_lower_mid: 5, census_band_upper_mid: 6, census_band_high: 13 },
+                { hour: 18, census: 30, p25: 24, median: 29, p75: 35, p95: 46, arrivals: 6, wr: 11, discharge: 5, admit: 0.5, lwbs: 0.3, netFlow: 0.5, census_band_low: 24, census_band_lower_mid: 5, census_band_upper_mid: 6, census_band_high: 11 },
+                // 7pm-6am (Night shift hours - from sequence 1-12 in source data)
+                { hour: 19, census: 31, p25: 24, median: 30, p75: 37, p95: 47, arrivals: 6, wr: 11, discharge: 5, admit: 0.4, lwbs: 0.3, netFlow: 0.6, census_band_low: 24, census_band_lower_mid: 6, census_band_upper_mid: 7, census_band_high: 10 },
+                { hour: 20, census: 31, p25: 25, median: 30, p75: 36, p95: 47, arrivals: 6, wr: 11, discharge: 5, admit: 0.8, lwbs: 0.3, netFlow: 0.2, census_band_low: 25, census_band_lower_mid: 5, census_band_upper_mid: 6, census_band_high: 11 },
+                { hour: 21, census: 30, p25: 24, median: 29, p75: 35, p95: 46, arrivals: 5, wr: 10, discharge: 5, admit: 0.9, lwbs: 0.3, netFlow: -0.9, census_band_low: 24, census_band_lower_mid: 5, census_band_upper_mid: 6, census_band_high: 11 },
+                { hour: 22, census: 28, p25: 23, median: 27, p75: 33, p95: 44, arrivals: 4, wr: 9, discharge: 5, admit: 0.7, lwbs: 0.3, netFlow: -1.7, census_band_low: 23, census_band_lower_mid: 4, census_band_upper_mid: 6, census_band_high: 11 },
+                { hour: 23, census: 26, p25: 19, median: 25, p75: 31, p95: 41, arrivals: 3, wr: 7, discharge: 4, admit: 0.7, lwbs: 0.2, netFlow: -1.7, census_band_low: 19, census_band_lower_mid: 6, census_band_upper_mid: 6, census_band_high: 10 },
+                { hour: 0, census: 23, p25: 17, median: 22, p75: 28, p95: 37, arrivals: 2, wr: 6, discharge: 4, admit: 0.6, lwbs: 0.2, netFlow: -2.6, census_band_low: 17, census_band_lower_mid: 5, census_band_upper_mid: 6, census_band_high: 9 },
+                { hour: 1, census: 20, p25: 15, median: 19, p75: 24, p95: 33, arrivals: 2, wr: 4, discharge: 3, admit: 0.6, lwbs: 0.1, netFlow: -1.6, census_band_low: 15, census_band_lower_mid: 4, census_band_upper_mid: 5, census_band_high: 9 },
+                { hour: 2, census: 17, p25: 12, median: 16, p75: 22, p95: 29, arrivals: 2, wr: 3, discharge: 3, admit: 0.5, lwbs: 0, netFlow: -1.5, census_band_low: 12, census_band_lower_mid: 4, census_band_upper_mid: 6, census_band_high: 7 },
+                { hour: 3, census: 15, p25: 11, median: 14, p75: 19, p95: 25, arrivals: 1, wr: 3, discharge: 2, admit: 0.4, lwbs: 0, netFlow: -1.4, census_band_low: 11, census_band_lower_mid: 3, census_band_upper_mid: 5, census_band_high: 6 },
+                { hour: 4, census: 13, p25: 9, median: 13, p75: 17, p95: 23, arrivals: 1, wr: 2, discharge: 2, admit: 0.4, lwbs: 0, netFlow: -1.4, census_band_low: 9, census_band_lower_mid: 4, census_band_upper_mid: 4, census_band_high: 6 },
+                { hour: 5, census: 12, p25: 9, median: 11, p75: 15, p95: 21, arrivals: 1, wr: 2, discharge: 2, admit: 0.4, lwbs: 0, netFlow: -1.4, census_band_low: 9, census_band_lower_mid: 2, census_band_upper_mid: 4, census_band_high: 6 },
+                { hour: 6, census: 11, p25: 8, median: 10, p75: 14, p95: 19, arrivals: 1, wr: 2, discharge: 2, admit: 0.3, lwbs: 0, netFlow: -1.3, census_band_low: 8, census_band_lower_mid: 2, census_band_upper_mid: 4, census_band_high: 5 }
             ];
 
             const maxCensus = Math.max(...hourlyData.map(d => d.census));
@@ -1917,8 +2086,11 @@
                     if (d.census >= 28) bar.classList.add('peak-bar');
                     else if (d.census <= 15) bar.classList.add('low-bar');
 
-                    const hourLabel = d.hour === 0 ? '12AM' : d.hour === 12 ? '12PM' : d.hour > 12 ? `${d.hour-12}PM` : `${d.hour}AM`;
-                    bar.title = `${hourLabel}: ${d.census} patients in ED, ${d.wr} in waiting room`;
+                    bar.dataset.hourData = JSON.stringify(d);
+                    bar.dataset.type = 'census';
+                    bar.addEventListener('mouseenter', showFlowTooltip);
+                    bar.addEventListener('mousemove', moveTooltip);
+                    bar.addEventListener('mouseleave', hideTooltip);
                     censusContainer.appendChild(bar);
                 });
             }
@@ -1933,11 +2105,149 @@
                     if (d.arrivals >= 5) bar.classList.add('peak-bar');
                     else if (d.arrivals <= 2) bar.classList.add('low-bar');
 
-                    const hourLabel = d.hour === 0 ? '12AM' : d.hour === 12 ? '12PM' : d.hour > 12 ? `${d.hour-12}PM` : `${d.hour}AM`;
-                    bar.title = `${hourLabel}: ~${d.arrivals} new patients/hour`;
+                    bar.dataset.hourData = JSON.stringify(d);
+                    bar.dataset.type = 'arrivals';
+                    bar.addEventListener('mouseenter', showFlowTooltip);
+                    bar.addEventListener('mousemove', moveTooltip);
+                    bar.addEventListener('mouseleave', hideTooltip);
                     arrivalsContainer.appendChild(bar);
                 });
             }
+
+            // Build percentile range chart using pre-calculated band heights
+            if (percentileContainer) {
+                const chartHeight = 100; // pixels for the chart area
+                const scale = chartHeight / 50; // 50 is our y-axis max
+
+                hourlyData.forEach((d, i) => {
+                    const group = document.createElement('div');
+                    group.className = 'percentile-bar-group';
+
+                    const stack = document.createElement('div');
+                    stack.className = 'percentile-stack';
+
+                    // Use pre-calculated band heights from data
+                    // band_high: p75 → p95, band_upper_mid: median → p75
+                    // band_lower_mid: p25 → median, band_low: 0 → p25
+                    const p95Height = d.census_band_high * scale;
+                    const p75Height = d.census_band_upper_mid * scale;
+                    const medianHeight = d.census_band_lower_mid * scale;
+                    const p25Height = d.census_band_low * scale;
+
+                    // p95 band (top) - p75 to p95
+                    const p95Band = document.createElement('div');
+                    p95Band.className = 'p95-band';
+                    p95Band.style.height = `${p95Height}px`;
+
+                    // p75 band - median to p75
+                    const p75Band = document.createElement('div');
+                    p75Band.className = 'p75-band';
+                    p75Band.style.height = `${p75Height}px`;
+
+                    // median band - p25 to median
+                    const medianBand = document.createElement('div');
+                    medianBand.className = 'mean-band';
+                    medianBand.style.height = `${medianHeight}px`;
+
+                    // p25 band (bottom) - 0 to p25
+                    const p25Band = document.createElement('div');
+                    p25Band.className = 'p25-band';
+                    p25Band.style.height = `${p25Height}px`;
+
+                    stack.appendChild(p95Band);
+                    stack.appendChild(p75Band);
+                    stack.appendChild(medianBand);
+                    stack.appendChild(p25Band);
+
+                    group.appendChild(stack);
+                    group.dataset.hourData = JSON.stringify(d);
+                    group.dataset.type = 'percentile';
+                    group.addEventListener('mouseenter', showFlowTooltip);
+                    group.addEventListener('mousemove', moveTooltip);
+                    group.addEventListener('mouseleave', hideTooltip);
+
+                    percentileContainer.appendChild(group);
+                });
+            }
+        }
+
+        // Show tooltip for flow chart bars
+        function showFlowTooltip(e) {
+            const tooltip = document.getElementById('tooltip');
+            const d = JSON.parse(e.target.dataset.hourData);
+            const type = e.target.dataset.type;
+
+            const hourLabel = d.hour === 0 ? '12 AM' : d.hour === 12 ? '12 PM' : d.hour > 12 ? `${d.hour-12} PM` : `${d.hour} AM`;
+            const flowSign = d.netFlow >= 0 ? '+' : '';
+            const flowColor = d.netFlow >= 0 ? '#2e7d32' : '#c62828';
+
+            if (type === 'percentile') {
+                tooltip.innerHTML = `
+                    <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: #333;">${hourLabel} Census Range</div>
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: 4px 12px; margin-bottom: 10px;">
+                        <div style="font-size: 0.75rem; color: #c62828;">p95 (busy):</div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">${d.p95} patients</div>
+                        <div style="font-size: 0.75rem; color: #ff9800;">p75:</div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">${d.p75} patients</div>
+                        <div style="font-size: 0.75rem; color: #43a047;">Median:</div>
+                        <div style="font-size: 0.9rem; font-weight: 700; color: #2e7d32;">${d.median} patients</div>
+                        <div style="font-size: 0.75rem; color: #2196f3;">p25 (light):</div>
+                        <div style="font-size: 0.9rem; font-weight: 600;">${d.p25} patients</div>
+                    </div>
+                    <div style="font-size: 0.72rem; color: #888; border-top: 1px solid #eee; padding-top: 6px;">
+                        Range: ${d.p25} – ${d.p95} (spread of ${d.p95 - d.p25})
+                    </div>
+                `;
+            } else if (type === 'census') {
+                tooltip.innerHTML = `
+                    <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: #333;">${hourLabel}</div>
+                    <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.4rem; font-weight: 700; color: #1565c0;">${d.census}</div>
+                            <div style="font-size: 0.7rem; color: #666;">in ED</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.4rem; font-weight: 700; color: #e65100;">${d.wr}</div>
+                            <div style="font-size: 0.7rem; color: #666;">waiting</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.4rem; font-weight: 700; color: ${flowColor};">${flowSign}${d.netFlow.toFixed(1)}</div>
+                            <div style="font-size: 0.7rem; color: #666;">net/hr</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.72rem; color: #888; border-top: 1px solid #eee; padding-top: 6px;">
+                        ${d.netFlow >= 0 ? '↑ Census building' : '↓ Census draining'}
+                    </div>
+                `;
+            } else {
+                tooltip.innerHTML = `
+                    <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: #333;">${hourLabel}</div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px;">
+                        <div style="text-align: center; padding: 6px; background: #e8f5e9; border-radius: 4px;">
+                            <div style="font-size: 1.1rem; font-weight: 700; color: #2e7d32;">+${d.arrivals}</div>
+                            <div style="font-size: 0.65rem; color: #666;">arrivals</div>
+                        </div>
+                        <div style="text-align: center; padding: 6px; background: #e3f2fd; border-radius: 4px;">
+                            <div style="font-size: 1.1rem; font-weight: 700; color: #1565c0;">-${d.discharge}</div>
+                            <div style="font-size: 0.65rem; color: #666;">discharged</div>
+                        </div>
+                        <div style="text-align: center; padding: 6px; background: #f3e5f5; border-radius: 4px;">
+                            <div style="font-size: 1.1rem; font-weight: 700; color: #6a1b9a;">-${d.admit.toFixed(1)}</div>
+                            <div style="font-size: 0.65rem; color: #666;">admitted</div>
+                        </div>
+                        <div style="text-align: center; padding: 6px; background: #fff3e0; border-radius: 4px;">
+                            <div style="font-size: 1.1rem; font-weight: 700; color: #e65100;">${d.lwbs.toFixed(1)}</div>
+                            <div style="font-size: 0.65rem; color: #666;">LWBS</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.72rem; color: #888; border-top: 1px solid #eee; padding-top: 6px;">
+                        Mean values from FY24/25 data
+                    </div>
+                `;
+            }
+
+            tooltip.classList.add('visible');
+            moveTooltip(e);
         }
 
         // Initialize
