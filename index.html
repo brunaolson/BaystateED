@@ -1647,6 +1647,21 @@
                 'peds-senior': 'Pediatric Senior Resident'
             };
 
+            // Actionable insights based on shift timing and patient flow data
+            const shiftInsights = {
+                1: { icon: '🌅', text: 'Starts at daily low (11 pts). Volume builds steadily—front-load pickups before noon rush.' },
+                2: { icon: '📈', text: 'Arrives as volume climbing. Peak arrivals 11am-12pm. Overlap with Res #1 until 4pm.' },
+                3: { icon: '🔥', text: 'Covers evening peak + 7pm handoff (31 pts). Critical overlap with day team ending.' },
+                4: { icon: '⚡', text: 'Peak coverage role. Highest census hours (28-31). Support night handoff transition.' },
+                5: { icon: '🌙', text: 'Bridges peak to overnight. Census drops from 31→20 during shift. WR clears after 10pm.' },
+                6: { icon: '🌃', text: 'Overnight: census 26→11. Lowest arrivals 3-6am. Prep clean handoff at 7am.' },
+                101: { icon: '☀️', text: 'Afternoon peds coverage. Census building toward evening peak.' },
+                102: { icon: '🎯', text: 'Covers peds evening surge. Overlaps with Intern #1 until 8pm.' },
+                103: { icon: '🦉', text: 'Overnight peds. Low volume but critical coverage. Hands off at morning transition.' }
+            };
+
+            const insight = shiftInsights[shift.id] || { icon: '📋', text: 'Standard shift coverage.' };
+
             tooltip.innerHTML = `
                 <div class="tooltip-title ${shift.type}">
                     ${shift.label} <span style="font-weight: 400; font-size: 0.8rem;">(${typeLabels[shift.type]})</span>
@@ -1655,6 +1670,12 @@
                 <div style="background: #f0f4f8; padding: 12px; border-radius: 8px; margin: 12px 0;">
                     <div style="font-size: 1.5rem; font-weight: 700; color: #333;">${shift.patients} patients</div>
                     <div style="font-size: 0.8rem; color: #666; margin-top: 4px;">${formatHour(shift.startHour)} – ${formatHour(shift.endHour % 24)} (${duration} hours)</div>
+                </div>
+
+                <div style="background: #fffde7; padding: 10px 12px; border-radius: 6px; margin-bottom: 12px; border-left: 3px solid #ffc107;">
+                    <div style="font-size: 0.78rem; color: #5d4e37; line-height: 1.4;">
+                        ${insight.icon} ${insight.text}
+                    </div>
                 </div>
 
                 <div style="display: flex; gap: 12px; text-align: center; margin-bottom: 12px;">
