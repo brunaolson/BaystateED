@@ -1157,6 +1157,163 @@
         html {
             scroll-behavior: smooth;
         }
+
+        /* Key Findings Section */
+        .key-findings {
+            background: linear-gradient(135deg, #fff9e6 0%, #fff3cd 100%);
+            border: 1px solid #ffc107;
+            border-left: 4px solid #ff9800;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        .key-findings-header {
+            padding: 10px 16px;
+            background: rgba(255, 152, 0, 0.1);
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #e65100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .key-findings-icon {
+            font-size: 1rem;
+        }
+
+        .key-findings-content {
+            padding: 12px 16px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 8px;
+        }
+
+        .finding-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 8px;
+            font-size: 0.82rem;
+            color: #333;
+            line-height: 1.4;
+        }
+
+        .finding-bullet {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            flex-shrink: 0;
+            margin-top: 5px;
+        }
+
+        .finding-bullet.critical { background: #c62828; }
+        .finding-bullet.warning { background: #f57c00; }
+        .finding-bullet.good { background: #2e7d32; }
+        .finding-bullet.info { background: #1565c0; }
+
+        /* Provider Coverage Chart */
+        .coverage-chart {
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 1px solid #eee;
+        }
+
+        .coverage-chart-title {
+            font-size: 0.75rem;
+            color: #666;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .coverage-container {
+            position: relative;
+            height: 80px;
+            background: #fafafa;
+            border-radius: 6px;
+            padding: 10px 10px 20px 35px;
+        }
+
+        .coverage-bars {
+            display: flex;
+            align-items: flex-end;
+            height: 50px;
+            gap: 2px;
+        }
+
+        .coverage-bar {
+            flex: 1;
+            background: linear-gradient(180deg, var(--bh-purple-light) 0%, var(--bh-purple) 100%);
+            border-radius: 2px 2px 0 0;
+            position: relative;
+            min-width: 8px;
+            transition: opacity 0.2s;
+        }
+
+        .coverage-bar:hover {
+            opacity: 0.8;
+        }
+
+        .coverage-bar.low-coverage {
+            background: linear-gradient(180deg, #ffcdd2 0%, #e57373 100%);
+        }
+
+        .coverage-bar.high-coverage {
+            background: linear-gradient(180deg, #c8e6c9 0%, #66bb6a 100%);
+        }
+
+        .coverage-y-axis {
+            position: absolute;
+            left: 0;
+            top: 10px;
+            bottom: 20px;
+            width: 30px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: #999;
+            text-align: right;
+            padding-right: 4px;
+        }
+
+        .coverage-x-axis {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.6rem;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .coverage-legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 8px;
+            font-size: 0.68rem;
+            color: #666;
+        }
+
+        .coverage-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .coverage-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .key-findings-content {
+                grid-template-columns: 1fr;
+            }
+            .finding-item {
+                font-size: 0.78rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1170,6 +1327,32 @@
     <div class="container">
         <h1 class="page-title">Shift Coverage Visualization</h1>
         <p class="subtitle">24-Hour Waterfall View | Hover over any time slot to see expected patients that hour</p>
+
+        <!-- Key Findings Executive Summary -->
+        <div class="key-findings">
+            <div class="key-findings-header">
+                <span class="key-findings-icon">📋</span>
+                <span>Key Findings</span>
+            </div>
+            <div class="key-findings-content">
+                <div class="finding-item">
+                    <span class="finding-bullet critical"></span>
+                    <span><strong>3× census swing:</strong> 11 pts at 7am → 31 pts at 7pm peak</span>
+                </div>
+                <div class="finding-item">
+                    <span class="finding-bullet warning"></span>
+                    <span><strong>Coverage gap:</strong> Only 2 providers 10pm–7am while clearing 20 patients</span>
+                </div>
+                <div class="finding-item">
+                    <span class="finding-bullet good"></span>
+                    <span><strong>Peak coverage:</strong> 4 providers overlap 3pm–6pm during plateau (26-31 pts)</span>
+                </div>
+                <div class="finding-item">
+                    <span class="finding-bullet info"></span>
+                    <span><strong>Night drain:</strong> Census drops -2.6/hr at midnight (steepest decline)</span>
+                </div>
+            </div>
+        </div>
 
         <div class="controls">
             <button class="toggle-btn" id="pedsToggle" onclick="togglePeds()">
@@ -1389,6 +1572,33 @@
                         <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(255, 152, 0, 0.2);"></div> Busy (top 25%)</div>
                         <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(67, 160, 71, 0.4);"></div> Typical (median)</div>
                         <div class="percentile-legend-item"><div class="percentile-legend-box" style="background: rgba(33, 150, 243, 0.2);"></div> Quiet (bottom 25%)</div>
+                    </div>
+                </div>
+
+                <!-- Provider Coverage Chart -->
+                <div class="coverage-chart" style="flex-basis: 100%;">
+                    <div class="coverage-chart-title">Provider Coverage vs Census (hover for patients-per-provider ratio)</div>
+                    <div class="coverage-container">
+                        <div class="coverage-y-axis">
+                            <span>4</span>
+                            <span>3</span>
+                            <span>2</span>
+                            <span>1</span>
+                            <span>0</span>
+                        </div>
+                        <div class="coverage-bars" id="coverageBars"></div>
+                        <div class="coverage-x-axis">
+                            <span>7A</span>
+                            <span>12P</span>
+                            <span>7P</span>
+                            <span>12A</span>
+                            <span>6A</span>
+                        </div>
+                    </div>
+                    <div class="coverage-legend">
+                        <div class="coverage-legend-item"><div class="coverage-legend-dot" style="background: #e57373;"></div> 2 providers (gap)</div>
+                        <div class="coverage-legend-item"><div class="coverage-legend-dot" style="background: var(--bh-purple);"></div> 3 providers</div>
+                        <div class="coverage-legend-item"><div class="coverage-legend-dot" style="background: #66bb6a;"></div> 4 providers (peak)</div>
                     </div>
                 </div>
             </div>
@@ -2290,6 +2500,58 @@
                     percentileContainer.appendChild(group);
                 });
             }
+
+            // Build provider coverage chart
+            const coverageContainer = document.getElementById('coverageBars');
+            if (coverageContainer) {
+                // Calculate providers on duty for each hour (7am to 6am)
+                const coverageData = hourlyData.map(d => {
+                    const hour = d.hour;
+                    let providers = 0;
+
+                    // Check each EM shift
+                    emShifts.forEach(shift => {
+                        let start = shift.startHour;
+                        let end = shift.endHour;
+
+                        // Handle overnight shifts
+                        if (end > 24) {
+                            // Shift wraps past midnight
+                            if (hour >= start || hour < (end - 24)) {
+                                providers++;
+                            }
+                        } else {
+                            if (hour >= start && hour < end) {
+                                providers++;
+                            }
+                        }
+                    });
+
+                    return {
+                        hour: hour,
+                        providers: providers,
+                        census: d.census,
+                        ratio: d.census / Math.max(providers, 1)
+                    };
+                });
+
+                const maxProviders = 4;
+                coverageData.forEach((d, i) => {
+                    const bar = document.createElement('div');
+                    bar.className = 'coverage-bar';
+                    bar.style.height = `${(d.providers / maxProviders) * 100}%`;
+
+                    if (d.providers <= 2) bar.classList.add('low-coverage');
+                    else if (d.providers >= 4) bar.classList.add('high-coverage');
+
+                    bar.dataset.hourData = JSON.stringify(d);
+                    bar.dataset.type = 'coverage';
+                    bar.addEventListener('mouseenter', showFlowTooltip);
+                    bar.addEventListener('mousemove', moveTooltip);
+                    bar.addEventListener('mouseleave', hideTooltip);
+                    coverageContainer.appendChild(bar);
+                });
+            }
         }
 
         // Show tooltip for flow chart bars
@@ -2317,6 +2579,29 @@
                     </div>
                     <div style="font-size: 0.72rem; color: #888; border-top: 1px solid #eee; padding-top: 6px;">
                         Day-to-day range: ${d.p25} – ${d.p95} (${d.p95 - d.p25} patient spread)
+                    </div>
+                `;
+            } else if (type === 'coverage') {
+                const ratioColor = d.ratio > 10 ? '#c62828' : d.ratio > 7 ? '#f57c00' : '#2e7d32';
+                const ratioLabel = d.ratio > 10 ? 'High load' : d.ratio > 7 ? 'Moderate' : 'Good';
+                tooltip.innerHTML = `
+                    <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; color: #333;">${hourLabel} Coverage</div>
+                    <div style="display: flex; gap: 15px; margin-bottom: 10px;">
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.4rem; font-weight: 700; color: var(--bh-purple);">${d.providers}</div>
+                            <div style="font-size: 0.7rem; color: #666;">providers</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.4rem; font-weight: 700; color: #1565c0;">${d.census}</div>
+                            <div style="font-size: 0.7rem; color: #666;">patients</div>
+                        </div>
+                        <div style="text-align: center;">
+                            <div style="font-size: 1.4rem; font-weight: 700; color: ${ratioColor};">${d.ratio.toFixed(1)}</div>
+                            <div style="font-size: 0.7rem; color: #666;">pts/provider</div>
+                        </div>
+                    </div>
+                    <div style="font-size: 0.72rem; color: ${ratioColor}; border-top: 1px solid #eee; padding-top: 6px;">
+                        ${ratioLabel} - ${d.providers <= 2 ? '⚠️ Coverage gap' : d.providers >= 4 ? '✓ Peak coverage' : 'Standard staffing'}
                     </div>
                 `;
             } else if (type === 'census') {
