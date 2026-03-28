@@ -783,6 +783,144 @@
             display: block;
         }
 
+        /* Insights Section */
+        .insights-section {
+            margin-top: 25px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(107, 78, 155, 0.1);
+            overflow: hidden;
+        }
+
+        .insights-header {
+            padding: 14px 20px;
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            border-bottom: 1px solid #a5d6a7;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #2e7d32;
+        }
+
+        .insights-content {
+            padding: 16px 20px;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .insight-card {
+            flex: 1;
+            min-width: 200px;
+            padding: 14px;
+            background: #fafafa;
+            border-radius: 8px;
+            border-left: 3px solid #ddd;
+        }
+
+        .insight-card.peak {
+            border-left-color: #e53935;
+            background: #fff5f5;
+        }
+
+        .insight-card.good {
+            border-left-color: #43a047;
+            background: #f5fff5;
+        }
+
+        .insight-card.note {
+            border-left-color: #fb8c00;
+            background: #fffaf5;
+        }
+
+        .insight-title {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #888;
+            margin-bottom: 6px;
+        }
+
+        .insight-value {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 4px;
+        }
+
+        .insight-detail {
+            font-size: 0.78rem;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .flow-chart {
+            width: 100%;
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #eee;
+        }
+
+        .flow-bars {
+            display: flex;
+            align-items: flex-end;
+            gap: 2px;
+            height: 50px;
+            padding: 0 4px;
+        }
+
+        .flow-bar {
+            flex: 1;
+            background: linear-gradient(180deg, #81c784 0%, #43a047 100%);
+            border-radius: 2px 2px 0 0;
+            position: relative;
+            min-width: 8px;
+        }
+
+        .flow-bar.peak-bar {
+            background: linear-gradient(180deg, #ef5350 0%, #c62828 100%);
+        }
+
+        .flow-bar.low-bar {
+            background: linear-gradient(180deg, #90caf9 0%, #42a5f5 100%);
+        }
+
+        .flow-labels {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.65rem;
+            color: #999;
+            margin-top: 4px;
+            padding: 0 4px;
+        }
+
+        .flow-legend {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 8px;
+            font-size: 0.7rem;
+            color: #666;
+        }
+
+        .flow-legend-item {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .flow-legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 2px;
+        }
+
+        .flow-legend-dot.low { background: #42a5f5; }
+        .flow-legend-dot.normal { background: #43a047; }
+        .flow-legend-dot.peak { background: #c62828; }
+
         @media (max-width: 1000px) {
             .chart-container {
                 overflow-x: auto;
@@ -903,6 +1041,49 @@
                 <div class="stat-item">
                     <div class="stat-value peds">14</div>
                     <div class="stat-label">Peds Patients</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Patient Flow Insights -->
+        <div class="insights-section">
+            <div class="insights-header">
+                <span>📊</span>
+                <span>Patient Flow Insights</span>
+                <span style="font-weight: 400; font-size: 0.8rem; color: #558b2f; margin-left: auto;">FY24/25 Peds ED Data</span>
+            </div>
+            <div class="insights-content">
+                <div class="insight-card peak">
+                    <div class="insight-title">Peak Arrivals</div>
+                    <div class="insight-value">5 PM – 8 PM</div>
+                    <div class="insight-detail">~6 new patients/hour on average. This is when 4 providers are actively seeing patients (Res #2, Flex, AP #2, and overlap with Res #1/AP #1).</div>
+                </div>
+                <div class="insight-card good">
+                    <div class="insight-title">Best Coverage Alignment</div>
+                    <div class="insight-value">3 PM – 10 PM</div>
+                    <div class="insight-detail">Maximum staffing overlaps with highest patient volume. Shift starts are staggered to build capacity before the evening rush.</div>
+                </div>
+                <div class="insight-card note">
+                    <div class="insight-title">Overnight Lull</div>
+                    <div class="insight-value">2 AM – 6 AM</div>
+                    <div class="insight-detail">~1 patient/hour average. Resident #3 and AP #2 wind down while maintaining coverage until 7 AM handoff.</div>
+                </div>
+
+                <div class="flow-chart" style="flex-basis: 100%;">
+                    <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">Avg New Arrivals by Hour (Peds ED)</div>
+                    <div class="flow-bars" id="flowBars"></div>
+                    <div class="flow-labels">
+                        <span>12A</span>
+                        <span>6A</span>
+                        <span>12P</span>
+                        <span>6P</span>
+                        <span>11P</span>
+                    </div>
+                    <div class="flow-legend">
+                        <div class="flow-legend-item"><div class="flow-legend-dot low"></div> Low (&lt;2/hr)</div>
+                        <div class="flow-legend-item"><div class="flow-legend-dot normal"></div> Normal (2-4/hr)</div>
+                        <div class="flow-legend-item"><div class="flow-legend-dot peak"></div> Peak (5+/hr)</div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1647,9 +1828,43 @@
             });
         };
 
+        // Build patient flow visualization
+        function buildFlowChart() {
+            const container = document.getElementById('flowBars');
+            if (!container) return;
+
+            // Actual FY24/25 Peds ED mean arrivals by hour (from data)
+            // Hours 0-23 (midnight to 11pm)
+            const arrivals = [
+                2, 1, 1, 1, 1, 1, 1, 2, 3, 4, 4, 5,  // 12am-11am
+                4, 5, 4, 5, 5, 6, 6, 6, 6, 5, 4, 3   // 12pm-11pm
+            ];
+
+            const maxVal = Math.max(...arrivals);
+
+            arrivals.forEach((val, hour) => {
+                const bar = document.createElement('div');
+                bar.className = 'flow-bar';
+                bar.style.height = `${(val / maxVal) * 100}%`;
+
+                // Color by intensity
+                if (val >= 5) {
+                    bar.classList.add('peak-bar');
+                } else if (val < 2) {
+                    bar.classList.add('low-bar');
+                }
+
+                // Tooltip
+                bar.title = `${hour === 0 ? '12' : hour > 12 ? hour - 12 : hour}${hour < 12 ? 'AM' : 'PM'}: ~${val} pts/hr`;
+
+                container.appendChild(bar);
+            });
+        }
+
         // Initialize
         buildTimeAxis();
         buildShifts();
+        buildFlowChart();
         updateCurrentTimeLine();
         setInterval(updateCurrentTimeLine, 60000);
     </script>
