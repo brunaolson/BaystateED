@@ -1314,6 +1314,76 @@
                 font-size: 0.78rem;
             }
         }
+
+        /* Tab Navigation */
+        .tab-container {
+            margin-bottom: 20px;
+        }
+
+        .tab-nav {
+            display: flex;
+            gap: 4px;
+            background: white;
+            padding: 6px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(107, 78, 155, 0.1);
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .tab-btn {
+            padding: 10px 24px;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .tab-btn:hover {
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--bh-purple) 0%, var(--bh-purple-dark) 100%);
+            color: white;
+            box-shadow: 0 2px 8px rgba(107, 78, 155, 0.3);
+        }
+
+        .tab-btn .tab-icon {
+            font-size: 1.1rem;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @media (max-width: 480px) {
+            .tab-btn {
+                padding: 8px 16px;
+                font-size: 0.8rem;
+            }
+            .tab-btn .tab-icon {
+                font-size: 1rem;
+            }
+        }
     </style>
 </head>
 <body>
@@ -1326,8 +1396,28 @@
 
     <div class="container">
         <h1 class="page-title">Shift Coverage Visualization</h1>
-        <p class="subtitle">24-Hour Waterfall View | Hover over any time slot to see expected patients that hour</p>
+        <p class="subtitle">24-Hour View | Pediatric Emergency Department</p>
 
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tab-nav">
+                <button class="tab-btn active" onclick="switchTab('schedule')" id="tabSchedule">
+                    <span class="tab-icon">📅</span>
+                    <span>Schedule</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('insights')" id="tabInsights">
+                    <span class="tab-icon">📊</span>
+                    <span>Insights</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('analysis')" id="tabAnalysis">
+                    <span class="tab-icon">🔬</span>
+                    <span>Analysis</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- INSIGHTS TAB -->
+        <div class="tab-content" id="contentInsights">
         <!-- Key Findings Executive Summary -->
         <div class="key-findings">
             <div class="key-findings-header">
@@ -1353,7 +1443,10 @@
                 </div>
             </div>
         </div>
+        </div><!-- End Insights Tab (Key Findings portion - Patient Flow added below) -->
 
+        <!-- SCHEDULE TAB -->
+        <div class="tab-content active" id="contentSchedule">
         <div class="controls">
             <button class="toggle-btn" id="pedsToggle" onclick="togglePeds()">
                 <span class="toggle-indicator"></span>
@@ -1455,7 +1548,10 @@
                 </div>
             </div>
         </div>
+        </div><!-- End Schedule Tab -->
 
+        <!-- INSIGHTS TAB (continued - Patient Flow section) -->
+        <div class="tab-content insights-flow-section" id="contentInsightsFlow">
         <!-- Patient Flow Insights -->
         <div class="insights-section">
             <div class="insights-header">
@@ -1603,6 +1699,92 @@
                 </div>
             </div>
         </div>
+        </div><!-- End Insights Tab (Flow section) -->
+
+        <!-- ANALYSIS TAB - Combined View -->
+        <div class="tab-content" id="contentAnalysis">
+            <div class="analysis-header" style="background: linear-gradient(135deg, #e8eaf6 0%, #c5cae9 100%); padding: 12px 16px; border-radius: 8px; margin-bottom: 16px; display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 1.2rem;">🔬</span>
+                <span style="font-weight: 600; color: #3949ab;">Coverage Analysis</span>
+                <span style="font-size: 0.8rem; color: #5c6bc0; margin-left: auto;">Schedule + Census Overlay</span>
+            </div>
+
+            <!-- Mini Key Metrics Row -->
+            <div style="display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;">
+                <div style="flex: 1; min-width: 140px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #c62828;">
+                    <div style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Peak Load</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: #c62828;">15.5</div>
+                    <div style="font-size: 0.72rem; color: #666;">pts/provider @ 7pm</div>
+                </div>
+                <div style="flex: 1; min-width: 140px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #2e7d32;">
+                    <div style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Best Coverage</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: #2e7d32;">6.5</div>
+                    <div style="font-size: 0.72rem; color: #666;">pts/provider @ 4pm</div>
+                </div>
+                <div style="flex: 1; min-width: 140px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #f57c00;">
+                    <div style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Night Gap</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: #f57c00;">10h</div>
+                    <div style="font-size: 0.72rem; color: #666;">with only 2 providers</div>
+                </div>
+                <div style="flex: 1; min-width: 140px; background: white; border-radius: 8px; padding: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); border-left: 3px solid #1565c0;">
+                    <div style="font-size: 0.7rem; color: #888; text-transform: uppercase;">Avg Load</div>
+                    <div style="font-size: 1.4rem; font-weight: 700; color: #1565c0;">7.4</div>
+                    <div style="font-size: 0.72rem; color: #666;">pts/provider (24h avg)</div>
+                </div>
+            </div>
+
+            <!-- Combined Chart Container -->
+            <div class="chart-container" style="position: relative;">
+                <div class="time-axis" id="timeAxisAnalysis"></div>
+                <div class="chart-area" id="chartAreaAnalysis">
+                    <div class="current-time-line" id="currentTimeLineAnalysis"></div>
+                    <!-- Census overlay will be added here -->
+                    <div id="censusOverlay" style="position: absolute; right: 10px; top: 0; bottom: 0; width: 60px; pointer-events: none;"></div>
+                </div>
+            </div>
+
+            <!-- Coverage Ratio Timeline -->
+            <div style="background: white; border-radius: 12px; padding: 16px; margin-top: 16px; box-shadow: 0 4px 20px rgba(107, 78, 155, 0.1);">
+                <div style="font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 12px;">Patients per Provider Throughout Day</div>
+                <div style="display: flex; align-items: flex-end; height: 60px; gap: 2px;" id="ratioTimeline"></div>
+                <div style="display: flex; justify-content: space-between; font-size: 0.6rem; color: #999; margin-top: 4px;">
+                    <span>7A</span><span>12P</span><span>7P</span><span>12A</span><span>6A</span>
+                </div>
+                <div style="display: flex; gap: 12px; justify-content: center; margin-top: 8px; font-size: 0.7rem; color: #666;">
+                    <span><span style="display: inline-block; width: 10px; height: 10px; background: #c8e6c9; border-radius: 2px; margin-right: 4px;"></span>&lt;8 (good)</span>
+                    <span><span style="display: inline-block; width: 10px; height: 10px; background: #ffe0b2; border-radius: 2px; margin-right: 4px;"></span>8-12 (moderate)</span>
+                    <span><span style="display: inline-block; width: 10px; height: 10px; background: #ffcdd2; border-radius: 2px; margin-right: 4px;"></span>&gt;12 (high)</span>
+                </div>
+            </div>
+
+            <!-- Recommendations -->
+            <div style="background: white; border-radius: 12px; padding: 16px; margin-top: 16px; box-shadow: 0 4px 20px rgba(107, 78, 155, 0.1);">
+                <div style="font-size: 0.85rem; font-weight: 600; color: #333; margin-bottom: 12px;">💡 Coverage Optimization Opportunities</div>
+                <div style="display: grid; gap: 8px;">
+                    <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #fff3e0; border-radius: 6px;">
+                        <span style="color: #e65100;">⚠️</span>
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.82rem; color: #e65100;">10pm–7am Gap</div>
+                            <div style="font-size: 0.75rem; color: #666;">Only 2 providers clearing 20 patients. Consider extending AP #2 or adding overnight support.</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #e8f5e9; border-radius: 6px;">
+                        <span style="color: #2e7d32;">✓</span>
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.82rem; color: #2e7d32;">3pm–6pm Peak Staffed</div>
+                            <div style="font-size: 0.75rem; color: #666;">4-provider overlap handles plateau well (26-31 pts at 6.5-7.8 ratio).</div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: flex-start; gap: 8px; padding: 10px; background: #e3f2fd; border-radius: 6px;">
+                        <span style="color: #1565c0;">💭</span>
+                        <div>
+                            <div style="font-weight: 600; font-size: 0.82rem; color: #1565c0;">7pm Handoff Timing</div>
+                            <div style="font-size: 0.75rem; color: #666;">Night inherits peak census (31 pts). Res #2 ends at midnight—consider staggering handoff.</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div><!-- End Analysis Tab -->
     </div>
 
     <div class="tooltip" id="tooltip"></div>
@@ -2656,10 +2838,125 @@
             moveTooltip(e);
         }
 
+        // Tab switching
+        function switchTab(tab) {
+            // Update tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
+
+            // Hide all tab content
+            document.querySelectorAll('.tab-content').forEach(content => content.classList.remove('active'));
+
+            // Show appropriate content
+            if (tab === 'schedule') {
+                document.getElementById('contentSchedule').classList.add('active');
+            } else if (tab === 'insights') {
+                document.getElementById('contentInsights').classList.add('active');
+                document.getElementById('contentInsightsFlow').classList.add('active');
+            } else if (tab === 'analysis') {
+                document.getElementById('contentAnalysis').classList.add('active');
+                buildAnalysisTab(); // Build on first view
+            }
+        }
+
+        // Build Analysis tab content
+        let analysisBuilt = false;
+        function buildAnalysisTab() {
+            if (analysisBuilt) return;
+            analysisBuilt = true;
+
+            // Build time axis for analysis chart
+            const timeAxisAnalysis = document.getElementById('timeAxisAnalysis');
+            const chartAreaAnalysis = document.getElementById('chartAreaAnalysis');
+
+            if (timeAxisAnalysis && chartAreaAnalysis) {
+                // Clone time axis
+                for (let h = 0; h < 24; h++) {
+                    const hour = (START_HOUR + h) % 24;
+                    const label = document.createElement('div');
+                    label.className = 'time-label' + (hour % 6 === 0 ? ' major' : '');
+                    label.style.top = `${h * HOUR_HEIGHT}px`;
+                    label.textContent = formatHourShort(hour);
+                    timeAxisAnalysis.appendChild(label);
+
+                    const line = document.createElement('div');
+                    line.className = 'hour-line' + (hour % 6 === 0 ? ' major' : '');
+                    line.style.top = `${h * HOUR_HEIGHT}px`;
+                    chartAreaAnalysis.appendChild(line);
+                }
+
+                // Build shifts for analysis view
+                allShifts.forEach(shift => {
+                    if (shift.isPeds) return; // Skip peds for analysis view
+
+                    const block = document.createElement('div');
+                    block.className = `shift-block ${shift.type}`;
+
+                    let startY = hourToY(shift.startHour);
+                    let endY = hourToY(shift.endHour);
+                    let height = endY - startY;
+
+                    if (height < 0) height = (24 * HOUR_HEIGHT) - startY + endY;
+
+                    block.style.top = `${startY}px`;
+                    block.style.height = `${height}px`;
+                    block.style.left = `${shift.lane * (LANE_WIDTH + LANE_GAP) + 10}px`;
+                    block.style.width = `${LANE_WIDTH}px`;
+
+                    block.innerHTML = `
+                        <div class="shift-content">
+                            <div class="shift-header">${shift.label}</div>
+                            <div class="shift-time">${formatHour(shift.startHour)} - ${formatHour(shift.endHour % 24)}</div>
+                            <div class="shift-patients">${shift.patients} patients</div>
+                        </div>
+                    `;
+
+                    chartAreaAnalysis.appendChild(block);
+                });
+            }
+
+            // Build ratio timeline
+            const ratioTimeline = document.getElementById('ratioTimeline');
+            if (ratioTimeline) {
+                // Census data for ratio calculation
+                const censusData = [11,13,17,20,23,25,26,26,27,28,29,30,31,31,30,28,26,23,20,17,15,13,12,11];
+
+                censusData.forEach((census, i) => {
+                    const hour = (7 + i) % 24;
+                    let providers = 0;
+
+                    emShifts.forEach(shift => {
+                        let start = shift.startHour;
+                        let end = shift.endHour;
+                        if (end > 24) {
+                            if (hour >= start || hour < (end - 24)) providers++;
+                        } else {
+                            if (hour >= start && hour < end) providers++;
+                        }
+                    });
+
+                    const ratio = census / Math.max(providers, 1);
+                    const bar = document.createElement('div');
+                    bar.style.flex = '1';
+                    bar.style.height = `${Math.min(ratio / 16 * 100, 100)}%`;
+                    bar.style.borderRadius = '2px 2px 0 0';
+                    bar.style.minWidth = '8px';
+
+                    if (ratio < 8) bar.style.background = 'linear-gradient(180deg, #a5d6a7 0%, #66bb6a 100%)';
+                    else if (ratio < 12) bar.style.background = 'linear-gradient(180deg, #ffcc80 0%, #ffa726 100%)';
+                    else bar.style.background = 'linear-gradient(180deg, #ef9a9a 0%, #ef5350 100%)';
+
+                    bar.title = `${formatHourShort(hour)}: ${ratio.toFixed(1)} pts/provider (${census} pts, ${providers} providers)`;
+                    ratioTimeline.appendChild(bar);
+                });
+            }
+        }
+
         // Initialize
         buildTimeAxis();
         buildShifts();
         buildFlowChart();
+        buildMathExplanations();
         updateCurrentTimeLine();
         setInterval(updateCurrentTimeLine, 60000);
     </script>
