@@ -856,6 +856,117 @@
             line-height: 1.4;
         }
 
+        /* Dark Theme Daily Summary */
+        .daily-summary-row {
+            flex-basis: 100%;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            padding: 16px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 12px;
+            margin-bottom: 12px;
+        }
+
+        .daily-stat {
+            flex: 1;
+            min-width: 80px;
+            text-align: center;
+            padding: 12px 8px;
+            background: rgba(255,255,255,0.03);
+            border-radius: 8px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+
+        .daily-stat-value {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+
+        .daily-stat-label {
+            font-size: 0.68rem;
+            color: rgba(255,255,255,0.5);
+            margin-top: 4px;
+        }
+
+        /* Dark Theme Insight Cards */
+        .insight-card-dark {
+            flex: 1;
+            min-width: 180px;
+            padding: 14px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 10px;
+            border-left: 3px solid #4dabf7;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .insight-card-dark:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+        }
+
+        .insight-card-dark.low {
+            border-left-color: #69db7c;
+        }
+
+        .insight-card-dark.peak {
+            border-left-color: #ff6b6b;
+        }
+
+        .insight-card-dark.plateau {
+            border-left-color: #ffa94d;
+        }
+
+        .insight-card-dark.drain {
+            border-left-color: #4dabf7;
+        }
+
+        .insight-card-header {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.5);
+            margin-bottom: 6px;
+        }
+
+        .insight-card-value {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .insight-card-tags {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 8px;
+            flex-wrap: wrap;
+        }
+
+        .insight-card-tags .tag {
+            font-size: 0.68rem;
+            padding: 2px 8px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.08);
+            color: rgba(255,255,255,0.7);
+        }
+
+        .insight-card-tags .tag.rooms {
+            background: rgba(77,171,247,0.2);
+            color: #4dabf7;
+        }
+
+        .insight-card-tags .tag.waiting {
+            background: rgba(255,169,77,0.2);
+            color: #ffa94d;
+        }
+
+        .insight-card-detail {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.6);
+            line-height: 1.4;
+        }
+
         /* Beautiful Flow Charts - Data is Beautiful Inspired */
         .flow-chart {
             width: 100%;
@@ -1422,6 +1533,109 @@
             box-shadow: 0 0 8px rgba(105,219,124,0.6);
         }
 
+        /* Analysis Tab - Census Panel */
+        .analysis-census-panel {
+            position: absolute;
+            right: 0;
+            top: 0;
+            bottom: 0;
+            width: 120px;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border-radius: 0 12px 12px 0;
+            border-left: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .census-panel-header {
+            text-align: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            color: rgba(255,255,255,0.7);
+            padding: 8px;
+            background: rgba(0,0,0,0.2);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .census-panel-scale {
+            position: absolute;
+            right: 8px;
+            top: 35px;
+            bottom: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            font-size: 0.55rem;
+            color: rgba(255,255,255,0.4);
+        }
+
+        .analysis-census-bar {
+            position: absolute;
+            left: 8px;
+            height: 28px;
+            max-width: 85px;
+            background: linear-gradient(90deg, #4dabf7 0%, #339af0 100%);
+            border-radius: 0 4px 4px 0;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 6px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+
+        .analysis-census-bar:hover {
+            filter: brightness(1.2);
+            transform: scaleX(1.05);
+            transform-origin: left;
+        }
+
+        .analysis-census-bar.good-load {
+            background: linear-gradient(90deg, #69db7c 0%, #51cf66 100%);
+        }
+
+        .analysis-census-bar.moderate-load {
+            background: linear-gradient(90deg, #ffa94d 0%, #ff922b 100%);
+        }
+
+        .analysis-census-bar.high-load {
+            background: linear-gradient(90deg, #ff6b6b 0%, #fa5252 100%);
+        }
+
+        .census-value {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.3);
+        }
+
+        /* Provider Count Indicators */
+        .provider-count-indicator {
+            position: absolute;
+            left: 480px;
+            width: 22px;
+            height: 18px;
+            background: rgba(107, 78, 155, 0.15);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--bh-purple);
+            z-index: 5;
+        }
+
+        .provider-count-indicator.low {
+            background: rgba(255, 107, 107, 0.2);
+            color: #e03131;
+        }
+
+        .provider-count-indicator.high {
+            background: rgba(105, 219, 124, 0.2);
+            color: #2f9e44;
+        }
+
         @media (max-width: 768px) {
             .key-findings-content {
                 grid-template-columns: 1fr;
@@ -1671,53 +1885,54 @@
                 <span style="font-weight: 400; font-size: 0.8rem; color: #558b2f; margin-left: auto;">FY24/25 Peds ED Data <span style="background: #e3f2fd; color: #1565c0; padding: 2px 6px; border-radius: 4px; font-size: 0.7rem; margin-left: 6px;">Winter (Oct–Mar)</span></span>
             </div>
             <div class="insights-content">
-                <!-- Daily Summary Row -->
-                <div style="flex-basis: 100%; display: flex; gap: 12px; flex-wrap: wrap; padding: 12px; background: #f8f9fa; border-radius: 8px; margin-bottom: 8px;">
-                    <div style="flex: 1; min-width: 100px; text-align: center; padding: 8px; background: white; border-radius: 6px;">
-                        <div style="font-size: 1.3rem; font-weight: 700; color: #2e7d32;">96</div>
-                        <div style="font-size: 0.68rem; color: #666;">Arrivals/Day</div>
+                <!-- Daily Summary Row - Dark Theme -->
+                <div class="daily-summary-row">
+                    <div class="daily-stat">
+                        <div class="daily-stat-value" style="color: #4dabf7;">96</div>
+                        <div class="daily-stat-label">Arrivals/Day</div>
                     </div>
-                    <div style="flex: 1; min-width: 100px; text-align: center; padding: 8px; background: white; border-radius: 6px;">
-                        <div style="font-size: 1.3rem; font-weight: 700; color: #1565c0;">84</div>
-                        <div style="font-size: 0.68rem; color: #666;">Discharges</div>
+                    <div class="daily-stat">
+                        <div class="daily-stat-value" style="color: #69db7c;">84</div>
+                        <div class="daily-stat-label">Discharges</div>
                     </div>
-                    <div style="flex: 1; min-width: 100px; text-align: center; padding: 8px; background: white; border-radius: 6px;">
-                        <div style="font-size: 1.3rem; font-weight: 700; color: #6a1b9a;">12</div>
-                        <div style="font-size: 0.68rem; color: #666;">Admits (12%)</div>
+                    <div class="daily-stat">
+                        <div class="daily-stat-value" style="color: #da77f2;">12</div>
+                        <div class="daily-stat-label">Admits (12%)</div>
                     </div>
-                    <div style="flex: 1; min-width: 100px; text-align: center; padding: 8px; background: white; border-radius: 6px;">
-                        <div style="font-size: 1.3rem; font-weight: 700; color: #e65100;">3</div>
-                        <div style="font-size: 0.68rem; color: #666;">LWBS (3%)</div>
+                    <div class="daily-stat">
+                        <div class="daily-stat-value" style="color: #ffa94d;">3</div>
+                        <div class="daily-stat-label">LWBS (3%)</div>
                     </div>
                 </div>
 
-                <div class="insight-card" style="border-left-color: #1565c0; background: #f5f9ff;">
-                    <div class="insight-title">7 AM Handoff (Day Inherits)</div>
-                    <div class="insight-value">11 patients</div>
-                    <div class="insight-detail" style="margin-bottom: 6px;">
-                        <span style="display: inline-block; background: #e3f2fd; padding: 2px 6px; border-radius: 3px; font-size: 0.72rem; margin-right: 4px;">8 in rooms</span>
-                        <span style="display: inline-block; background: #fff3e0; padding: 2px 6px; border-radius: 3px; font-size: 0.72rem;">3 waiting</span>
+                <!-- Insight Cards - Dark Theme -->
+                <div class="insight-card-dark low">
+                    <div class="insight-card-header">7 AM Handoff</div>
+                    <div class="insight-card-value">11 patients</div>
+                    <div class="insight-card-tags">
+                        <span class="tag rooms">8 in rooms</span>
+                        <span class="tag waiting">3 waiting</span>
                     </div>
-                    <div class="insight-detail">Lowest census. Day builds dept: +0.9 to +2.7/hr until 1pm.</div>
+                    <div class="insight-card-detail">Lowest census. Day builds: +0.9 to +2.7/hr</div>
                 </div>
-                <div class="insight-card" style="border-left-color: #6a1b9a; background: #faf5ff;">
-                    <div class="insight-title">7 PM Handoff (Night Inherits)</div>
-                    <div class="insight-value">31 patients</div>
-                    <div class="insight-detail" style="margin-bottom: 6px;">
-                        <span style="display: inline-block; background: #ede7f6; padding: 2px 6px; border-radius: 3px; font-size: 0.72rem; margin-right: 4px;">20 in rooms</span>
-                        <span style="display: inline-block; background: #fff3e0; padding: 2px 6px; border-radius: 3px; font-size: 0.72rem;">11 waiting</span>
+                <div class="insight-card-dark peak">
+                    <div class="insight-card-header">7 PM Handoff</div>
+                    <div class="insight-card-value">31 patients</div>
+                    <div class="insight-card-tags">
+                        <span class="tag rooms">20 in rooms</span>
+                        <span class="tag waiting">11 waiting</span>
                     </div>
-                    <div class="insight-detail">Peak census. Night clears dept: -0.9 to -2.6/hr overnight.</div>
+                    <div class="insight-card-detail">Peak census. Night clears: -0.9 to -2.6/hr</div>
                 </div>
-                <div class="insight-card peak">
-                    <div class="insight-title">Peak + Plateau</div>
-                    <div class="insight-value">1 PM – 9 PM</div>
-                    <div class="insight-detail">Census 26-31, net flow near zero (+0.3 to +0.6). Arrivals ≈ Discharges. Holding pattern.</div>
+                <div class="insight-card-dark plateau">
+                    <div class="insight-card-header">Peak Plateau</div>
+                    <div class="insight-card-value">1 PM – 9 PM</div>
+                    <div class="insight-card-detail">Census 26-31, net flow near zero. Holding pattern.</div>
                 </div>
-                <div class="insight-card good">
-                    <div class="insight-title">Night Drain</div>
-                    <div class="insight-value">9 PM – 7 AM</div>
-                    <div class="insight-detail">Discharges outpace arrivals. Census drops 31→11. Midnight has steepest drain (-2.6/hr).</div>
+                <div class="insight-card-dark drain">
+                    <div class="insight-card-header">Night Drain</div>
+                    <div class="insight-card-value">9 PM – 7 AM</div>
+                    <div class="insight-card-detail">Census drops 31 to 11. Steepest at midnight (-2.6/hr).</div>
                 </div>
 
                 <div class="flow-chart" style="flex-basis: 100%;">
@@ -1843,14 +2058,17 @@
                 </div>
             </div>
 
-            <!-- Combined Chart Container -->
+            <!-- Combined Chart Container - Shifts + Census -->
             <div class="chart-container" style="position: relative;">
                 <div class="time-axis" id="timeAxisAnalysis"></div>
-                <div class="chart-area" id="chartAreaAnalysis">
+                <div class="chart-area" id="chartAreaAnalysis" style="padding-right: 130px;">
                     <div class="current-time-line" id="currentTimeLineAnalysis"></div>
-                    <!-- Census overlay will be added here -->
-                    <div id="censusOverlay" style="position: absolute; right: 10px; top: 0; bottom: 0; width: 60px; pointer-events: none;"></div>
                 </div>
+            </div>
+            <div style="display: flex; gap: 16px; margin-top: 8px; justify-content: center; font-size: 0.72rem; color: #666;">
+                <span><span style="display: inline-block; width: 10px; height: 10px; background: linear-gradient(90deg, #69db7c, #51cf66); border-radius: 2px; margin-right: 4px;"></span>Good (&lt;8/provider)</span>
+                <span><span style="display: inline-block; width: 10px; height: 10px; background: linear-gradient(90deg, #ffa94d, #ff922b); border-radius: 2px; margin-right: 4px;"></span>Moderate (8-12)</span>
+                <span><span style="display: inline-block; width: 10px; height: 10px; background: linear-gradient(90deg, #ff6b6b, #fa5252); border-radius: 2px; margin-right: 4px;"></span>High (&gt;12)</span>
             </div>
 
             <!-- Coverage Ratio Timeline -->
@@ -2975,12 +3193,16 @@
             if (analysisBuilt) return;
             analysisBuilt = true;
 
+            // Census data matching hourlyData (7am start)
+            const censusData = [11,13,17,20,23,25,26,26,27,28,29,30,31,31,30,28,26,23,20,17,15,13,12,11];
+            const maxCensus = 35;
+
             // Build time axis for analysis chart
             const timeAxisAnalysis = document.getElementById('timeAxisAnalysis');
             const chartAreaAnalysis = document.getElementById('chartAreaAnalysis');
 
             if (timeAxisAnalysis && chartAreaAnalysis) {
-                // Clone time axis
+                // Clone time axis with census values
                 for (let h = 0; h < 24; h++) {
                     const hour = (START_HOUR + h) % 24;
                     const label = document.createElement('div');
@@ -2995,9 +3217,10 @@
                     chartAreaAnalysis.appendChild(line);
                 }
 
-                // Build shifts for analysis view
+                // Build shifts for analysis view (narrower to make room for census)
+                const ANALYSIS_LANE_WIDTH = 85;
                 allShifts.forEach(shift => {
-                    if (shift.isPeds) return; // Skip peds for analysis view
+                    if (shift.isPeds) return;
 
                     const block = document.createElement('div');
                     block.className = `shift-block ${shift.type}`;
@@ -3005,36 +3228,97 @@
                     let startY = hourToY(shift.startHour);
                     let endY = hourToY(shift.endHour);
                     let height = endY - startY;
-
                     if (height < 0) height = (24 * HOUR_HEIGHT) - startY + endY;
 
                     block.style.top = `${startY}px`;
                     block.style.height = `${height}px`;
-                    block.style.left = `${shift.lane * (LANE_WIDTH + LANE_GAP) + 10}px`;
-                    block.style.width = `${LANE_WIDTH}px`;
+                    block.style.left = `${shift.lane * (ANALYSIS_LANE_WIDTH + 8) + 10}px`;
+                    block.style.width = `${ANALYSIS_LANE_WIDTH}px`;
 
                     block.innerHTML = `
                         <div class="shift-content">
                             <div class="shift-header">${shift.label}</div>
                             <div class="shift-time">${formatHour(shift.startHour)} - ${formatHour(shift.endHour % 24)}</div>
-                            <div class="shift-patients">${shift.patients} patients</div>
+                            <div class="shift-patients">${shift.patients} pts</div>
                         </div>
                     `;
-
                     chartAreaAnalysis.appendChild(block);
                 });
+
+                // Add census overlay panel on the right
+                const censusPanel = document.createElement('div');
+                censusPanel.className = 'analysis-census-panel';
+                censusPanel.innerHTML = `
+                    <div class="census-panel-header">Census</div>
+                    <div class="census-panel-scale">
+                        <span>35</span>
+                        <span>20</span>
+                        <span>0</span>
+                    </div>
+                `;
+                chartAreaAnalysis.appendChild(censusPanel);
+
+                // Add census bars for each hour
+                censusData.forEach((census, i) => {
+                    const hour = (7 + i) % 24;
+                    let providers = 0;
+                    emShifts.forEach(shift => {
+                        let start = shift.startHour;
+                        let end = shift.endHour;
+                        if (end > 24) {
+                            if (hour >= start || hour < (end - 24)) providers++;
+                        } else {
+                            if (hour >= start && hour < end) providers++;
+                        }
+                    });
+                    const ratio = census / Math.max(providers, 1);
+
+                    const bar = document.createElement('div');
+                    bar.className = 'analysis-census-bar';
+                    bar.style.top = `${i * HOUR_HEIGHT}px`;
+                    bar.style.width = `${(census / maxCensus) * 100}%`;
+
+                    // Color based on ratio (load per provider)
+                    if (ratio > 12) bar.classList.add('high-load');
+                    else if (ratio > 8) bar.classList.add('moderate-load');
+                    else bar.classList.add('good-load');
+
+                    bar.innerHTML = `<span class="census-value">${census}</span>`;
+                    bar.title = `${formatHourShort(hour)}: ${census} pts, ${providers} providers (${ratio.toFixed(1)}/provider)`;
+
+                    censusPanel.appendChild(bar);
+                });
+
+                // Add provider count indicators on shift timeline
+                for (let h = 0; h < 24; h++) {
+                    const hour = (7 + h) % 24;
+                    let providers = 0;
+                    emShifts.forEach(shift => {
+                        let start = shift.startHour;
+                        let end = shift.endHour;
+                        if (end > 24) {
+                            if (hour >= start || hour < (end - 24)) providers++;
+                        } else {
+                            if (hour >= start && hour < end) providers++;
+                        }
+                    });
+
+                    const indicator = document.createElement('div');
+                    indicator.className = 'provider-count-indicator';
+                    indicator.style.top = `${h * HOUR_HEIGHT + 8}px`;
+                    indicator.textContent = providers;
+                    if (providers <= 2) indicator.classList.add('low');
+                    else if (providers >= 4) indicator.classList.add('high');
+                    chartAreaAnalysis.appendChild(indicator);
+                }
             }
 
             // Build ratio timeline
             const ratioTimeline = document.getElementById('ratioTimeline');
             if (ratioTimeline) {
-                // Census data for ratio calculation
-                const censusData = [11,13,17,20,23,25,26,26,27,28,29,30,31,31,30,28,26,23,20,17,15,13,12,11];
-
                 censusData.forEach((census, i) => {
                     const hour = (7 + i) % 24;
                     let providers = 0;
-
                     emShifts.forEach(shift => {
                         let start = shift.startHour;
                         let end = shift.endHour;
