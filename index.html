@@ -1053,36 +1053,57 @@
                 <span style="font-weight: 400; font-size: 0.8rem; color: #558b2f; margin-left: auto;">FY24/25 Peds ED Data</span>
             </div>
             <div class="insights-content">
-                <div class="insight-card peak">
-                    <div class="insight-title">Peak Arrivals</div>
-                    <div class="insight-value">5 PM – 8 PM</div>
-                    <div class="insight-detail">~6 new patients/hour on average. This is when 4 providers are actively seeing patients (Res #2, Flex, AP #2, and overlap with Res #1/AP #1).</div>
+                <div class="insight-card" style="border-left-color: #1565c0; background: #f5f9ff;">
+                    <div class="insight-title">7 AM Handoff (Day Inherits)</div>
+                    <div class="insight-value">11 patients</div>
+                    <div class="insight-detail">Census at shift change. Day team starts with manageable load, ~3 in waiting room. Lowest point of 24hr cycle.</div>
                 </div>
-                <div class="insight-card good">
-                    <div class="insight-title">Best Coverage Alignment</div>
-                    <div class="insight-value">3 PM – 10 PM</div>
-                    <div class="insight-detail">Maximum staffing overlaps with highest patient volume. Shift starts are staggered to build capacity before the evening rush.</div>
+                <div class="insight-card" style="border-left-color: #6a1b9a; background: #faf5ff;">
+                    <div class="insight-title">7 PM Handoff (Night Inherits)</div>
+                    <div class="insight-value">31 patients</div>
+                    <div class="insight-detail">Peak census at shift change. Night team inherits full department, ~11 in waiting room. Critical staffing moment.</div>
+                </div>
+                <div class="insight-card peak">
+                    <div class="insight-title">Peak Volume</div>
+                    <div class="insight-value">5 PM – 9 PM</div>
+                    <div class="insight-detail">Census 28-31, arrivals ~6/hr, WR 10-11. Four providers overlap (Res #2, Flex, AP #2 + late AP #1).</div>
                 </div>
                 <div class="insight-card note">
-                    <div class="insight-title">Overnight Lull</div>
-                    <div class="insight-value">2 AM – 6 AM</div>
-                    <div class="insight-detail">~1 patient/hour average. Resident #3 and AP #2 wind down while maintaining coverage until 7 AM handoff.</div>
+                    <div class="insight-title">Overnight Nadir</div>
+                    <div class="insight-value">3 AM – 6 AM</div>
+                    <div class="insight-detail">Census drops to 11-15, arrivals ~1/hr, WR 2-3. Res #3 + AP #2 wind down before 7 AM handoff.</div>
                 </div>
 
                 <div class="flow-chart" style="flex-basis: 100%;">
-                    <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">Avg New Arrivals by Hour (Peds ED)</div>
-                    <div class="flow-bars" id="flowBars"></div>
-                    <div class="flow-labels">
-                        <span>12A</span>
-                        <span>6A</span>
-                        <span>12P</span>
-                        <span>6P</span>
-                        <span>11P</span>
+                    <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                        <div style="flex: 1; min-width: 280px;">
+                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">ED Census (patients in department)</div>
+                            <div class="flow-bars" id="censusBars"></div>
+                            <div class="flow-labels">
+                                <span>7A</span>
+                                <span>12P</span>
+                                <span>7P</span>
+                                <span>12A</span>
+                                <span>6A</span>
+                            </div>
+                        </div>
+                        <div style="flex: 1; min-width: 280px;">
+                            <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 500;">New Arrivals (patients/hour)</div>
+                            <div class="flow-bars" id="flowBars"></div>
+                            <div class="flow-labels">
+                                <span>7A</span>
+                                <span>12P</span>
+                                <span>7P</span>
+                                <span>12A</span>
+                                <span>6A</span>
+                            </div>
+                        </div>
                     </div>
-                    <div class="flow-legend">
-                        <div class="flow-legend-item"><div class="flow-legend-dot low"></div> Low (&lt;2/hr)</div>
-                        <div class="flow-legend-item"><div class="flow-legend-dot normal"></div> Normal (2-4/hr)</div>
-                        <div class="flow-legend-item"><div class="flow-legend-dot peak"></div> Peak (5+/hr)</div>
+                    <div class="flow-legend" style="margin-top: 12px;">
+                        <div class="flow-legend-item"><div class="flow-legend-dot low"></div> Low</div>
+                        <div class="flow-legend-item"><div class="flow-legend-dot normal"></div> Moderate</div>
+                        <div class="flow-legend-item"><div class="flow-legend-dot peak"></div> High</div>
+                        <div class="flow-legend-item" style="margin-left: 10px; padding-left: 10px; border-left: 1px solid #ddd;"><span style="font-size: 0.7rem; color: #888;">Winter avg ~15% higher than summer</span></div>
                     </div>
                 </div>
             </div>
@@ -1830,35 +1851,72 @@
 
         // Build patient flow visualization
         function buildFlowChart() {
-            const container = document.getElementById('flowBars');
-            if (!container) return;
+            const arrivalsContainer = document.getElementById('flowBars');
+            const censusContainer = document.getElementById('censusBars');
 
-            // Actual FY24/25 Peds ED mean arrivals by hour (from data)
-            // Hours 0-23 (midnight to 11pm)
-            const arrivals = [
-                2, 1, 1, 1, 1, 1, 1, 2, 3, 4, 4, 5,  // 12am-11am
-                4, 5, 4, 5, 5, 6, 6, 6, 6, 5, 4, 3   // 12pm-11pm
+            // FY24/25 Peds ED data ordered 7am-6am (matching chart)
+            // Index 0 = 7am, Index 23 = 6am next day
+            const hourlyData = [
+                { hour: 7, census: 11, arrivals: 2, wr: 3 },
+                { hour: 8, census: 13, arrivals: 4, wr: 4 },
+                { hour: 9, census: 17, arrivals: 5, wr: 7 },
+                { hour: 10, census: 20, arrivals: 5, wr: 8 },
+                { hour: 11, census: 23, arrivals: 6, wr: 9 },
+                { hour: 12, census: 25, arrivals: 6, wr: 9 },
+                { hour: 13, census: 26, arrivals: 5, wr: 9 },
+                { hour: 14, census: 26, arrivals: 5, wr: 9 },
+                { hour: 15, census: 27, arrivals: 6, wr: 9 },
+                { hour: 16, census: 28, arrivals: 6, wr: 10 },
+                { hour: 17, census: 29, arrivals: 6, wr: 11 },
+                { hour: 18, census: 30, arrivals: 6, wr: 11 },
+                { hour: 19, census: 31, arrivals: 6, wr: 11 },
+                { hour: 20, census: 31, arrivals: 6, wr: 11 },
+                { hour: 21, census: 30, arrivals: 5, wr: 10 },
+                { hour: 22, census: 28, arrivals: 4, wr: 9 },
+                { hour: 23, census: 26, arrivals: 3, wr: 7 },
+                { hour: 0, census: 23, arrivals: 2, wr: 6 },
+                { hour: 1, census: 20, arrivals: 2, wr: 4 },
+                { hour: 2, census: 17, arrivals: 2, wr: 3 },
+                { hour: 3, census: 15, arrivals: 1, wr: 3 },
+                { hour: 4, census: 13, arrivals: 1, wr: 2 },
+                { hour: 5, census: 12, arrivals: 1, wr: 2 },
+                { hour: 6, census: 11, arrivals: 1, wr: 2 }
             ];
 
-            const maxVal = Math.max(...arrivals);
+            const maxCensus = Math.max(...hourlyData.map(d => d.census));
+            const maxArrivals = Math.max(...hourlyData.map(d => d.arrivals));
 
-            arrivals.forEach((val, hour) => {
-                const bar = document.createElement('div');
-                bar.className = 'flow-bar';
-                bar.style.height = `${(val / maxVal) * 100}%`;
+            // Build census bars
+            if (censusContainer) {
+                hourlyData.forEach((d, i) => {
+                    const bar = document.createElement('div');
+                    bar.className = 'flow-bar';
+                    bar.style.height = `${(d.census / maxCensus) * 100}%`;
 
-                // Color by intensity
-                if (val >= 5) {
-                    bar.classList.add('peak-bar');
-                } else if (val < 2) {
-                    bar.classList.add('low-bar');
-                }
+                    if (d.census >= 28) bar.classList.add('peak-bar');
+                    else if (d.census <= 15) bar.classList.add('low-bar');
 
-                // Tooltip
-                bar.title = `${hour === 0 ? '12' : hour > 12 ? hour - 12 : hour}${hour < 12 ? 'AM' : 'PM'}: ~${val} pts/hr`;
+                    const hourLabel = d.hour === 0 ? '12AM' : d.hour === 12 ? '12PM' : d.hour > 12 ? `${d.hour-12}PM` : `${d.hour}AM`;
+                    bar.title = `${hourLabel}: ${d.census} patients in ED, ${d.wr} in waiting room`;
+                    censusContainer.appendChild(bar);
+                });
+            }
 
-                container.appendChild(bar);
-            });
+            // Build arrivals bars
+            if (arrivalsContainer) {
+                hourlyData.forEach((d, i) => {
+                    const bar = document.createElement('div');
+                    bar.className = 'flow-bar';
+                    bar.style.height = `${(d.arrivals / maxArrivals) * 100}%`;
+
+                    if (d.arrivals >= 5) bar.classList.add('peak-bar');
+                    else if (d.arrivals <= 2) bar.classList.add('low-bar');
+
+                    const hourLabel = d.hour === 0 ? '12AM' : d.hour === 12 ? '12PM' : d.hour > 12 ? `${d.hour-12}PM` : `${d.hour}AM`;
+                    bar.title = `${hourLabel}: ~${d.arrivals} new patients/hour`;
+                    arrivalsContainer.appendChild(bar);
+                });
+            }
         }
 
         // Initialize
