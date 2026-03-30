@@ -1,47 +1,45 @@
-# ER Shift Coverage Visualization
+# Baystate Health Pediatric ED Visualization Tool
 
-Interactive waterfall-style visualization tool for Pediatric Emergency Room shift scheduling at Baystate Health.
+Interactive multi-tab visualization tool for Pediatric Emergency Room shift scheduling, census analysis, and operational insights at Baystate Health.
+
+## Live Demo
+
+- **Primary**: [olsonj-wps.github.io/er-shift-visualization](https://olsonj-wps.github.io/er-shift-visualization)
+- **Mirror**: [brunaolson.github.io/BaystateED](https://brunaolson.github.io/BaystateED)
 
 ## Overview
 
-This tool visualizes 24-hour ER shift coverage (7am to 7am) showing:
-- **EM Shifts**: Residents, Advanced Practitioners (APs), and Flex Attending
-- **Pediatric Overlay**: Optional toggle to show Pediatric Residents coverage
+This tool provides four integrated views for understanding ED operations:
 
-## Features
+| Tab | Purpose |
+|-----|---------|
+| **Schedule** | Waterfall shift visualization with patient distribution |
+| **Insights** | Key findings, patient flow patterns, and census percentiles |
+| **Analysis** | Horizontal timeline correlating census, shifts, and workload |
+| **Deep Dive** | Seasonal comparisons, day-of-week variation, and provider variability |
 
-- **Waterfall Chart**: Shifts cascade down as they start throughout the day
-- **Hover Interactions**: See expected patient counts per hour for each provider
+---
+
+## Tab 1: Schedule
+
+### Features
+- **Waterfall Chart**: Shifts cascade down as they start (7am-7am cycle)
+- **Hover Interactions**: Patient counts per hour for each provider
 - **Three-Phase Distribution Model**: Realistic frontloading of patient volume
-- **Math Transparency**: Expandable section explaining all rate calculations
-- **Baystate Health Branding**: Official colors and logo
+- **Math Transparency**: Expandable section explaining rate calculations
+- **Pediatric Toggle**: Show/hide Pediatric Residents overlay
 
-## Patient Distribution Model
-
-Patients are distributed across each shift in three phases:
+### Patient Distribution Model
 
 | Phase | Duration | Rate | Description |
 |-------|----------|------|-------------|
-| High | First 6 hours | 1.5× base | Provider is fresh, higher productivity |
-| Tapering | Middle hours | 0.5× base | Slowing down |
-| Wind-down | Final 1h (1.5h for Flex) | 0 | Completing existing cases, no new patients |
+| High | First 6 hours | 1.5x base | Provider fresh, high productivity |
+| Tapering | Middle hours | 0.5x base | Slowing down |
+| Wind-down | Final 1-1.5h | 0 | Completing existing cases |
 
-### Example: 9-hour Resident Shift (13 patients)
+### Shift Schedule
 
-```
-Equation: 13 = 6(1.5X) + 2(0.5X) + 1(0)
-          13 = 9X + 1X = 10X
-          X = 1.3 (base rate)
-
-First 6h:  1.95 pts/hr × 6h = 11.7 pts
-Middle 2h: 0.65 pts/hr × 2h = 1.3 pts
-Final 1h:  0 pts/hr × 1h    = 0 pts
-                       Total: 13 pts ✓
-```
-
-## Shift Schedule
-
-### EM Shifts (Always Visible)
+**EM Shifts (Always Visible)**
 
 | Shift | Time | Duration | Patients |
 |-------|------|----------|----------|
@@ -52,7 +50,7 @@ Final 1h:  0 pts/hr × 1h    = 0 pts
 | AP #2 | 5pm - 2am | 9h | 16 |
 | Resident #3 | 10pm - 7am | 9h | 13 |
 
-### Pediatric Shifts (Toggle On/Off)
+**Pediatric Shifts (Toggle)**
 
 | Shift | Time | Duration | Patients |
 |-------|------|----------|----------|
@@ -60,39 +58,175 @@ Final 1h:  0 pts/hr × 1h    = 0 pts
 | Peds Intern #2 | 1pm - 10pm | 9h | 4 |
 | Peds Senior | 11pm - 8am | 9h | 6 |
 
-## Usage
+---
 
-1. Open `index.html` in a web browser
-2. Hover over any time slot on the left to see patient counts for that hour
-3. Hover over any shift block to see that provider's distribution
-4. Click "Show Pediatric Residents" to toggle the overlay
-5. Expand "How are rates calculated?" for detailed math
+## Tab 2: Insights
 
-## Color Legend
+### Key Findings Cards
+- **Peak Census**: Maximum census time and value
+- **Minimum Census**: Lowest census point
+- **Peak Arrivals**: Hour with most patient arrivals
+- **Plateau Period**: Extended high-census period
 
-| Provider Type | Color |
-|---------------|-------|
-| Residents | Purple |
-| Advanced Practitioners | Blue |
-| Flex Attending | Green |
-| Pediatric Residents | Orange |
+### Visualizations
+- **Patient Flow**: Arrivals vs Discharges + Admits by hour
+- **Census Percentiles**: P25/P50/P75/P95 bands throughout the day
+- **ED Coverage**: Total providers and patients by hour
+
+---
+
+## Tab 3: Analysis
+
+Horizontal timeline view showing:
+
+- **Census Overlay**: Bar chart of census throughout the day
+- **Shift Swim Lanes**: Visual representation of all active shifts
+- **Load Indicator**: Color-coded workload (Low/Moderate/High/Critical)
+- **Metric Cards**: Glowing accent cards for key stats
+
+### Load Categories
+
+| Level | Patients/Provider | Color |
+|-------|-------------------|-------|
+| Low | < 3.5 | Green |
+| Moderate | 3.5 - 5.0 | Yellow |
+| High | 5.0 - 6.5 | Orange |
+| Critical | > 6.5 | Red |
+
+---
+
+## Tab 4: Deep Dive
+
+Uses data from the **Baystate Pediatric ED Staffing Summit** (2024) to provide:
+
+### Winter vs Summer Comparison
+Side-by-side hourly census bars showing seasonal variation
+
+### Day of Week APP Coverage
+Bar chart showing APP hour variation Monday-Sunday
+
+### Waiting Room Patterns
+Hourly waiting room census with P95 overlay
+
+### Provider Variability
+Encounter distribution (P10/P50/P90) by provider type:
+- MD: Wide variability (24-122 patients)
+- APP: Moderate variability (11-38 patients)
+- Resident: Moderate variability (18-69 patients)
+
+---
+
+## Data Sources
+
+The Deep Dive tab uses CSV data from the **Baystate Pediatric ED Staffing Summit (2024)**:
+
+| File | Contents |
+|------|----------|
+| `ped_ed_hourly_7pm_format.csv` | Hourly census, arrivals, discharges, admits, WR census |
+| `ped_ed_day_of_week.csv` | APP hours and coverage by day |
+| `ped_ed_staffing_variability.csv` | Provider encounter percentiles |
+
+### Data Structure
+
+**Hourly Data Columns:**
+```
+hour, hour_24, sequence, shift, shift_detail, census_mean, census_median,
+census_p25, census_p75, census_p95, wr_census_mean, wr_census_p95,
+arrivals_mean, arrivals_p95, discharge_mean, discharge_p95, admit_mean,
+admit_p95, lwbs_mean, lwbs_p95, boarding_mean, winter_census, summer_census
+```
+
+---
 
 ## Files
 
-- `index.html` - Main visualization (standalone, no dependencies)
-- `baystate-logo.png` - Baystate Health logo
-- `README.md` - This documentation
+| File | Description |
+|------|-------------|
+| `index.html` | Main application (standalone, no build process) |
+| `baystate-logo.png` | Baystate Health logo |
+| `README.md` | This documentation |
+
+---
 
 ## Development
 
-This is a standalone HTML file with no build process or dependencies. Edit `index.html` directly.
+### Architecture
+
+Single-file HTML application with embedded CSS and JavaScript. No external dependencies or build process required.
 
 ### Key Functions
 
-- `calculateDistribution(patients, duration, isFlexAttending)` - Calculates three-phase patient distribution
-- `getPatientsAtHour(hour)` - Returns all active providers and their patient counts for a given hour
-- `buildShifts()` - Renders shift blocks on the chart
-- `showTimeTooltip()` / `showShiftTooltip()` - Tooltip handlers
+| Function | Purpose |
+|----------|---------|
+| `calculateDistribution(patients, duration, isFlexAttending)` | Three-phase patient distribution |
+| `getPatientsAtHour(hour)` | Active providers and patient counts |
+| `buildShifts()` | Render Schedule tab waterfall |
+| `buildAnalysisTab()` | Render Analysis tab timeline |
+| `buildExperimentalTab()` | Render Deep Dive tab visualizations |
+| `switchTab(tabId)` | Tab navigation with lazy loading |
+| `showTimeTooltip()` / `showShiftTooltip()` | Tooltip handlers |
+
+### Tab Lazy Loading
+
+Tabs are built on first view to improve initial load time:
+```javascript
+function switchTab(tabId) {
+    // ... tab switching logic
+    if (tabId === 'analysis' && !analysisBuilt) {
+        buildAnalysisTab();
+        analysisBuilt = true;
+    }
+    if (tabId === 'experimental' && !experimentalBuilt) {
+        buildExperimentalTab();
+        experimentalBuilt = true;
+    }
+}
+```
+
+### Color Palette
+
+| Element | Color |
+|---------|-------|
+| Residents | Purple (#9b59b6) |
+| Advanced Practitioners | Blue (#3498db) |
+| Flex Attending | Green (#27ae60) |
+| Pediatric Residents | Orange (#e67e22) |
+| Census bars | Cyan (#00d4ff) |
+| Arrivals | Green (#4ade80) |
+| Discharges | Orange (#fb923c) |
+| Waiting Room | Magenta (#ff00ff) |
+
+### Extending the Tool
+
+1. **Add new tab**: Create tab button, content div, and `buildNewTab()` function
+2. **Add new chart**: Use existing CSS classes (`.chart-bar`, `.chart-container`)
+3. **Add new data**: Embed in `buildExperimentalTab()` or load via fetch
+
+---
+
+## Deployment
+
+### GitHub Pages
+
+Both repos auto-deploy from `main` branch:
+
+```bash
+# Push to primary
+git push origin main
+
+# Push to mirror (requires brunaolson auth)
+gh auth switch --user brunaolson
+git push bruna main:main
+```
+
+### Git Remotes
+
+| Remote | Repository |
+|--------|------------|
+| origin | github.com/olsonj-wps/er-shift-visualization |
+| bruna | github.com/brunaolson/BaystateED |
+
+---
 
 ## License
 
