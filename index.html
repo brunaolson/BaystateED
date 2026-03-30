@@ -1945,45 +1945,122 @@
 
         .dow-chart {
             display: flex;
-            align-items: flex-end;
-            height: 80px;
-            gap: 8px;
+            align-items: stretch;
+            height: 120px;
+            gap: 6px;
+            padding: 4px;
         }
 
-        .dow-bar {
+        .dow-calendar-page {
             flex: 1;
-            background: linear-gradient(180deg, #da77f2 0%, #be4bdb 100%);
-            border-radius: 4px 4px 0 0;
+            background: #1a1a2e;
+            border-radius: 8px;
             position: relative;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.08);
         }
 
-        .dow-bar:hover {
-            filter: brightness(1.2);
-            transform: scaleY(1.05);
-            transform-origin: bottom;
+        .dow-calendar-page:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            border-color: rgba(255,255,255,0.2);
         }
 
-        .dow-bar::after {
-            content: attr(data-day);
+        .dow-calendar-header {
+            background: linear-gradient(135deg, #2d2d44 0%, #1f1f35 100%);
+            padding: 6px 4px;
+            text-align: center;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: rgba(255,255,255,0.7);
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .dow-calendar-header.weekend {
+            background: linear-gradient(135deg, #3d2d44 0%, #2f1f35 100%);
+            color: rgba(218,119,242,0.8);
+        }
+
+        .dow-calendar-body {
+            flex: 1;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+
+        .dow-fill {
             position: absolute;
-            bottom: -18px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-size: 0.6rem;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            transition: height 0.5s ease;
+            border-radius: 0 0 6px 6px;
+        }
+
+        .dow-fill.high {
+            background: linear-gradient(0deg,
+                rgba(74,222,128,0.4) 0%,
+                rgba(74,222,128,0.2) 50%,
+                rgba(74,222,128,0.05) 100%);
+        }
+
+        .dow-fill.medium {
+            background: linear-gradient(0deg,
+                rgba(251,191,36,0.4) 0%,
+                rgba(251,191,36,0.2) 50%,
+                rgba(251,191,36,0.05) 100%);
+        }
+
+        .dow-fill.low {
+            background: linear-gradient(0deg,
+                rgba(248,113,113,0.5) 0%,
+                rgba(248,113,113,0.25) 50%,
+                rgba(248,113,113,0.05) 100%);
+        }
+
+        .dow-hours-display {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            padding: 8px 4px;
+        }
+
+        .dow-hours-number {
+            font-size: 1.3rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .dow-fill.high + .dow-hours-display .dow-hours-number { color: #4ade80; }
+        .dow-fill.medium + .dow-hours-display .dow-hours-number { color: #fbbf24; }
+        .dow-fill.low + .dow-hours-display .dow-hours-number { color: #f87171; }
+
+        .dow-hours-label {
+            font-size: 0.55rem;
             color: rgba(255,255,255,0.5);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
         }
 
-        .dow-bar::before {
-            content: attr(data-hours);
+        .dow-calendar-page::after {
+            content: '';
             position: absolute;
-            top: -16px;
+            top: 0;
             left: 50%;
             transform: translateX(-50%);
-            font-size: 0.6rem;
-            color: #da77f2;
-            font-weight: 600;
+            width: 12px;
+            height: 3px;
+            background: rgba(255,255,255,0.15);
+            border-radius: 0 0 2px 2px;
         }
 
         .wr-chart {
@@ -2685,8 +2762,8 @@
 
                 <!-- Day of Week APP Coverage -->
                 <div class="exp-section">
-                    <div class="exp-section-title">APP Hours by Day of Week</div>
-                    <div class="exp-section-subtitle">Coverage varies significantly</div>
+                    <div class="exp-section-title">APP Coverage Calendar</div>
+                    <div class="exp-section-subtitle">Weekly hours: <span style="color:#4ade80;">High (25+)</span> <span style="color:#fbbf24;">Medium (18-24)</span> <span style="color:#f87171;">Low (&lt;18)</span></div>
                     <div class="dow-chart" id="dowChart"></div>
                 </div>
 
@@ -4015,14 +4092,28 @@
 
             const dowChart = document.getElementById('dowChart');
             if (dowChart) {
-                dowData.forEach(d => {
-                    const bar = document.createElement('div');
-                    bar.className = 'dow-bar';
-                    bar.style.height = `${(d.hours / maxHours) * 100}%`;
-                    bar.setAttribute('data-day', d.day);
-                    bar.setAttribute('data-hours', d.hours + 'h');
-                    bar.title = `${d.day}: ${d.hours} APP hours`;
-                    dowChart.appendChild(bar);
+                const fullDays = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+                dowData.forEach((d, i) => {
+                    const isWeekend = i >= 5;
+                    const fillPercent = (d.hours / maxHours) * 100;
+                    const fillLevel = d.hours >= 25 ? 'high' : d.hours >= 18 ? 'medium' : 'low';
+
+                    const page = document.createElement('div');
+                    page.className = 'dow-calendar-page';
+                    page.title = `${fullDays[i]}: ${d.hours} APP hours`;
+
+                    page.innerHTML = `
+                        <div class="dow-calendar-header ${isWeekend ? 'weekend' : ''}">${d.day}</div>
+                        <div class="dow-calendar-body">
+                            <div class="dow-fill ${fillLevel}" style="height: ${fillPercent}%;"></div>
+                            <div class="dow-hours-display">
+                                <div class="dow-hours-number">${d.hours}</div>
+                                <div class="dow-hours-label">hours</div>
+                            </div>
+                        </div>
+                    `;
+
+                    dowChart.appendChild(page);
                 });
             }
 
