@@ -148,17 +148,19 @@
             flex-wrap: wrap;
         }
 
-        .legend-item {
+        .legend > .legend-item,
+        .legend-group > .legend-item {
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 0.85rem;
-            color: #1a1a1a;
+            color: #222 !important;
             font-weight: 600;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255,255,255,0.95);
             padding: 6px 12px;
             border-radius: 6px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+            border: 1px solid rgba(0,0,0,0.08);
         }
 
         .legend-color {
@@ -1894,6 +1896,7 @@
             display: flex;
             gap: 2px;
             align-items: flex-end;
+            height: 100%;
         }
 
         .season-bar {
