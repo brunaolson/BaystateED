@@ -2321,16 +2321,120 @@
 
         .tab-content {
             display: none;
-            animation: fadeIn 0.3s ease;
         }
 
         .tab-content.active {
             display: block;
+            animation: slideUp 0.4s ease-out;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Staggered card animations */
+        .tab-content.active .insight-card-dark,
+        .tab-content.active .metric-card,
+        .tab-content.active .exp-section,
+        .tab-content.active .observation {
+            animation: cardPop 0.4s ease-out backwards;
+        }
+
+        .tab-content.active .insight-card-dark:nth-child(1) { animation-delay: 0.05s; }
+        .tab-content.active .insight-card-dark:nth-child(2) { animation-delay: 0.1s; }
+        .tab-content.active .insight-card-dark:nth-child(3) { animation-delay: 0.15s; }
+        .tab-content.active .insight-card-dark:nth-child(4) { animation-delay: 0.2s; }
+
+        .tab-content.active .metric-card:nth-child(1) { animation-delay: 0.05s; }
+        .tab-content.active .metric-card:nth-child(2) { animation-delay: 0.1s; }
+        .tab-content.active .metric-card:nth-child(3) { animation-delay: 0.15s; }
+        .tab-content.active .metric-card:nth-child(4) { animation-delay: 0.2s; }
+
+        @keyframes cardPop {
+            from {
+                opacity: 0;
+                transform: translateY(15px) scale(0.97);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Next Tab Button */
+        .next-tab-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .next-tab-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, var(--bh-purple) 0%, var(--bh-purple-dark) 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(107, 78, 155, 0.3);
+        }
+
+        .next-tab-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(107, 78, 155, 0.4);
+        }
+
+        .next-tab-btn:active {
+            transform: translateY(0);
+        }
+
+        .next-tab-btn .arrow {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .next-tab-btn:hover .arrow {
+            transform: translateX(4px);
+        }
+
+        .next-tab-btn .next-label {
+            font-size: 0.75rem;
+            opacity: 0.8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .next-tab-btn .next-title {
+            font-size: 1rem;
+        }
+
+        /* Pulse animation for next button on load */
+        .next-tab-btn {
+            animation: gentlePulse 2s ease-in-out infinite;
+            animation-delay: 1s;
+        }
+
+        .next-tab-btn:hover {
+            animation: none;
+        }
+
+        @keyframes gentlePulse {
+            0%, 100% { box-shadow: 0 4px 15px rgba(107, 78, 155, 0.3); }
+            50% { box-shadow: 0 4px 25px rgba(107, 78, 155, 0.5); }
         }
 
         @media (max-width: 480px) {
@@ -2505,6 +2609,17 @@
                 </div>
             </div>
         </div>
+
+        <!-- Next Button -->
+        <div class="next-tab-container">
+            <button class="next-tab-btn" onclick="switchTab('insights')">
+                <div>
+                    <div class="next-label">Next</div>
+                    <div class="next-title">Insights</div>
+                </div>
+                <span class="arrow">&#8594;</span>
+            </button>
+        </div>
         </div><!-- End Schedule Tab -->
 
         <!-- INSIGHTS TAB (continued - Patient Flow section) -->
@@ -2656,6 +2771,17 @@
                 </div>
             </div>
         </div>
+
+        <!-- Next Button -->
+        <div class="next-tab-container">
+            <button class="next-tab-btn" onclick="switchTab('analysis')">
+                <div>
+                    <div class="next-label">Next</div>
+                    <div class="next-title">Analysis</div>
+                </div>
+                <span class="arrow">&#8594;</span>
+            </button>
+        </div>
         </div><!-- End Insights Tab (Flow section) -->
 
         <!-- ANALYSIS TAB - Beautiful Combined View -->
@@ -2754,6 +2880,17 @@
                             Night inherits <strong>31 patients</strong> at peak
                         </div>
                     </div>
+                </div>
+
+                <!-- Next Button -->
+                <div class="next-tab-container">
+                    <button class="next-tab-btn" onclick="switchTab('experimental')">
+                        <div>
+                            <div class="next-label">Next</div>
+                            <div class="next-title">Deep Dive</div>
+                        </div>
+                        <span class="arrow">&#8594;</span>
+                    </button>
                 </div>
             </div>
         </div><!-- End Analysis Tab -->
@@ -2897,6 +3034,17 @@
                         <div class="exp-obs-title">WR Clears by 2AM</div>
                         <div class="exp-obs-text">Waiting room drops to 1-2 patients after 2AM. Night team focuses on rooms.</div>
                     </div>
+                </div>
+
+                <!-- Back to Start Button -->
+                <div class="next-tab-container">
+                    <button class="next-tab-btn" onclick="switchTab('schedule')" style="background: linear-gradient(135deg, var(--bh-green) 0%, var(--bh-green-dark) 100%); box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);">
+                        <span class="arrow" style="transform: rotate(180deg);">&#8594;</span>
+                        <div>
+                            <div class="next-label">Back to</div>
+                            <div class="next-title">Schedule</div>
+                        </div>
+                    </button>
                 </div>
             </div>
         </div><!-- End Experimental Tab -->
