@@ -5389,6 +5389,20 @@
                 cell.title = `${formatHour(hour)}: ${val} new check-ins`;
                 col.appendChild(cell);
             }
+
+            // Total at bottom
+            const total = Object.values(data).reduce((sum, v) => sum + v, 0);
+            const totalCell = document.createElement('div');
+            totalCell.className = 'census-hour-cell';
+            totalCell.style.top = `${24 * HOUR_HEIGHT}px`;
+            totalCell.style.height = `${HOUR_HEIGHT}px`;
+            totalCell.style.fontWeight = '800';
+            totalCell.style.fontSize = '0.78rem';
+            totalCell.style.color = 'var(--bh-purple-dark)';
+            totalCell.style.borderTop = '2px solid var(--bh-purple)';
+            totalCell.textContent = total;
+            totalCell.title = `Total check-ins/day: ${total}`;
+            col.appendChild(totalCell);
         }
 
         // Initialize
