@@ -2604,7 +2604,7 @@
             </div>
             <div class="legend-item">
                 <div class="legend-color attending"></div>
-                <span>Flex Attending (18 pts)</span>
+                <span>Flex Attending (16 pts)</span>
             </div>
             <div class="legend-group hidden" id="pedsLegend">
                 <div class="legend-item">
@@ -2682,7 +2682,7 @@
                 <div class="stat-label">Attending</div>
             </div>
             <div class="stat-item">
-                <div class="stat-value" id="totalPatientsVal">89</div>
+                <div class="stat-value" id="totalPatientsVal">87</div>
                 <div class="stat-label" id="totalPatientsLabel">Total Patients/Day</div>
             </div>
             <div class="stats-divider" id="statsDivider"></div>
@@ -3472,7 +3472,7 @@
                 label: 'Flex Attending',
                 startHour: 15.5,
                 endHour: 24,
-                patients: 18,
+                patients: 16,
                 lane: 3,
                 isPeds: false
             },
@@ -3756,7 +3756,7 @@
             const totalPatientsLabel = document.getElementById('totalPatientsLabel');
 
             let shifts = 6;
-            let patients = 89;
+            let patients = 87;
             let labels = [];
             if (showPeds) { shifts += 3; patients += 15; labels.push('Peds'); }
             if (showEmInterns) { shifts += 2; patients += 14; labels.push('EM Intern'); }
