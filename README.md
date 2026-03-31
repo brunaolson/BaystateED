@@ -145,6 +145,9 @@ admit_p95, lwbs_mean, lwbs_p95, boarding_mean, winter_census, summer_census
 | `index.html` | Main application (standalone, no build process) |
 | `baystate-logo.png` | Baystate Health logo |
 | `README.md` | This documentation |
+| `docs/SETUP.md` | Development environment, installed tools & packages |
+| `.env` | GitHub token (gitignored) |
+| `.gitignore` | Ignored files |
 
 ---
 
