@@ -276,6 +276,38 @@
             opacity: 0.85;
         }
 
+        .census-column {
+            width: 55px;
+            flex-shrink: 0;
+            position: relative;
+            border-left: 2px solid #e0e0e0;
+            margin-left: 4px;
+        }
+
+        .census-column-header {
+            position: absolute;
+            top: -28px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+        }
+
+        .census-hour-cell {
+            position: absolute;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.72rem;
+            font-weight: 600;
+            color: #444;
+        }
+
         .time-axis {
             width: 75px;
             flex-shrink: 0;
@@ -2694,6 +2726,15 @@
             <div class="time-axis" id="timeAxis"></div>
             <div class="chart-area" id="chartArea">
                 <div class="current-time-line" id="currentTimeLine"></div>
+            </div>
+            <div class="census-column" id="censusColumn">
+                <div class="census-column-header">
+                    <div style="font-weight:700; font-size:0.68rem; color:var(--bh-purple-dark); text-transform:uppercase; letter-spacing:0.5px;">Census</div>
+                    <select id="seasonSelect" onchange="buildCensusColumn()" style="font-size:0.65rem; padding:2px 4px; border-radius:4px; border:1px solid #ccc; cursor:pointer;">
+                        <option value="fw">Fall/Winter</option>
+                        <option value="ss">Spring/Summer</option>
+                    </select>
+                </div>
             </div>
         </div>
 
@@ -5300,10 +5341,61 @@
 
         }
 
+        // Census data from PEM Staffing Summit Excel (ED Hourly New Arrival Mean)
+        // Index by hour 0-23
+        const censusData = {
+            fw: {  // Fall/Winter (Oct-Mar) - Total Pedi ED Census Mean
+                0: 23, 1: 20, 2: 17, 3: 15, 4: 13, 5: 12, 6: 11, 7: 11, 8: 13, 9: 17,
+                10: 20, 11: 23, 12: 25, 13: 26, 14: 26, 15: 27, 16: 28, 17: 29, 18: 30,
+                19: 31, 20: 31, 21: 30, 22: 28, 23: 26
+            },
+            ss: {  // Spring/Summer (Apr-Sep) - Total Pedi ED Census Mean
+                0: 22, 1: 19, 2: 16, 3: 13, 4: 11, 5: 10, 6: 9, 7: 9, 8: 11, 9: 13,
+                10: 16, 11: 17, 12: 19, 13: 20, 14: 21, 15: 21, 16: 23, 17: 24, 18: 26,
+                19: 27, 20: 28, 21: 28, 22: 27, 23: 25
+            }
+        };
+
+        function buildCensusColumn() {
+            const col = document.getElementById('censusColumn');
+            const season = document.getElementById('seasonSelect').value;
+            const data = censusData[season];
+
+            // Remove old cells (keep header)
+            col.querySelectorAll('.census-hour-cell').forEach(el => el.remove());
+
+            const maxCensus = Math.max(...Object.values(data));
+
+            for (let i = 0; i < 24; i++) {
+                const hour = (START_HOUR + i) % 24;
+                const val = data[hour];
+
+                const cell = document.createElement('div');
+                cell.className = 'census-hour-cell';
+                cell.style.top = `${i * HOUR_HEIGHT}px`;
+                cell.style.height = `${HOUR_HEIGHT}px`;
+
+                // Color intensity based on census value
+                const intensity = val / maxCensus;
+                let color;
+                if (intensity > 0.8) color = '#c62828';
+                else if (intensity > 0.6) color = '#e65100';
+                else if (intensity > 0.4) color = '#f57c00';
+                else color = '#2e7d32';
+
+                cell.style.color = color;
+                cell.style.background = `rgba(${intensity > 0.6 ? '198,40,40' : '46,125,50'}, ${intensity * 0.08})`;
+                cell.textContent = val;
+                cell.title = `${formatHour(hour)}: ${val} patients in ED`;
+                col.appendChild(cell);
+            }
+        }
+
         // Initialize
         buildTimeAxis();
         buildShifts();
         buildAttendingColumn();
+        buildCensusColumn();
         buildFlowChart();
         buildMathExplanations();
         updateCurrentTimeLine();
