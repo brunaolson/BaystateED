@@ -25,6 +25,9 @@
             --bh-orange-dark: #E65100;
             --bh-orange-light: #FFB74D;
             --bh-brown: #5D4E37;
+            --bh-teal: #00897B;
+            --bh-teal-dark: #00695C;
+            --bh-teal-light: #4DB6AC;
         }
 
         body {
@@ -186,6 +189,10 @@
             background: linear-gradient(135deg, var(--bh-orange) 0%, var(--bh-orange-dark) 100%);
         }
 
+        .legend-color.em-intern {
+            background: linear-gradient(135deg, var(--bh-teal) 0%, var(--bh-teal-dark) 100%);
+        }
+
         .legend-group {
             display: flex;
             gap: 20px;
@@ -297,6 +304,19 @@
             background: linear-gradient(180deg, var(--bh-green-light) 0%, var(--bh-green) 40%, var(--bh-green-dark) 100%);
         }
 
+        .shift-block.em-intern {
+            background: linear-gradient(180deg, var(--bh-teal-light) 0%, var(--bh-teal) 40%, var(--bh-teal-dark) 100%);
+            border: 2px dashed rgba(255,255,255,0.5);
+        }
+
+        .shift-block.em-intern-overlay {
+            display: none;
+        }
+
+        .shift-block.em-intern-overlay.visible {
+            display: block;
+        }
+
         .shift-block.peds-intern,
         .shift-block.peds-senior {
             background: linear-gradient(180deg, var(--bh-orange-light) 0%, var(--bh-orange) 40%, var(--bh-orange-dark) 100%);
@@ -395,6 +415,7 @@
         .tooltip-title.resident { color: var(--bh-purple); }
         .tooltip-title.ap { color: var(--bh-blue); }
         .tooltip-title.attending { color: var(--bh-green); }
+        .tooltip-title.em-intern { color: var(--bh-teal); }
         .tooltip-title.peds-intern, .tooltip-title.peds-senior { color: var(--bh-orange); }
         .tooltip-title.time-tooltip { color: #333; }
 
@@ -450,6 +471,8 @@
         .distribution-segment.low.ap { background: #B8D4E8; color: var(--bh-blue-dark); }
         .distribution-segment.high.attending { background: var(--bh-green); }
         .distribution-segment.low.attending { background: #C8E6C9; color: var(--bh-green-dark); }
+        .distribution-segment.high.em-intern { background: var(--bh-teal); }
+        .distribution-segment.low.em-intern { background: #B2DFDB; color: var(--bh-teal-dark); }
         .distribution-segment.high.peds-intern,
         .distribution-segment.high.peds-senior { background: var(--bh-orange); }
         .distribution-segment.low.peds-intern,
@@ -506,6 +529,7 @@
         .breakdown-dot.resident { background: var(--bh-purple); }
         .breakdown-dot.ap { background: var(--bh-blue); }
         .breakdown-dot.attending { background: var(--bh-green); }
+        .breakdown-dot.em-intern { background: var(--bh-teal); }
         .breakdown-dot.peds-intern,
         .breakdown-dot.peds-senior { background: var(--bh-orange); }
 
@@ -563,6 +587,10 @@
             color: var(--bh-orange);
         }
 
+        .stat-value.em-intern {
+            color: var(--bh-teal);
+        }
+
         .stat-label {
             font-size: 0.72rem;
             color: #888;
@@ -576,6 +604,15 @@
         }
 
         .peds-stats.visible {
+            display: flex;
+        }
+
+        .em-intern-stats {
+            display: none;
+            gap: 35px;
+        }
+
+        .em-intern-stats.visible {
             display: flex;
         }
 
@@ -744,6 +781,7 @@
         .math-group-header.resident { background: var(--bh-purple); }
         .math-group-header.ap { background: var(--bh-blue); }
         .math-group-header.attending { background: var(--bh-green); }
+        .math-group-header.em-intern { background: var(--bh-teal); }
         .math-group-header.peds { background: var(--bh-orange); }
 
         .math-group-body {
@@ -780,6 +818,14 @@
             margin-top: 12px;
             padding-top: 12px;
             border-top: 1px dashed #ddd;
+        }
+
+        .em-intern-math-group {
+            display: none;
+        }
+
+        .em-intern-math-group.visible {
+            display: block;
         }
 
         .peds-math-group {
@@ -2541,6 +2587,10 @@
                 <span class="toggle-indicator"></span>
                 <span>Show Pediatric Residents</span>
             </button>
+            <button class="toggle-btn" id="emInternToggle" onclick="toggleEmInterns()">
+                <span class="toggle-indicator"></span>
+                <span>Show EM Intern Residents</span>
+            </button>
         </div>
 
         <div class="legend">
@@ -2563,7 +2613,17 @@
                 </div>
                 <div class="legend-item">
                     <div class="legend-color peds"></div>
-                    <span>Peds Senior (6 pts)</span>
+                    <span>Peds Senior (7 pts)</span>
+                </div>
+            </div>
+            <div class="legend-group hidden" id="emInternLegend" style="background: rgba(0, 137, 123, 0.08); border-color: var(--bh-teal);">
+                <div class="legend-item">
+                    <div class="legend-color em-intern"></div>
+                    <span>EM Intern Day (7 pts)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color em-intern"></div>
+                    <span>EM Intern Night (7 pts)</span>
                 </div>
             </div>
         </div>
@@ -2632,8 +2692,19 @@
                     <div class="stat-label">Peds Shifts</div>
                 </div>
                 <div class="stat-item">
-                    <div class="stat-value peds">14</div>
+                    <div class="stat-value peds">15</div>
                     <div class="stat-label">Peds Patients</div>
+                </div>
+            </div>
+            <div class="stats-divider" id="emInternStatsDivider"></div>
+            <div class="em-intern-stats" id="emInternStats">
+                <div class="stat-item">
+                    <div class="stat-value em-intern">2</div>
+                    <div class="stat-label">EM Intern Shifts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value em-intern">14</div>
+                    <div class="stat-label">EM Intern Patients</div>
                 </div>
             </div>
         </div>
@@ -3465,7 +3536,37 @@
             }
         ];
 
-        const allShifts = [...emShifts, ...pedsShifts];
+        // EM Intern Shifts (overlay)
+        // EM Intern Day: 1pm-10pm (9h), 7 patients
+        // EM Intern Night: 11pm-8am (9h), 7 patients
+        let showEmInterns = false;
+        const emInternShifts = [
+            {
+                id: 201,
+                type: 'em-intern',
+                label: 'EM Intern Day',
+                startHour: 13,        // 1pm
+                endHour: 22,          // 10pm
+                patients: 7,
+                lane: 9,
+                isPeds: false,
+                isEmIntern: true
+            },
+            {
+                id: 202,
+                type: 'em-intern',
+                label: 'EM Intern Night',
+                startHour: 23,        // 11pm
+                endHour: 32,          // 8am next day (wraps)
+                patients: 7,
+                lane: 10,
+                isPeds: false,
+                isEmIntern: true,
+                wraps: true
+            }
+        ];
+
+        const allShifts = [...emShifts, ...pedsShifts, ...emInternShifts];
 
         // Helper functions
         function formatHour(hour) {
@@ -3532,10 +3633,13 @@
         function getPatientsAtHour(targetHour) {
             const results = {
                 em: { shifts: [], total: 0 },
-                peds: { shifts: [], total: 0 }
+                peds: { shifts: [], total: 0 },
+                emIntern: { shifts: [], total: 0 }
             };
 
-            const shiftsToCheck = showPeds ? allShifts : emShifts;
+            let shiftsToCheck = [...emShifts];
+            if (showPeds) shiftsToCheck = shiftsToCheck.concat(pedsShifts);
+            if (showEmInterns) shiftsToCheck = shiftsToCheck.concat(emInternShifts);
 
             shiftsToCheck.forEach(shift => {
                 const duration = shift.endHour - shift.startHour;
@@ -3588,6 +3692,9 @@
                     if (shift.isPeds) {
                         results.peds.shifts.push(shiftInfo);
                         results.peds.total += patientsThisHour;
+                    } else if (shift.isEmIntern) {
+                        results.emIntern.shifts.push(shiftInfo);
+                        results.emIntern.total += patientsThisHour;
                     } else {
                         results.em.shifts.push(shiftInfo);
                         results.em.total += patientsThisHour;
@@ -3620,13 +3727,45 @@
             const totalPatientsVal = document.getElementById('totalPatientsVal');
             const totalPatientsLabel = document.getElementById('totalPatientsLabel');
 
-            if (showPeds) {
-                totalShiftsVal.textContent = '9'; // 6 EM + 3 Peds
-                totalPatientsVal.textContent = '103'; // 89 EM + 14 Peds
-                totalPatientsLabel.textContent = 'Peds ER Patients/Day';
+            updateTotals();
+        }
+
+        // Toggle EM Interns
+        function toggleEmInterns() {
+            showEmInterns = !showEmInterns;
+            const btn = document.getElementById('emInternToggle');
+            const legend = document.getElementById('emInternLegend');
+            const stats = document.getElementById('emInternStats');
+            const divider = document.getElementById('emInternStatsDivider');
+
+            btn.classList.toggle('active', showEmInterns);
+            legend.classList.toggle('hidden', !showEmInterns);
+            stats.classList.toggle('visible', showEmInterns);
+            divider.classList.toggle('visible', showEmInterns);
+
+            document.querySelectorAll('.em-intern-overlay').forEach(el => {
+                el.classList.toggle('visible', showEmInterns);
+            });
+
+            updateTotals();
+        }
+
+        function updateTotals() {
+            const totalShiftsVal = document.getElementById('totalShiftsVal');
+            const totalPatientsVal = document.getElementById('totalPatientsVal');
+            const totalPatientsLabel = document.getElementById('totalPatientsLabel');
+
+            let shifts = 6;
+            let patients = 89;
+            let labels = [];
+            if (showPeds) { shifts += 3; patients += 15; labels.push('Peds'); }
+            if (showEmInterns) { shifts += 2; patients += 14; labels.push('EM Intern'); }
+
+            totalShiftsVal.textContent = shifts;
+            totalPatientsVal.textContent = patients;
+            if (labels.length > 0) {
+                totalPatientsLabel.textContent = labels.join(' + ') + ' + EM Patients/Day';
             } else {
-                totalShiftsVal.textContent = '6';
-                totalPatientsVal.textContent = '89';
                 totalPatientsLabel.textContent = 'Total Patients/Day';
             }
         }
@@ -3689,7 +3828,7 @@
 
                     // Bottom block (main portion: 11pm - 7am)
                     const bottomBlock = document.createElement('div');
-                    bottomBlock.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : ''}`;
+                    bottomBlock.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : shift.isEmIntern ? ' em-intern-overlay' : ''}`;
                     bottomBlock.style.left = `${15 + shift.lane * (LANE_WIDTH + LANE_GAP)}px`;
                     bottomBlock.style.width = `${LANE_WIDTH}px`;
                     bottomBlock.style.top = `${hourToY(shift.startHour)}px`;
@@ -3724,7 +3863,7 @@
                     const isWrapInZeroPhase = (duration - topDuration) >= (duration - dist.zeroHours);
 
                     const topBlock = document.createElement('div');
-                    topBlock.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : ''}`;
+                    topBlock.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : shift.isEmIntern ? ' em-intern-overlay' : ''}`;
                     topBlock.style.left = `${15 + shift.lane * (LANE_WIDTH + LANE_GAP)}px`;
                     topBlock.style.width = `${LANE_WIDTH}px`;
                     topBlock.style.top = '0px';
@@ -3756,7 +3895,7 @@
                 } else {
                     // Normal single block
                     const block = document.createElement('div');
-                    block.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : ''}`;
+                    block.className = `shift-block ${shift.type}${shift.isPeds ? ' peds-overlay' : shift.isEmIntern ? ' em-intern-overlay' : ''}`;
                     block.style.left = `${15 + shift.lane * (LANE_WIDTH + LANE_GAP)}px`;
                     block.style.width = `${LANE_WIDTH}px`;
                     block.style.top = `${hourToY(shift.startHour)}px`;
@@ -3849,8 +3988,34 @@
                 });
             }
 
-            const totalPatients = patients.em.total + (showPeds ? patients.peds.total : 0);
-            const activeCount = patients.em.shifts.length + (showPeds ? patients.peds.shifts.length : 0);
+            let emInternHtml = '';
+            if (showEmInterns && patients.emIntern.shifts.length > 0) {
+                emInternHtml = '<div class="breakdown-section-title">EM Interns</div>';
+                patients.emIntern.shifts.forEach(s => {
+                    let phaseLabel;
+                    if (s.phase === 'high') {
+                        phaseLabel = '<span style="color: #2e7d32;">●</span> high';
+                    } else if (s.phase === 'zero') {
+                        phaseLabel = '<span style="color: #888;">○</span> winding down';
+                    } else {
+                        phaseLabel = '<span style="color: #c62828;">●</span> tapering';
+                    }
+
+                    emInternHtml += `
+                        <div class="breakdown-row">
+                            <div class="breakdown-dot ${s.type}"></div>
+                            <span class="breakdown-label">${s.label}</span>
+                            <span class="breakdown-value" style="font-size: 1rem;">${s.patientsThisHour.toFixed(2)} pts</span>
+                        </div>
+                        <div style="font-size: 0.7rem; color: #888; margin-left: 18px; margin-bottom: 6px;">
+                            Hour ${s.hoursIntoShift + 1} of ${s.duration} · ${phaseLabel}
+                        </div>
+                    `;
+                });
+            }
+
+            const totalPatients = patients.em.total + (showPeds ? patients.peds.total : 0) + (showEmInterns ? patients.emIntern.total : 0);
+            const activeCount = patients.em.shifts.length + (showPeds ? patients.peds.shifts.length : 0) + (showEmInterns ? patients.emIntern.shifts.length : 0);
 
             tooltip.innerHTML = `
                 <div class="tooltip-title time-tooltip">
@@ -3864,6 +4029,7 @@
                     ${patients.em.shifts.length > 0 ? '<div class="breakdown-section-title">Breakdown by Provider</div>' : ''}
                     ${emHtml}
                     ${pedsHtml}
+                    ${emInternHtml}
                 </div>
                 <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid #eee; font-size: 0.7rem; color: #999; text-align: center;">
                     See "How are rates calculated?" below for details
@@ -3886,7 +4052,8 @@
                 'ap': 'Advanced Practitioner',
                 'attending': 'Flex Attending',
                 'peds-intern': 'Pediatric Intern',
-                'peds-senior': 'Pediatric Senior Resident'
+                'peds-senior': 'Pediatric Senior Resident',
+                'em-intern': 'EM Intern Resident'
             };
 
             // Actionable insights based on shift timing and patient flow data
@@ -3899,7 +4066,9 @@
                 6: { text: 'Overnight: census 26 to 11. Lowest arrivals 3-6am. Prep clean handoff at 7am.' },
                 101: { text: 'Afternoon peds coverage. Census building toward evening peak.' },
                 102: { text: 'Covers peds evening surge. Overlaps with Intern #1 until 8pm.' },
-                103: { text: 'Overnight peds. Low volume but critical coverage. Hands off at morning transition.' }
+                103: { text: 'Overnight peds. Low volume but critical coverage. Hands off at morning transition.' },
+                201: { text: 'EM Intern afternoon/evening shift. Covers rising census through evening peak.' },
+                202: { text: 'EM Intern overnight. Census drops through shift. Hands off at morning transition.' }
             };
 
             const insight = shiftInsights[shift.id] || { text: 'Standard shift coverage.' };
@@ -3961,7 +4130,8 @@
                 'ap': '#1B6CA3',
                 'attending': '#2E7D32',
                 'peds-intern': '#E65100',
-                'peds-senior': '#E65100'
+                'peds-senior': '#E65100',
+                'em-intern': '#00695C'
             };
             return colors[type] || '#444';
         }
@@ -4046,6 +4216,20 @@
                     container.appendChild(el);
                 }
             });
+
+            // Add EM intern groups
+            const emInternGroups = [
+                { type: 'em-intern', label: 'EM Interns', shifts: emInternShifts, color: 'em-intern', isEmIntern: true }
+            ];
+
+            emInternGroups.forEach(group => {
+                if (group.shifts.length > 0) {
+                    const el = createMathGroup(group);
+                    el.classList.add('em-intern-math-group');
+                    if (showEmInterns) el.classList.add('visible');
+                    container.appendChild(el);
+                }
+            });
         }
 
         function createMathGroup(group) {
@@ -4109,6 +4293,15 @@
             originalTogglePeds();
             document.querySelectorAll('.peds-math-group').forEach(el => {
                 el.classList.toggle('visible', showPeds);
+            });
+        };
+
+        // Update EM intern math visibility when toggling
+        const originalToggleEmInterns = toggleEmInterns;
+        toggleEmInterns = function() {
+            originalToggleEmInterns();
+            document.querySelectorAll('.em-intern-math-group').forEach(el => {
+                el.classList.toggle('visible', showEmInterns);
             });
         };
 
