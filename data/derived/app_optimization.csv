@@ -1,0 +1,8 @@
+day_of_week,current_app_hours,winter_peak_census,target_hours_at_2_5_pph,gap
+Monday,27.0,31,12.4,14.6
+Tuesday,27.0,31,12.4,14.6
+Wednesday,29.25,31,12.4,16.85
+Thursday,18.0,31,12.4,5.6
+Friday,9.0,31,12.4,-3.4
+Saturday,11.25,31,12.4,-1.15
+Sunday,22.5,31,12.4,10.1

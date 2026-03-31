@@ -2446,6 +2446,28 @@
                 font-size: 1rem;
             }
         }
+
+        /* Demand vs Capacity Tab */
+        .tab-content.active .metric-card:nth-child(1) { animation-delay: 0.05s; }
+        .tab-content.active .metric-card:nth-child(2) { animation-delay: 0.1s; }
+        .tab-content.active .metric-card:nth-child(3) { animation-delay: 0.15s; }
+        .tab-content.active .metric-card:nth-child(4) { animation-delay: 0.2s; }
+
+        /* Rotation Heatmap cells animation */
+        .tab-content.active .exp-section { animation: cardPop 0.4s ease-out backwards; }
+        .tab-content.active .exp-section:nth-child(1) { animation-delay: 0.05s; }
+        .tab-content.active .exp-section:nth-child(2) { animation-delay: 0.1s; }
+        .tab-content.active .exp-section:nth-child(3) { animation-delay: 0.15s; }
+        .tab-content.active .exp-section:nth-child(4) { animation-delay: 0.2s; }
+
+        /* Tab nav wrap on small screens */
+        @media (max-width: 900px) {
+            .tab-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+                width: auto;
+            }
+        }
     </style>
 </head>
 <body>
@@ -2474,6 +2496,12 @@
                 </button>
                 <button class="tab-btn" onclick="switchTab('experimental')" id="tabExperimental">
                     <span>Deep Dive</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('demand')" id="tabDemand">
+                    <span>Demand vs Capacity</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('rotation')" id="tabRotation">
+                    <span>Rotation</span>
                 </button>
             </div>
         </div>
@@ -2768,6 +2796,39 @@
                         <div class="coverage-legend-item"><div class="coverage-legend-dot normal"></div> 3 providers</div>
                         <div class="coverage-legend-item"><div class="coverage-legend-dot high"></div> 4 providers (peak)</div>
                     </div>
+                <!-- WR Pressure Section -->
+                <div style="flex-basis: 100%; margin-top: 8px;">
+                    <div class="coverage-chart">
+                        <div class="coverage-chart-title">WR Census &amp; LWBS Risk Threshold</div>
+                        <div class="coverage-container" style="height: 130px;">
+                            <div class="coverage-y-axis" style="font-size:0.58rem;">
+                                <span>14</span>
+                                <span>10</span>
+                                <span>6</span>
+                                <span>2</span>
+                                <span>0</span>
+                            </div>
+                            <div style="position:relative; height:100%; display:flex; flex-direction:column; justify-content:flex-end;">
+                                <!-- LWBS risk zone background when WR>8 -->
+                                <div id="wrPressureBars" style="display:flex; align-items:flex-end; height:85px; gap:2px; position:relative; z-index:2;"></div>
+                                <!-- Threshold line at WR=8 -->
+                                <div id="wrThresholdLine" style="position:absolute; left:0; right:0; height:2px; background:rgba(229,57,53,0.8); border-top:2px dashed rgba(229,57,53,0.9); z-index:3;"></div>
+                                <div style="font-size:0.6rem; color:rgba(229,57,53,0.9); position:absolute; right:0; z-index:4;" id="wrThresholdLabel">WR=8 threshold</div>
+                            </div>
+                            <div class="coverage-x-axis">
+                                <span>7A</span>
+                                <span>12P</span>
+                                <span>7P</span>
+                                <span>12A</span>
+                                <span>6A</span>
+                            </div>
+                        </div>
+                        <div style="font-size:0.75rem; color:rgba(255,255,255,0.75); margin-top:10px; text-align:center; padding: 8px; background:rgba(229,57,53,0.12); border-radius:6px; border:1px solid rgba(229,57,53,0.3);">
+                            When WR &gt; 8 patients, LWBS events begin. Peak WR of 22 (P95) at 7pm.
+                        </div>
+                    </div>
+                </div>
+
                 </div>
             </div>
         </div>
@@ -3036,7 +3097,247 @@
                     </div>
                 </div>
 
-                <!-- Back to Start Button -->
+                <!-- Seasonal Staffing Proportionality -->
+                <div class="exp-section full-width" id="seasonalStaffingSection">
+                    <div class="exp-section-title">Seasonal Staffing Proportionality</div>
+                    <div class="exp-section-subtitle">Does staffing scale with demand?</div>
+                    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px;">
+                        <div style="flex:1; min-width:180px; background:white; border-radius:10px; padding:16px; border-left:3px solid var(--bh-blue); box-shadow:0 2px 8px rgba(107,78,155,0.08);">
+                            <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; color:#888; margin-bottom:6px;">Winter (Oct–Mar)</div>
+                            <div style="font-size:1.5rem; font-weight:800; color:var(--bh-blue);">5 shifts</div>
+                            <div style="font-size:0.85rem; color:#555; margin-top:4px;">42.5 h/day</div>
+                            <div style="font-size:0.8rem; color:#888; margin-top:4px;">Peak Census: 31</div>
+                        </div>
+                        <div style="flex:1; min-width:180px; background:white; border-radius:10px; padding:16px; border-left:3px solid var(--bh-orange); box-shadow:0 2px 8px rgba(107,78,155,0.08);">
+                            <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; color:#888; margin-bottom:6px;">Summer (Apr–Sep)</div>
+                            <div style="font-size:1.5rem; font-weight:800; color:var(--bh-orange);">4 shifts</div>
+                            <div style="font-size:0.85rem; color:#555; margin-top:4px;">34 h/day</div>
+                            <div style="font-size:0.8rem; color:#888; margin-top:4px;">Peak Census: 28</div>
+                        </div>
+                    </div>
+                    <div style="background:linear-gradient(135deg,#fff9e6,#fff3cd); border:1px solid #ffc107; border-left:4px solid #ff9800; border-radius:8px; padding:12px 16px; font-size:0.82rem; color:#5d4e37; line-height:1.5;">
+                        <strong>Proportional?</strong> Census drops ~10% (31 → 28) but staffing drops 20% (5 → 4 shifts). Is the Mid-Day shift cut justified?
+                    </div>
+                </div>
+
+                <!-- APP Optimization Note -->
+                <div class="exp-section full-width" id="appOptimizationNote">
+                    <div class="exp-section-title">APP Coverage Optimization</div>
+                    <div class="exp-section-subtitle">Target: 2.5 patients/provider/hour</div>
+                    <div style="background:white; border-radius:8px; padding:12px; border:1px solid #eee; font-size:0.82rem; color:#555; line-height:1.6;">
+                        <strong>Friday (9h)</strong> and <strong>Saturday (11.25h)</strong> fall below the <strong style="color:#e53935;">12.4h target</strong> needed for 2.5 PPH during peak census. These are the highest-risk days for APP understaffing.
+                    </div>
+                </div>
+
+                <!-- Next Button -->
+                <div class="next-tab-container">
+                    <button class="next-tab-btn" onclick="switchTab('demand')">
+                        <div>
+                            <div class="next-label">Next</div>
+                            <div class="next-title">Demand vs Capacity</div>
+                        </div>
+                        <span class="arrow">&#8594;</span>
+                    </button>
+                </div>
+            </div>
+        </div><!-- End Experimental Tab -->
+
+        <!-- DEMAND VS CAPACITY TAB -->
+        <div class="tab-content" id="contentDemand">
+            <div class="analysis-dashboard">
+                <div class="exp-header">
+                    <span class="exp-title">Demand vs Capacity</span>
+                    <span class="exp-subtitle">Where patient demand exceeds staffing capacity</span>
+                </div>
+
+                <!-- Key Metrics -->
+                <div class="analysis-metrics">
+                    <div class="metric-card red">
+                        <div class="metric-value">31</div>
+                        <div class="metric-label">Peak Demand Gap</div>
+                        <div class="metric-detail">pts vs 7.5 capacity @ 7pm</div>
+                    </div>
+                    <div class="metric-card orange">
+                        <div class="metric-value">2</div>
+                        <div class="metric-label">Night Understaffing</div>
+                        <div class="metric-detail">providers for 20 patients</div>
+                    </div>
+                    <div class="metric-card green">
+                        <div class="metric-value">4pm</div>
+                        <div class="metric-label">Best Coverage</div>
+                        <div class="metric-detail">6.5 pts/provider ratio</div>
+                    </div>
+                    <div class="metric-card blue">
+                        <div class="metric-value">22</div>
+                        <div class="metric-label">WR Overflow</div>
+                        <div class="metric-detail">Peak WR P95 @ 7pm</div>
+                    </div>
+                </div>
+
+                <!-- Demand vs Capacity Chart -->
+                <div class="analysis-timeline-container">
+                    <div class="timeline-header">
+                        <span>Census vs Provider Capacity (24h, 7am start)</span>
+                        <span class="timeline-subtitle">Bars = census mean | Step line = providers on duty</span>
+                    </div>
+                    <div style="position:relative; height:160px; background:#f8f9fa; border-radius:12px; padding:15px 12px 30px 50px; border:1px solid #eee;">
+                        <!-- y-axis labels -->
+                        <div style="position:absolute; left:0; top:15px; bottom:30px; width:46px; display:flex; flex-direction:column; justify-content:space-between; font-size:0.6rem; color:#999; text-align:right; padding-right:8px; font-weight:500;">
+                            <span>35</span><span>26</span><span>17</span><span>8</span><span>0</span>
+                        </div>
+                        <!-- bars container -->
+                        <div id="demandBars" style="display:flex; align-items:flex-end; height:100%; gap:1px; position:relative;"></div>
+                        <!-- x-axis -->
+                        <div style="position:absolute; bottom:8px; left:50px; right:12px; display:flex; justify-content:space-between; font-size:0.6rem; color:#999; font-weight:500;">
+                            <span>7A</span><span>12P</span><span>7P</span><span>12A</span><span>6A</span>
+                        </div>
+                    </div>
+                    <div style="display:flex; justify-content:center; gap:20px; margin-top:10px; font-size:0.7rem; color:#555; flex-wrap:wrap;">
+                        <span style="display:flex; align-items:center; gap:5px;"><span style="width:14px; height:10px; background:linear-gradient(180deg,var(--bh-blue),var(--bh-blue-light)); border-radius:2px; display:inline-block;"></span>Census (mean)</span>
+                        <span style="display:flex; align-items:center; gap:5px;"><span style="width:14px; height:3px; background:#43a047; display:inline-block;"></span>Adequate coverage</span>
+                        <span style="display:flex; align-items:center; gap:5px;"><span style="width:14px; height:3px; background:#e53935; display:inline-block;"></span>Demand exceeds capacity</span>
+                    </div>
+                </div>
+
+                <!-- Net Flow Chart -->
+                <div class="analysis-timeline-container" style="margin-top:16px;">
+                    <div class="timeline-header">
+                        <span>Hourly Net Flow (Arrivals − Discharges − Admits)</span>
+                        <span class="timeline-subtitle">Green = clearing | Red = building</span>
+                    </div>
+                    <div style="position:relative; height:130px; background:#f8f9fa; border-radius:12px; padding:15px 12px 30px 50px; border:1px solid #eee;">
+                        <div style="position:absolute; left:0; top:15px; bottom:30px; width:46px; display:flex; flex-direction:column; justify-content:space-between; font-size:0.6rem; color:#999; text-align:right; padding-right:8px; font-weight:500;">
+                            <span>+4</span><span>0</span><span>-4</span>
+                        </div>
+                        <div id="netFlowBars" style="display:flex; align-items:center; height:100%; gap:1px; position:relative;"></div>
+                        <div style="position:absolute; bottom:8px; left:50px; right:12px; display:flex; justify-content:space-between; font-size:0.6rem; color:#999; font-weight:500;">
+                            <span>7A</span><span>12P</span><span>7P</span><span>12A</span><span>6A</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- WR as Leading Indicator -->
+                <div class="analysis-timeline-container" style="margin-top:16px;">
+                    <div class="timeline-header">
+                        <span>Waiting Room Census (Leading Indicator)</span>
+                        <span class="timeline-subtitle">Threshold at WR=8 — above this, LWBS risk zone</span>
+                    </div>
+                    <div style="position:relative; height:140px; background:#f8f9fa; border-radius:12px; padding:15px 12px 30px 50px; border:1px solid #eee; overflow:hidden;">
+                        <div style="position:absolute; left:0; top:15px; bottom:30px; width:46px; display:flex; flex-direction:column; justify-content:space-between; font-size:0.6rem; color:#999; text-align:right; padding-right:8px; font-weight:500;">
+                            <span>14</span><span>8</span><span>4</span><span>0</span>
+                        </div>
+                        <!-- LWBS risk zone shading (top half above threshold) -->
+                        <div id="wrLeadingBars" style="display:flex; align-items:flex-end; height:100%; gap:1px; position:relative; z-index:2;"></div>
+                        <div id="wrLeadingThreshold" style="position:absolute; left:50px; right:12px; height:2px; background:rgba(229,57,53,0.9); z-index:3; border-top:2px dashed rgba(229,57,53,0.9);"></div>
+                        <div style="position:absolute; bottom:8px; left:50px; right:12px; display:flex; justify-content:space-between; font-size:0.6rem; color:#999; font-weight:500;">
+                            <span>7A</span><span>12P</span><span>7P</span><span>12A</span><span>6A</span>
+                        </div>
+                    </div>
+                    <div style="font-size:0.75rem; color:#555; margin-top:8px; padding:8px 12px; background:#fff5f5; border:1px solid #ffcccc; border-radius:6px; text-align:center;">
+                        When WR &gt; 8 patients, LWBS events begin. Peak WR of 22 (P95) at 7pm.
+                    </div>
+                </div>
+
+                <!-- Observations -->
+                <div class="analysis-observations" style="margin-top:16px;">
+                    <div class="observation warning">
+                        <div class="obs-time">7PM – 10PM</div>
+                        <div class="obs-content"><strong>Peak demand gap:</strong> 31 patients, only 7.5 effective capacity</div>
+                    </div>
+                    <div class="observation warning">
+                        <div class="obs-time">10PM – 7AM</div>
+                        <div class="obs-content"><strong>Night gap:</strong> 2 providers clearing 20 patients (10:1 ratio)</div>
+                    </div>
+                    <div class="observation success">
+                        <div class="obs-time">3PM – 6PM</div>
+                        <div class="obs-content"><strong>Best window:</strong> 4 providers, census 27–30, ratio 6.5–7.5</div>
+                    </div>
+                </div>
+
+                <!-- Next Button -->
+                <div class="next-tab-container">
+                    <button class="next-tab-btn" onclick="switchTab('rotation')">
+                        <div>
+                            <div class="next-label">Next</div>
+                            <div class="next-title">Rotation</div>
+                        </div>
+                        <span class="arrow">&#8594;</span>
+                    </button>
+                </div>
+            </div>
+        </div><!-- End Demand Tab -->
+
+        <!-- ROTATION TAB -->
+        <div class="tab-content" id="contentRotation">
+            <div class="experimental-dashboard">
+                <div class="exp-header">
+                    <span class="exp-title">28-Day Rotation Analysis</span>
+                    <span class="exp-subtitle">Capacity risk across the rotation cycle</span>
+                </div>
+
+                <!-- 28-Day Heatmap -->
+                <div class="exp-section full-width">
+                    <div class="exp-section-title">28-Day Rotation Capacity Heatmap</div>
+                    <div class="exp-section-subtitle">
+                        <span style="color:#43a047; font-weight:600;">Green</span> = low risk (≥2.5 PPH) &nbsp;
+                        <span style="color:#f59e0b; font-weight:600;">Yellow</span> = medium risk (2.08–2.49) &nbsp;
+                        <span style="color:#e53935; font-weight:600;">Red</span> = high risk (&lt;2.08)
+                    </div>
+                    <div id="rotationHeatmap" style="display:grid; grid-template-columns:repeat(7,1fr); gap:6px; margin-top:8px;"></div>
+                </div>
+
+                <!-- Provider Mix Breakdown -->
+                <div class="exp-section full-width">
+                    <div class="exp-section-title">Provider Mix Breakdown</div>
+                    <div class="exp-section-subtitle">Proportion of total rotation hours by provider type</div>
+                    <div style="display:flex; height:32px; border-radius:8px; overflow:hidden; margin-bottom:10px;">
+                        <div style="width:35.8%; background:var(--bh-purple); display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:white; font-weight:600;">35.8%</div>
+                        <div style="width:33.3%; background:var(--bh-purple-light); display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:white; font-weight:600;">33.3%</div>
+                        <div style="width:26.6%; background:var(--bh-blue); display:flex; align-items:center; justify-content:center; font-size:0.7rem; color:white; font-weight:600;">26.6%</div>
+                        <div style="width:4.3%; background:var(--bh-green); display:flex; align-items:center; justify-content:center; font-size:0.65rem; color:white; font-weight:600;"></div>
+                    </div>
+                    <div style="display:flex; gap:16px; flex-wrap:wrap; font-size:0.75rem; color:#555;">
+                        <span style="display:flex; align-items:center; gap:5px;"><span style="width:12px; height:12px; background:var(--bh-purple); border-radius:2px; display:inline-block;"></span>Senior Residents 35.8%</span>
+                        <span style="display:flex; align-items:center; gap:5px;"><span style="width:12px; height:12px; background:var(--bh-purple-light); border-radius:2px; display:inline-block;"></span>Junior Residents 33.3%</span>
+                        <span style="display:flex; align-items:center; gap:5px;"><span style="width:12px; height:12px; background:var(--bh-blue); border-radius:2px; display:inline-block;"></span>APPs 26.6%</span>
+                        <span style="display:flex; align-items:center; gap:5px;"><span style="width:12px; height:12px; background:var(--bh-green); border-radius:2px; display:inline-block;"></span>Fellows 4.3%</span>
+                    </div>
+                </div>
+
+                <!-- APP Coverage by Day of Week -->
+                <div class="exp-section full-width">
+                    <div class="exp-section-title">APP Coverage vs Target (by Day of Week)</div>
+                    <div class="exp-section-subtitle">Target = 12.4h/day (2.5 PPH). Red = below target.</div>
+                    <div id="rotationDowChart" style="display:flex; align-items:stretch; height:130px; gap:6px; padding:4px; position:relative;"></div>
+                    <div style="margin-top:8px; font-size:0.75rem; color:#e53935; background:#fff5f5; border:1px solid #ffcccc; border-radius:6px; padding:8px 12px; text-align:center;">
+                        Friday (9h) and Saturday (11.25h) fall below the 12.4h target needed for 2.5 PPH
+                    </div>
+                </div>
+
+                <!-- Seasonal Staffing Differential -->
+                <div class="exp-section full-width">
+                    <div class="exp-section-title">Seasonal Staffing Differential</div>
+                    <div class="exp-section-subtitle">Side-by-side seasonal comparison</div>
+                    <div style="display:flex; gap:16px; flex-wrap:wrap; margin-bottom:12px;">
+                        <div style="flex:1; min-width:160px; background:white; border-radius:10px; padding:16px; border-left:3px solid var(--bh-blue); box-shadow:0 2px 8px rgba(107,78,155,0.08); text-align:center;">
+                            <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; color:#888; margin-bottom:6px;">Winter</div>
+                            <div style="font-size:1.8rem; font-weight:800; color:var(--bh-blue);">5</div>
+                            <div style="font-size:0.8rem; color:#555;">shifts · 42.5 h/day</div>
+                            <div style="font-size:0.75rem; color:#888; margin-top:4px;">Peak Census 31</div>
+                        </div>
+                        <div style="flex:1; min-width:160px; background:white; border-radius:10px; padding:16px; border-left:3px solid var(--bh-orange); box-shadow:0 2px 8px rgba(107,78,155,0.08); text-align:center;">
+                            <div style="font-size:0.7rem; text-transform:uppercase; letter-spacing:0.5px; color:#888; margin-bottom:6px;">Summer</div>
+                            <div style="font-size:1.8rem; font-weight:800; color:var(--bh-orange);">4</div>
+                            <div style="font-size:0.8rem; color:#555;">shifts · 34 h/day</div>
+                            <div style="font-size:0.75rem; color:#888; margin-top:4px;">Peak Census 28</div>
+                        </div>
+                    </div>
+                    <div style="background:linear-gradient(135deg,#fff9e6,#fff3cd); border:1px solid #ffc107; border-left:4px solid #ff9800; border-radius:8px; padding:12px 16px; font-size:0.82rem; color:#5d4e37; line-height:1.5;">
+                        <strong>Proportional?</strong> Census drops ~10% (31 → 28) but staffing drops 20% (5 → 4 shifts). Is the Mid-Day shift cut justified?
+                    </div>
+                </div>
+
+                <!-- Back to Schedule Button -->
                 <div class="next-tab-container">
                     <button class="next-tab-btn" onclick="switchTab('schedule')" style="background: linear-gradient(135deg, var(--bh-green) 0%, var(--bh-green-dark) 100%); box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);">
                         <span class="arrow" style="transform: rotate(180deg);">&#8594;</span>
@@ -3047,7 +3348,8 @@
                     </button>
                 </div>
             </div>
-        </div><!-- End Experimental Tab -->
+        </div><!-- End Rotation Tab -->
+
     </div>
 
     <div class="tooltip" id="tooltip"></div>
@@ -4116,12 +4418,19 @@
             } else if (tab === 'insights') {
                 document.getElementById('contentInsights').classList.add('active');
                 document.getElementById('contentInsightsFlow').classList.add('active');
+                buildInsightsWrChart();
             } else if (tab === 'analysis') {
                 document.getElementById('contentAnalysis').classList.add('active');
                 buildAnalysisTab();
             } else if (tab === 'experimental') {
                 document.getElementById('contentExperimental').classList.add('active');
                 buildExperimentalTab();
+            } else if (tab === 'demand') {
+                document.getElementById('contentDemand').classList.add('active');
+                buildDemandTab();
+            } else if (tab === 'rotation') {
+                document.getElementById('contentRotation').classList.add('active');
+                buildRotationTab();
             }
         }
 
@@ -4296,6 +4605,323 @@
                     bar.title = `${formatHourShort((7 + i) % 24)}: ${wr} waiting`;
                     wrChart.appendChild(bar);
                 });
+            }
+        }
+
+        // Build WR pressure chart in Insights tab
+        let insightsWrBuilt = false;
+        function buildInsightsWrChart() {
+            if (insightsWrBuilt) return;
+            insightsWrBuilt = true;
+
+            const wrData = [3,4,7,8,9,9,9,9,10,10,11,11,11,10,9,7,6,4,3,2,2,2,2,3];
+            const maxWr = 14;
+            const threshold = 8;
+            const chartHeight = 85; // px
+
+            const barsContainer = document.getElementById('wrPressureBars');
+            if (!barsContainer) return;
+
+            wrData.forEach((wr, i) => {
+                const bar = document.createElement('div');
+                const pct = (wr / maxWr) * 100;
+                bar.style.flex = '1';
+                bar.style.height = pct + '%';
+                bar.style.borderRadius = '2px 2px 0 0';
+                bar.style.minWidth = '8px';
+                bar.style.cursor = 'pointer';
+                bar.style.transition = 'all 0.2s';
+                if (wr > threshold) {
+                    bar.style.background = 'linear-gradient(180deg, #ff6b6b 0%, #fa5252 50%, #e03131 100%)';
+                    bar.style.boxShadow = '0 0 8px rgba(229,57,53,0.4)';
+                } else {
+                    bar.style.background = 'linear-gradient(180deg, #69db7c 0%, #51cf66 50%, #40c057 100%)';
+                    bar.style.boxShadow = '0 0 6px rgba(67,160,71,0.3)';
+                }
+                bar.title = `${formatHourShort((7+i)%24)}: WR=${wr} patients${wr > threshold ? ' (LWBS risk)' : ''}`;
+                barsContainer.appendChild(bar);
+            });
+
+            // Position threshold line at WR=8 / maxWr height from bottom of the 85px chart
+            const thresholdLine = document.getElementById('wrThresholdLine');
+            const thresholdLabel = document.getElementById('wrThresholdLabel');
+            if (thresholdLine) {
+                const pctFromBottom = (threshold / maxWr) * 100;
+                thresholdLine.style.bottom = pctFromBottom + '%';
+                thresholdLine.style.top = 'auto';
+            }
+            if (thresholdLabel) {
+                const pctFromBottom = (threshold / maxWr) * 100;
+                thresholdLabel.style.bottom = 'calc(' + pctFromBottom + '% + 4px)';
+                thresholdLabel.style.top = 'auto';
+            }
+        }
+
+        // Build Demand vs Capacity tab
+        let demandBuilt = false;
+        function buildDemandTab() {
+            if (demandBuilt) return;
+            demandBuilt = true;
+
+            const censusData = [11,13,17,20,23,25,26,26,27,28,29,30,31,31,30,28,26,23,20,17,15,13,12,11];
+            // Providers on duty each hour (7am start), from emShifts
+            const providersData = [2,2,2,3,3,4,4,4,4,4,4,3,3,3,2,2,2,2,2,2,2,2,2,2];
+            const maxCensus = 35;
+
+            // Demand vs Capacity bars
+            const demandBarsEl = document.getElementById('demandBars');
+            if (demandBarsEl) {
+                censusData.forEach((census, i) => {
+                    const providers = providersData[i];
+                    // threshold: each provider handles ~7.5 patients well
+                    const capacity = providers * 7.5;
+                    const overCapacity = census > capacity;
+
+                    const bar = document.createElement('div');
+                    bar.style.flex = '1';
+                    bar.style.height = ((census / maxCensus) * 100) + '%';
+                    bar.style.borderRadius = '2px 2px 0 0';
+                    bar.style.minWidth = '8px';
+                    bar.style.cursor = 'pointer';
+                    bar.style.transition = 'all 0.2s';
+                    bar.style.position = 'relative';
+                    if (overCapacity) {
+                        bar.style.background = 'linear-gradient(180deg, #ef5350 0%, #e53935 50%, #c62828 100%)';
+                    } else {
+                        bar.style.background = 'linear-gradient(180deg, var(--bh-blue) 0%, var(--bh-blue-light) 100%)';
+                    }
+                    bar.title = `${formatHourShort((7+i)%24)}: ${census} pts, ${providers} providers (cap ~${capacity} pts) — ${overCapacity ? 'OVER capacity' : 'OK'}`;
+                    bar.addEventListener('mouseenter', function(e) {
+                        const tooltip = document.getElementById('tooltip');
+                        const h = formatHourShort((7+i)%24);
+                        const ppp = (census/Math.max(providers,1)).toFixed(1);
+                        tooltip.innerHTML = `<div style="font-weight:700;font-size:0.95rem;margin-bottom:8px;color:#333;">${h} — ${overCapacity ? '<span style="color:#e53935;">Over Capacity</span>' : '<span style="color:#43a047;">Within Capacity</span>'}</div>
+                            <div style="display:flex;gap:12px;margin-bottom:8px;">
+                                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:#1565c0;">${census}</div><div style="font-size:0.7rem;color:#666;">patients</div></div>
+                                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:var(--bh-purple);">${providers}</div><div style="font-size:0.7rem;color:#666;">providers</div></div>
+                                <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:${parseFloat(ppp)>10?'#e53935':parseFloat(ppp)>7?'#f57c00':'#43a047'};">${ppp}</div><div style="font-size:0.7rem;color:#666;">pts/prov</div></div>
+                            </div>`;
+                        tooltip.classList.add('visible');
+                        moveTooltip(e);
+                    });
+                    bar.addEventListener('mousemove', moveTooltip);
+                    bar.addEventListener('mouseleave', hideTooltip);
+                    demandBarsEl.appendChild(bar);
+                });
+            }
+
+            // Net flow bars
+            const netFlowData = [-2,-1,-1,-1,-1,-1,1,3,3,2,3,2,1,1,1,1,1,1,1,1,0,-1,-1,-1];
+            const maxAbsFlow = 4;
+            const netFlowEl = document.getElementById('netFlowBars');
+            if (netFlowEl) {
+                netFlowData.forEach((flow, i) => {
+                    const wrapper = document.createElement('div');
+                    wrapper.style.flex = '1';
+                    wrapper.style.height = '100%';
+                    wrapper.style.display = 'flex';
+                    wrapper.style.flexDirection = 'column';
+                    wrapper.style.justifyContent = 'center';
+                    wrapper.style.alignItems = 'stretch';
+                    wrapper.style.position = 'relative';
+
+                    const bar = document.createElement('div');
+                    const pct = (Math.abs(flow) / maxAbsFlow) * 45; // 45% of half height
+                    bar.style.width = '100%';
+                    bar.style.height = pct + '%';
+                    bar.style.minHeight = '2px';
+                    bar.style.borderRadius = flow >= 0 ? '2px 2px 0 0' : '0 0 2px 2px';
+                    bar.style.background = flow > 0
+                        ? 'linear-gradient(180deg, #ef5350, #c62828)'
+                        : flow < 0
+                        ? 'linear-gradient(0deg, #69db7c, #2e7d32)'
+                        : '#ccc';
+                    bar.style.alignSelf = flow >= 0 ? 'flex-end' : 'flex-start';
+                    bar.style.marginTop = flow >= 0 ? 'auto' : '0';
+                    bar.style.marginBottom = flow < 0 ? 'auto' : '0';
+                    bar.title = `${formatHourShort((7+i)%24)}: ${flow > 0 ? '+' : ''}${flow} net flow`;
+
+                    wrapper.appendChild(bar);
+                    netFlowEl.appendChild(wrapper);
+                });
+            }
+
+            // WR Leading Indicator chart
+            const wrLeadData = [3,4,7,8,9,9,9,9,10,10,11,11,11,10,9,7,6,4,3,2,2,2,2,3];
+            const maxWrLead = 14;
+            const wrThreshold = 8;
+            const wrBarsEl = document.getElementById('wrLeadingBars');
+            const wrThreshEl = document.getElementById('wrLeadingThreshold');
+
+            if (wrBarsEl) {
+                wrLeadData.forEach((wr, i) => {
+                    const bar = document.createElement('div');
+                    bar.style.flex = '1';
+                    bar.style.height = ((wr / maxWrLead) * 100) + '%';
+                    bar.style.borderRadius = '2px 2px 0 0';
+                    bar.style.minWidth = '8px';
+                    bar.style.cursor = 'pointer';
+                    if (wr > wrThreshold) {
+                        bar.style.background = 'linear-gradient(180deg, #ef5350 0%, #e53935 50%, #c62828 100%)';
+                    } else {
+                        bar.style.background = 'linear-gradient(180deg, var(--bh-orange) 0%, var(--bh-orange-light) 100%)';
+                    }
+                    bar.title = `${formatHourShort((7+i)%24)}: WR=${wr}${wr > wrThreshold ? ' (LWBS risk)' : ''}`;
+                    bar.addEventListener('mouseenter', function(e) {
+                        const tooltip = document.getElementById('tooltip');
+                        tooltip.innerHTML = `<div style="font-weight:700;font-size:0.95rem;margin-bottom:8px;color:#333;">${formatHourShort((7+i)%24)} — Waiting Room</div>
+                            <div style="font-size:1.4rem;font-weight:700;color:${wr>wrThreshold?'#e53935':'#f57c00'};">${wr} patients</div>
+                            <div style="font-size:0.75rem;color:${wr>wrThreshold?'#e53935':'#666'};margin-top:4px;">${wr>wrThreshold?'LWBS risk zone (WR > 8)':'Below LWBS threshold'}</div>`;
+                        tooltip.classList.add('visible');
+                        moveTooltip(e);
+                    });
+                    bar.addEventListener('mousemove', moveTooltip);
+                    bar.addEventListener('mouseleave', hideTooltip);
+                    wrBarsEl.appendChild(bar);
+                });
+            }
+
+            if (wrThreshEl) {
+                const pctFromBottom = (wrThreshold / maxWrLead) * 100;
+                wrThreshEl.style.bottom = pctFromBottom + '%';
+                wrThreshEl.style.top = 'auto';
+            }
+        }
+
+        // Build Rotation tab
+        let rotationBuilt = false;
+        function buildRotationTab() {
+            if (rotationBuilt) return;
+            rotationBuilt = true;
+
+            const rotationData = [
+                {day:1, capacity:3.15, risk:'low', hours:126},
+                {day:2, capacity:2.36, risk:'medium', hours:94.5},
+                {day:3, capacity:2.48, risk:'medium', hours:99},
+                {day:4, capacity:2.31, risk:'medium', hours:92.25},
+                {day:5, capacity:2.08, risk:'medium', hours:83.25},
+                {day:6, capacity:2.08, risk:'medium', hours:83.25},
+                {day:7, capacity:1.97, risk:'high', hours:78.75},
+                {day:8, capacity:2.53, risk:'low', hours:101.25},
+                {day:9, capacity:2.81, risk:'low', hours:112.5},
+                {day:10, capacity:2.59, risk:'low', hours:103.5},
+                {day:11, capacity:2.19, risk:'medium', hours:87.75},
+                {day:12, capacity:2.03, risk:'high', hours:81},
+                {day:13, capacity:1.97, risk:'high', hours:78.75},
+                {day:14, capacity:2.08, risk:'medium', hours:83.25},
+                {day:15, capacity:2.53, risk:'low', hours:101.25},
+                {day:16, capacity:2.81, risk:'low', hours:112.5},
+                {day:17, capacity:2.93, risk:'low', hours:117},
+                {day:18, capacity:2.19, risk:'medium', hours:87.75},
+                {day:19, capacity:2.08, risk:'medium', hours:83.25},
+                {day:20, capacity:2.08, risk:'medium', hours:83.25},
+                {day:21, capacity:2.08, risk:'medium', hours:83.25},
+                {day:22, capacity:2.59, risk:'low', hours:103.5},
+                {day:23, capacity:2.81, risk:'low', hours:112.5},
+                {day:24, capacity:2.59, risk:'low', hours:103.5},
+                {day:25, capacity:2.19, risk:'medium', hours:87.75},
+                {day:26, capacity:2.03, risk:'high', hours:81},
+                {day:27, capacity:1.97, risk:'high', hours:78.75},
+                {day:28, capacity:2.08, risk:'medium', hours:83.25}
+            ];
+
+            const riskColors = { low: '#43a047', medium: '#f59e0b', high: '#e53935' };
+            const riskBg = { low: '#e8f5e9', medium: '#fffbeb', high: '#fff5f5' };
+
+            const heatmap = document.getElementById('rotationHeatmap');
+            if (heatmap) {
+                rotationData.forEach(d => {
+                    const cell = document.createElement('div');
+                    cell.style.background = riskBg[d.risk];
+                    cell.style.border = `2px solid ${riskColors[d.risk]}`;
+                    cell.style.borderRadius = '8px';
+                    cell.style.padding = '8px 4px';
+                    cell.style.textAlign = 'center';
+                    cell.style.cursor = 'pointer';
+                    cell.style.transition = 'transform 0.15s ease, box-shadow 0.15s ease';
+                    cell.innerHTML = `
+                        <div style="font-size:0.65rem;color:#888;font-weight:600;margin-bottom:2px;">Day ${d.day}</div>
+                        <div style="font-size:1.1rem;font-weight:800;color:${riskColors[d.risk]};">${d.capacity.toFixed(2)}</div>
+                        <div style="font-size:0.58rem;color:#999;">PPH</div>
+                    `;
+                    cell.title = `Day ${d.day}: ${d.capacity.toFixed(2)} PPH — ${d.hours}h total — Risk: ${d.risk}`;
+                    cell.addEventListener('mouseenter', function(e) {
+                        cell.style.transform = 'translateY(-2px)';
+                        cell.style.boxShadow = `0 4px 15px ${riskColors[d.risk]}55`;
+                        const tooltip = document.getElementById('tooltip');
+                        tooltip.innerHTML = `<div style="font-weight:700;font-size:0.95rem;margin-bottom:8px;color:#333;">Rotation Day ${d.day}</div>
+                            <div style="display:flex;gap:12px;margin-bottom:8px;">
+                                <div style="text-align:center;"><div style="font-size:1.4rem;font-weight:700;color:${riskColors[d.risk]};">${d.capacity.toFixed(2)}</div><div style="font-size:0.7rem;color:#666;">PPH</div></div>
+                                <div style="text-align:center;"><div style="font-size:1.4rem;font-weight:700;color:#555;">${d.hours}</div><div style="font-size:0.7rem;color:#666;">total hours</div></div>
+                            </div>
+                            <div style="font-size:0.75rem;color:${riskColors[d.risk]};text-transform:capitalize;font-weight:600;">${d.risk} risk day</div>`;
+                        tooltip.classList.add('visible');
+                        moveTooltip(e);
+                    });
+                    cell.addEventListener('mousemove', moveTooltip);
+                    cell.addEventListener('mouseleave', function() {
+                        cell.style.transform = '';
+                        cell.style.boxShadow = '';
+                        hideTooltip();
+                    });
+                    heatmap.appendChild(cell);
+                });
+            }
+
+            // Rotation DOW chart with target threshold line
+            const rotDowData = [
+                { day: 'Mon', hours: 27 },
+                { day: 'Tue', hours: 27 },
+                { day: 'Wed', hours: 29.25 },
+                { day: 'Thu', hours: 18 },
+                { day: 'Fri', hours: 9 },
+                { day: 'Sat', hours: 11.25 },
+                { day: 'Sun', hours: 22.5 }
+            ];
+            const targetHours = 12.4;
+            const maxRotHours = 32;
+
+            const rotDowEl = document.getElementById('rotationDowChart');
+            if (rotDowEl) {
+                rotDowEl.style.position = 'relative';
+
+                const fullDays = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+                rotDowData.forEach((d, i) => {
+                    const isWeekend = i >= 5;
+                    const belowTarget = d.hours < targetHours;
+                    const fillPercent = (d.hours / maxRotHours) * 100;
+                    const fillLevel = d.hours >= 25 ? 'high' : d.hours >= 18 ? 'medium' : 'low';
+
+                    const page = document.createElement('div');
+                    page.className = 'dow-calendar-page';
+                    if (belowTarget) {
+                        page.style.border = '2px solid #e53935';
+                        page.style.boxShadow = '0 0 10px rgba(229,57,53,0.2)';
+                    }
+                    page.title = `${fullDays[i]}: ${d.hours}h APP coverage${belowTarget ? ' (BELOW target)' : ''}`;
+
+                    page.innerHTML = `
+                        <div class="dow-calendar-header ${isWeekend ? 'weekend' : ''}" style="${belowTarget ? 'background:linear-gradient(135deg,rgba(229,57,53,0.15),rgba(229,57,53,0.08));color:#e53935;' : ''}">${d.day}</div>
+                        <div class="dow-calendar-body">
+                            <div class="dow-fill ${fillLevel}" style="height:${fillPercent}%;"></div>
+                            <div class="dow-hours-display">
+                                <div class="dow-hours-number" style="${belowTarget ? 'color:#e53935;' : ''}">${d.hours}</div>
+                                <div class="dow-hours-label">hours</div>
+                            </div>
+                        </div>
+                    `;
+                    rotDowEl.appendChild(page);
+                });
+
+                // Add target threshold line
+                const targetPct = (targetHours / maxRotHours) * 100;
+                const thresholdDiv = document.createElement('div');
+                thresholdDiv.style.cssText = `position:absolute;left:0;right:0;bottom:${targetPct}%;height:2px;background:rgba(229,57,53,0.85);border-top:2px dashed rgba(229,57,53,0.85);z-index:10;pointer-events:none;`;
+                const labelDiv = document.createElement('div');
+                labelDiv.style.cssText = `position:absolute;right:0;bottom:calc(${targetPct}% + 3px);font-size:0.6rem;color:rgba(229,57,53,0.9);font-weight:600;z-index:11;pointer-events:none;`;
+                labelDiv.textContent = '12.4h target';
+                rotDowEl.appendChild(thresholdDiv);
+                rotDowEl.appendChild(labelDiv);
             }
         }
 
