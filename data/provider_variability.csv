@@ -1,0 +1,16 @@
+provider_type,percentile,hours
+MD Hours,p10,24
+MD Hours,p25,24
+MD Hours,p50,38
+MD Hours,p75,59
+MD Hours,p90,122
+APP Hours,p10,11
+APP Hours,p25,16
+APP Hours,p50,23
+APP Hours,p75,29
+APP Hours,p90,38
+Resident Hours,p10,18
+Resident Hours,p25,27
+Resident Hours,p50,30
+Resident Hours,p75,56
+Resident Hours,p90,69

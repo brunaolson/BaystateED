@@ -1,0 +1,145 @@
+season,hour,shift_name,attending_shifts,capacity_pph
+winter,0,Day (7:30a-4p),0.0,2.5
+winter,0,Flex (11:30a-8p),0.0,2.5
+winter,0,Evening (3:30p-12a),0.0,2.5
+winter,0,Swing (5p-1:30a),0.5,2.5
+winter,0,Night (11:30p-8a),1.5,2.5
+winter,0,TOTAL,2,5
+winter,1,Day (7:30a-4p),0.0,2.5
+winter,1,Flex (11:30a-8p),0.0,2.5
+winter,1,Evening (3:30p-12a),0.0,2.5
+winter,1,Swing (5p-1:30a),0.0,2.5
+winter,1,Night (11:30p-8a),1,2.5
+winter,1,TOTAL,1,2.5
+winter,2,Day (7:30a-4p),0.0,2.5
+winter,2,Flex (11:30a-8p),0.0,2.5
+winter,2,Evening (3:30p-12a),0.0,2.5
+winter,2,Swing (5p-1:30a),0.0,2.5
+winter,2,Night (11:30p-8a),1,2.5
+winter,2,TOTAL,1,2.5
+winter,3,Day (7:30a-4p),0.0,2.5
+winter,3,Flex (11:30a-8p),0.0,2.5
+winter,3,Evening (3:30p-12a),0.0,2.5
+winter,3,Swing (5p-1:30a),0.0,2.5
+winter,3,Night (11:30p-8a),1,2.5
+winter,3,TOTAL,1,2.5
+winter,4,Day (7:30a-4p),0.0,2.5
+winter,4,Flex (11:30a-8p),0.0,2.5
+winter,4,Evening (3:30p-12a),0.0,2.5
+winter,4,Swing (5p-1:30a),0.0,2.5
+winter,4,Night (11:30p-8a),1,2.5
+winter,4,TOTAL,1,2.5
+winter,5,Day (7:30a-4p),0.0,2.5
+winter,5,Flex (11:30a-8p),0.0,2.5
+winter,5,Evening (3:30p-12a),0.0,2.5
+winter,5,Swing (5p-1:30a),0.0,2.5
+winter,5,Night (11:30p-8a),1,2.5
+winter,5,TOTAL,1,2.5
+winter,6,Day (7:30a-4p),0.0,2.5
+winter,6,Flex (11:30a-8p),0.0,2.5
+winter,6,Evening (3:30p-12a),0.0,2.5
+winter,6,Swing (5p-1:30a),0.0,2.5
+winter,6,Night (11:30p-8a),1,2.5
+winter,6,TOTAL,1,2.5
+winter,7,Day (7:30a-4p),0.0,2.5
+winter,7,Flex (11:30a-8p),0.0,2.5
+winter,7,Evening (3:30p-12a),0.0,2.5
+winter,7,Swing (5p-1:30a),0.0,2.5
+winter,7,Night (11:30p-8a),0.5,2.5
+winter,7,TOTAL,0.5,1.25
+winter,8,Day (7:30a-4p),1.5,2.5
+winter,8,Flex (11:30a-8p),0.0,2.5
+winter,8,Evening (3:30p-12a),0.0,2.5
+winter,8,Swing (5p-1:30a),0.0,2.5
+winter,8,Night (11:30p-8a),0.0,2.5
+winter,8,TOTAL,1.5,3.75
+winter,9,Day (7:30a-4p),1,2.5
+winter,9,Flex (11:30a-8p),0.0,2.5
+winter,9,Evening (3:30p-12a),0.0,2.5
+winter,9,Swing (5p-1:30a),0.0,2.5
+winter,9,Night (11:30p-8a),0.0,2.5
+winter,9,TOTAL,1,2.5
+winter,10,Day (7:30a-4p),1,2.5
+winter,10,Flex (11:30a-8p),0.0,2.5
+winter,10,Evening (3:30p-12a),0.0,2.5
+winter,10,Swing (5p-1:30a),0.0,2.5
+winter,10,Night (11:30p-8a),0.0,2.5
+winter,10,TOTAL,1,2.5
+winter,11,Day (7:30a-4p),1,2.5
+winter,11,Flex (11:30a-8p),0.0,2.5
+winter,11,Evening (3:30p-12a),0.0,2.5
+winter,11,Swing (5p-1:30a),0.0,2.5
+winter,11,Night (11:30p-8a),0.0,2.5
+winter,11,TOTAL,1,2.5
+winter,12,Day (7:30a-4p),1,2.5
+winter,12,Flex (11:30a-8p),1.5,2.5
+winter,12,Evening (3:30p-12a),0.0,2.5
+winter,12,Swing (5p-1:30a),0.0,2.5
+winter,12,Night (11:30p-8a),0.0,2.5
+winter,12,TOTAL,2.5,6.25
+winter,13,Day (7:30a-4p),1,2.5
+winter,13,Flex (11:30a-8p),1,2.5
+winter,13,Evening (3:30p-12a),0.0,2.5
+winter,13,Swing (5p-1:30a),0.0,2.5
+winter,13,Night (11:30p-8a),0.0,2.5
+winter,13,TOTAL,2,5
+winter,14,Day (7:30a-4p),1,2.5
+winter,14,Flex (11:30a-8p),1,2.5
+winter,14,Evening (3:30p-12a),0.0,2.5
+winter,14,Swing (5p-1:30a),0.0,2.5
+winter,14,Night (11:30p-8a),0.0,2.5
+winter,14,TOTAL,2,5
+winter,15,Day (7:30a-4p),0.5,2.5
+winter,15,Flex (11:30a-8p),1,2.5
+winter,15,Evening (3:30p-12a),0.0,2.5
+winter,15,Swing (5p-1:30a),0.0,2.5
+winter,15,Night (11:30p-8a),0.0,2.5
+winter,15,TOTAL,1.5,3.75
+winter,16,Day (7:30a-4p),0.0,2.5
+winter,16,Flex (11:30a-8p),1,2.5
+winter,16,Evening (3:30p-12a),1.5,2.5
+winter,16,Swing (5p-1:30a),0.0,2.5
+winter,16,Night (11:30p-8a),0.0,2.5
+winter,16,TOTAL,2.5,6.25
+winter,17,Day (7:30a-4p),0.0,2.5
+winter,17,Flex (11:30a-8p),1,2.5
+winter,17,Evening (3:30p-12a),1,2.5
+winter,17,Swing (5p-1:30a),1.5,2.5
+winter,17,Night (11:30p-8a),0.0,2.5
+winter,17,TOTAL,3.5,8.75
+winter,18,Day (7:30a-4p),0.0,2.5
+winter,18,Flex (11:30a-8p),1,2.5
+winter,18,Evening (3:30p-12a),1,2.5
+winter,18,Swing (5p-1:30a),1,2.5
+winter,18,Night (11:30p-8a),0.0,2.5
+winter,18,TOTAL,3,7.5
+winter,19,Day (7:30a-4p),0.0,2.5
+winter,19,Flex (11:30a-8p),1,2.5
+winter,19,Evening (3:30p-12a),1,2.5
+winter,19,Swing (5p-1:30a),1,2.5
+winter,19,Night (11:30p-8a),0.0,2.5
+winter,19,TOTAL,3,7.5
+winter,20,Day (7:30a-4p),0.0,2.5
+winter,20,Flex (11:30a-8p),0.5,2.5
+winter,20,Evening (3:30p-12a),1,2.5
+winter,20,Swing (5p-1:30a),1,2.5
+winter,20,Night (11:30p-8a),0.0,2.5
+winter,20,TOTAL,2.5,6.25
+winter,21,Day (7:30a-4p),0.0,2.5
+winter,21,Flex (11:30a-8p),0.0,2.5
+winter,21,Evening (3:30p-12a),1,2.5
+winter,21,Swing (5p-1:30a),1,2.5
+winter,21,Night (11:30p-8a),0.0,2.5
+winter,21,TOTAL,2,5
+winter,22,Day (7:30a-4p),0.0,2.5
+winter,22,Flex (11:30a-8p),0.0,2.5
+winter,22,Evening (3:30p-12a),1,2.5
+winter,22,Swing (5p-1:30a),1,2.5
+winter,22,Night (11:30p-8a),0.0,2.5
+winter,22,TOTAL,2,5
+winter,23,Day (7:30a-4p),0.0,2.5
+winter,23,Flex (11:30a-8p),0.0,2.5
+winter,23,Evening (3:30p-12a),0.5,2.5
+winter,23,Swing (5p-1:30a),1,2.5
+winter,23,Night (11:30p-8a),0.0,2.5
+winter,23,TOTAL,1.5,3.75

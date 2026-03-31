@@ -1,0 +1,121 @@
+season,hour,shift_name,attending_shifts,capacity_pph
+summer,0,Day (7:30a-4p),0.0,2.5
+summer,0,Evening (1:30p-10p),0.0,2.5
+summer,0,Swing (5p-1:30a),1,2.5
+summer,0,Night (11:30p-8a),1.5,2.5
+summer,0,TOTAL,2.5,6.25
+summer,1,Day (7:30a-4p),0.0,2.5
+summer,1,Evening (1:30p-10p),0.0,2.5
+summer,1,Swing (5p-1:30a),0.5,2.5
+summer,1,Night (11:30p-8a),1,2.5
+summer,1,TOTAL,1.5,3.75
+summer,2,Day (7:30a-4p),0.0,2.5
+summer,2,Evening (1:30p-10p),0.0,2.5
+summer,2,Swing (5p-1:30a),0.0,2.5
+summer,2,Night (11:30p-8a),1,2.5
+summer,2,TOTAL,1,2.5
+summer,3,Day (7:30a-4p),0.0,2.5
+summer,3,Evening (1:30p-10p),0.0,2.5
+summer,3,Swing (5p-1:30a),0.0,2.5
+summer,3,Night (11:30p-8a),1,2.5
+summer,3,TOTAL,1,2.5
+summer,4,Day (7:30a-4p),0.0,2.5
+summer,4,Evening (1:30p-10p),0.0,2.5
+summer,4,Swing (5p-1:30a),0.0,2.5
+summer,4,Night (11:30p-8a),1,2.5
+summer,4,TOTAL,1,2.5
+summer,5,Day (7:30a-4p),0.0,2.5
+summer,5,Evening (1:30p-10p),0.0,2.5
+summer,5,Swing (5p-1:30a),0.0,2.5
+summer,5,Night (11:30p-8a),1,2.5
+summer,5,TOTAL,1,2.5
+summer,6,Day (7:30a-4p),0.0,2.5
+summer,6,Evening (1:30p-10p),0.0,2.5
+summer,6,Swing (5p-1:30a),0.0,2.5
+summer,6,Night (11:30p-8a),1,2.5
+summer,6,TOTAL,1,2.5
+summer,7,Day (7:30a-4p),0.0,2.5
+summer,7,Evening (1:30p-10p),0.0,2.5
+summer,7,Swing (5p-1:30a),0.0,2.5
+summer,7,Night (11:30p-8a),0.5,2.5
+summer,7,TOTAL,0.5,1.25
+summer,8,Day (7:30a-4p),1.5,2.5
+summer,8,Evening (1:30p-10p),0.0,2.5
+summer,8,Swing (5p-1:30a),0.0,2.5
+summer,8,Night (11:30p-8a),0.0,2.5
+summer,8,TOTAL,1.5,3.75
+summer,9,Day (7:30a-4p),1,2.5
+summer,9,Evening (1:30p-10p),0.0,2.5
+summer,9,Swing (5p-1:30a),0.0,2.5
+summer,9,Night (11:30p-8a),0.0,2.5
+summer,9,TOTAL,1,2.5
+summer,10,Day (7:30a-4p),1,2.5
+summer,10,Evening (1:30p-10p),0.0,2.5
+summer,10,Swing (5p-1:30a),0.0,2.5
+summer,10,Night (11:30p-8a),0.0,2.5
+summer,10,TOTAL,1,2.5
+summer,11,Day (7:30a-4p),1,2.5
+summer,11,Evening (1:30p-10p),0.0,2.5
+summer,11,Swing (5p-1:30a),0.0,2.5
+summer,11,Night (11:30p-8a),0.0,2.5
+summer,11,TOTAL,1,2.5
+summer,12,Day (7:30a-4p),1,2.5
+summer,12,Evening (1:30p-10p),0.0,2.5
+summer,12,Swing (5p-1:30a),0.0,2.5
+summer,12,Night (11:30p-8a),0.0,2.5
+summer,12,TOTAL,1,2.5
+summer,13,Day (7:30a-4p),1,2.5
+summer,13,Evening (1:30p-10p),0.0,2.5
+summer,13,Swing (5p-1:30a),0.0,2.5
+summer,13,Night (11:30p-8a),0.0,2.5
+summer,13,TOTAL,1,2.5
+summer,14,Day (7:30a-4p),1,2.5
+summer,14,Evening (1:30p-10p),1.5,2.5
+summer,14,Swing (5p-1:30a),0.0,2.5
+summer,14,Night (11:30p-8a),0.0,2.5
+summer,14,TOTAL,2.5,6.25
+summer,15,Day (7:30a-4p),0.5,2.5
+summer,15,Evening (1:30p-10p),1,2.5
+summer,15,Swing (5p-1:30a),0.0,2.5
+summer,15,Night (11:30p-8a),0.0,2.5
+summer,15,TOTAL,1.5,3.75
+summer,16,Day (7:30a-4p),0.0,2.5
+summer,16,Evening (1:30p-10p),1,2.5
+summer,16,Swing (5p-1:30a),0.0,2.5
+summer,16,Night (11:30p-8a),0.0,2.5
+summer,16,TOTAL,1,2.5
+summer,17,Day (7:30a-4p),0.0,2.5
+summer,17,Evening (1:30p-10p),1,2.5
+summer,17,Swing (5p-1:30a),1.5,2.5
+summer,17,Night (11:30p-8a),0.0,2.5
+summer,17,TOTAL,2.5,6.25
+summer,18,Day (7:30a-4p),0.0,2.5
+summer,18,Evening (1:30p-10p),1,2.5
+summer,18,Swing (5p-1:30a),1,2.5
+summer,18,Night (11:30p-8a),0.0,2.5
+summer,18,TOTAL,2,5
+summer,19,Day (7:30a-4p),0.0,2.5
+summer,19,Evening (1:30p-10p),1,2.5
+summer,19,Swing (5p-1:30a),1,2.5
+summer,19,Night (11:30p-8a),0.0,2.5
+summer,19,TOTAL,2,5
+summer,20,Day (7:30a-4p),0.0,2.5
+summer,20,Evening (1:30p-10p),1,2.5
+summer,20,Swing (5p-1:30a),1,2.5
+summer,20,Night (11:30p-8a),0.0,2.5
+summer,20,TOTAL,2,5
+summer,21,Day (7:30a-4p),0.0,2.5
+summer,21,Evening (1:30p-10p),0.5,2.5
+summer,21,Swing (5p-1:30a),1,2.5
+summer,21,Night (11:30p-8a),0.0,2.5
+summer,21,TOTAL,1.5,3.75
+summer,22,Day (7:30a-4p),0.0,2.5
+summer,22,Evening (1:30p-10p),0.0,2.5
+summer,22,Swing (5p-1:30a),1,2.5
+summer,22,Night (11:30p-8a),0.0,2.5
+summer,22,TOTAL,1,2.5
+summer,23,Day (7:30a-4p),0.0,2.5
+summer,23,Evening (1:30p-10p),0.0,2.5
+summer,23,Swing (5p-1:30a),1,2.5
+summer,23,Night (11:30p-8a),0.0,2.5
+summer,23,TOTAL,1,2.5
