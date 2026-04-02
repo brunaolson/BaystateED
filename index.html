@@ -5697,6 +5697,8 @@
             } catch { return []; }
         }
 
+        let pollVotersList = [];
+
         async function fetchPollResponses() {
             if (!POLL_API_URL) {
                 pollResponsesCache = getPollResponses();
@@ -5706,6 +5708,7 @@
                 const res = await fetch(POLL_API_URL);
                 const data = await res.json();
                 pollResponsesCache = data.responses || [];
+                pollVotersList = data.voters || [];
                 // Also cache locally
                 localStorage.setItem(POLL_STORAGE_KEY, JSON.stringify(pollResponsesCache));
             } catch {
@@ -5716,12 +5719,11 @@
         async function submitPollToBackend(email, answers) {
             const payload = { email, answers, timestamp: new Date().toISOString() };
 
-            // Always save locally
+            // Always save locally (anonymous)
             const local = getPollResponses();
-            const filtered = local.filter(r => r.email !== email);
-            filtered.push(payload);
-            localStorage.setItem(POLL_STORAGE_KEY, JSON.stringify(filtered));
-            pollResponsesCache = filtered;
+            local.push({ answers: answers });
+            localStorage.setItem(POLL_STORAGE_KEY, JSON.stringify(local));
+            pollResponsesCache = local;
 
             if (!POLL_API_URL) return;
 
@@ -5757,8 +5759,8 @@
             // Fetch shared responses
             await fetchPollResponses();
 
-            // Check if already voted
-            const existing = pollResponsesCache.find(r => r.email === email);
+            // Check if already voted (by email in voters list)
+            const existing = pollVotersList.includes(email) || localStorage.getItem('pem_poll_voted_' + email);
             if (existing) {
                 document.getElementById('pollForm').style.display = 'none';
                 document.getElementById('pollAlreadyVoted').style.display = 'block';
@@ -5798,6 +5800,7 @@
                     btn.disabled = true;
 
                     await submitPollToBackend(email, answers);
+                    localStorage.setItem('pem_poll_voted_' + email, 'true');
 
                     document.getElementById('pollForm').style.display = 'none';
                     document.getElementById('pollAlreadyVoted').style.display = 'block';
