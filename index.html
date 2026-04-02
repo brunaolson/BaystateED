@@ -2592,7 +2592,109 @@
         .tab-content.active .metric-card:nth-child(3) { animation-delay: 0.15s; }
         .tab-content.active .metric-card:nth-child(4) { animation-delay: 0.2s; }
 
-        /* Rotation Heatmap cells animation */
+        /* Poll styles */
+        .poll-question {
+            background: white;
+            border-radius: 10px;
+            padding: 18px 20px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(107,78,155,0.08);
+            border-left: 4px solid var(--bh-purple);
+        }
+
+        .poll-question-text {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .poll-options {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .poll-option {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            background: #f5f7fa;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, box-shadow 0.2s;
+            font-size: 0.88rem;
+            font-weight: 500;
+            border: 2px solid transparent;
+        }
+
+        .poll-option:hover {
+            background: #ede7f6;
+            border-color: var(--bh-purple-light);
+        }
+
+        .poll-option input[type="radio"] {
+            accent-color: var(--bh-purple);
+            width: 16px;
+            height: 16px;
+            cursor: pointer;
+        }
+
+        .poll-option input[type="radio"]:checked + span {
+            color: var(--bh-purple);
+            font-weight: 700;
+        }
+
+        .poll-result-bar {
+            margin-bottom: 16px;
+        }
+
+        .poll-result-question {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 6px;
+        }
+
+        .poll-result-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 4px;
+        }
+
+        .poll-result-label {
+            width: 50px;
+            font-size: 0.78rem;
+            font-weight: 600;
+            color: #555;
+            text-align: right;
+        }
+
+        .poll-result-track {
+            flex: 1;
+            height: 22px;
+            background: #f0f0f0;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .poll-result-fill {
+            height: 100%;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            padding-right: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: white;
+            transition: width 0.5s ease;
+            min-width: fit-content;
+        }
+
+        /* Section animation */
         .tab-content.active .exp-section { animation: cardPop 0.4s ease-out backwards; }
         .tab-content.active .exp-section:nth-child(1) { animation-delay: 0.05s; }
         .tab-content.active .exp-section:nth-child(2) { animation-delay: 0.1s; }
@@ -2641,6 +2743,9 @@
                 </button>
                 <button class="tab-btn" onclick="switchTab('staffing')" id="tabStaffing">
                     <span>Staffing Analysis</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('poll')" id="tabPoll">
+                    <span>Staff Poll</span>
                 </button>
             </div>
         </div>
@@ -3497,6 +3602,101 @@
                 </div>
             </div>
         </div><!-- End Staffing Analysis Tab -->
+
+        <!-- POLL TAB -->
+        <div class="tab-content" id="contentPoll">
+            <div class="experimental-dashboard">
+                <div class="exp-header">
+                    <span class="exp-title">PEM Staffing Survey</span>
+                    <span class="exp-subtitle">Help us understand your preferences on resident staffing</span>
+                </div>
+
+                <!-- Email gate -->
+                <div id="pollEmailGate" class="exp-section full-width" style="text-align:center;">
+                    <div style="font-size:1rem; font-weight:600; color:var(--bh-purple-dark); margin-bottom:12px;">Enter your email to access the poll</div>
+                    <div style="display:flex; justify-content:center; gap:10px; align-items:center; flex-wrap:wrap;">
+                        <input type="email" id="pollEmail" placeholder="your.email@baystatehealth.org" style="padding:10px 16px; border:2px solid #ddd; border-radius:8px; font-size:0.9rem; width:320px; outline:none; transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--bh-purple)'" onblur="this.style.borderColor='#ddd'">
+                        <button onclick="unlockPoll()" style="padding:10px 24px; background:var(--bh-purple); color:white; border:none; border-radius:8px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='var(--bh-purple-dark)'" onmouseout="this.style.background='var(--bh-purple)'">Continue</button>
+                    </div>
+                    <div id="pollEmailError" style="color:#e53935; font-size:0.8rem; margin-top:8px; display:none;">Please enter a valid email address.</div>
+                </div>
+
+                <!-- Poll questions (hidden until email entered) -->
+                <div id="pollContent" style="display:none;">
+                    <div class="exp-section full-width" style="margin-bottom:16px;">
+                        <div style="font-size:0.82rem; color:#666; margin-bottom:16px; text-align:center;">
+                            Logged in as: <strong id="pollUserEmail"></strong>
+                            <span style="margin-left:12px; font-size:0.75rem; color:var(--bh-purple); cursor:pointer; text-decoration:underline;" onclick="resetPoll()">change</span>
+                        </div>
+
+                        <div id="pollAlreadyVoted" style="display:none; text-align:center; padding:20px; background:#e8f5e9; border-radius:10px; margin-bottom:16px;">
+                            <div style="font-size:1.1rem; font-weight:700; color:var(--bh-green-dark); margin-bottom:8px;">Thank you! Your response has been recorded.</div>
+                            <div style="font-size:0.85rem; color:#555;">You can view the results below.</div>
+                        </div>
+
+                        <form id="pollForm">
+                            <div class="poll-question" id="pollQ1">
+                                <div class="poll-question-text">1. Should PGY-1 residents be considered minimal staff?</div>
+                                <div class="poll-options">
+                                    <label class="poll-option"><input type="radio" name="q1" value="yes" required> <span>Yes</span></label>
+                                    <label class="poll-option"><input type="radio" name="q1" value="no"> <span>No</span></label>
+                                    <label class="poll-option"><input type="radio" name="q1" value="unsure"> <span>Unsure</span></label>
+                                </div>
+                            </div>
+
+                            <div class="poll-question" id="pollQ2">
+                                <div class="poll-question-text">2. Should PGY-2 and PGY-3 residents be considered minimal staff?</div>
+                                <div class="poll-options">
+                                    <label class="poll-option"><input type="radio" name="q2" value="yes" required> <span>Yes</span></label>
+                                    <label class="poll-option"><input type="radio" name="q2" value="no"> <span>No</span></label>
+                                    <label class="poll-option"><input type="radio" name="q2" value="unsure"> <span>Unsure</span></label>
+                                </div>
+                            </div>
+
+                            <div class="poll-question" id="pollQ3">
+                                <div class="poll-question-text">3. Is it OK to place Peds PGY-2 and PGY-3 in the 1 PM shifts?</div>
+                                <div class="poll-options">
+                                    <label class="poll-option"><input type="radio" name="q3" value="yes" required> <span>Yes</span></label>
+                                    <label class="poll-option"><input type="radio" name="q3" value="no"> <span>No</span></label>
+                                    <label class="poll-option"><input type="radio" name="q3" value="unsure"> <span>Unsure</span></label>
+                                </div>
+                            </div>
+
+                            <div class="poll-question" id="pollQ4">
+                                <div class="poll-question-text">4. Is it OK to place them on the 5 PM shifts?</div>
+                                <div class="poll-options">
+                                    <label class="poll-option"><input type="radio" name="q4" value="yes" required> <span>Yes</span></label>
+                                    <label class="poll-option"><input type="radio" name="q4" value="no"> <span>No</span></label>
+                                    <label class="poll-option"><input type="radio" name="q4" value="unsure"> <span>Unsure</span></label>
+                                </div>
+                            </div>
+
+                            <div style="text-align:center; margin-top:20px;">
+                                <button type="submit" id="pollSubmitBtn" style="padding:12px 40px; background:var(--bh-green); color:white; border:none; border-radius:8px; font-size:1rem; font-weight:700; cursor:pointer; transition:background 0.2s; box-shadow:0 4px 15px rgba(67,160,71,0.3);" onmouseover="this.style.background='var(--bh-green-dark)'" onmouseout="this.style.background='var(--bh-green)'">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Results -->
+                    <div class="exp-section full-width" style="margin-top:16px;">
+                        <div class="exp-section-title">Results</div>
+                        <div class="exp-section-subtitle" id="pollResponseCount">0 responses</div>
+                        <div id="pollResults"></div>
+                    </div>
+                </div>
+
+                <!-- Back to Schedule Button -->
+                <div class="next-tab-container">
+                    <button class="next-tab-btn" onclick="switchTab('schedule')" style="background: linear-gradient(135deg, var(--bh-green) 0%, var(--bh-green-dark) 100%); box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);">
+                        <span class="arrow" style="transform: rotate(180deg);">&#8594;</span>
+                        <div>
+                            <div class="next-label">Back to</div>
+                            <div class="next-title">Schedule</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div><!-- End Poll Tab -->
 
     </div>
 
@@ -4703,6 +4903,9 @@
             } else if (tab === 'staffing') {
                 document.getElementById('contentStaffing').classList.add('active');
                 buildStaffingChart();
+            } else if (tab === 'poll') {
+                document.getElementById('contentPoll').classList.add('active');
+                renderPollResults();
             }
         }
 
@@ -5431,6 +5634,136 @@
             totalCell.textContent = total;
             totalCell.title = `Total check-ins/day: ${total}`;
             col.appendChild(totalCell);
+        }
+
+        // Poll functionality
+        const POLL_STORAGE_KEY = 'pem_poll_responses';
+        const POLL_EMAIL_KEY = 'pem_poll_email';
+
+        const pollQuestions = [
+            'Should PGY-1 residents be considered minimal staff?',
+            'Should PGY-2 and PGY-3 residents be considered minimal staff?',
+            'OK to place Peds PGY-2 and PGY-3 in the 1 PM shifts?',
+            'OK to place them on the 5 PM shifts?'
+        ];
+
+        function getPollResponses() {
+            try {
+                return JSON.parse(localStorage.getItem(POLL_STORAGE_KEY) || '[]');
+            } catch { return []; }
+        }
+
+        function unlockPoll() {
+            const emailInput = document.getElementById('pollEmail');
+            const email = emailInput.value.trim().toLowerCase();
+            const errorEl = document.getElementById('pollEmailError');
+
+            if (!email || !email.includes('@') || !email.includes('.')) {
+                errorEl.style.display = 'block';
+                emailInput.style.borderColor = '#e53935';
+                return;
+            }
+
+            errorEl.style.display = 'none';
+            emailInput.style.borderColor = '#ddd';
+            localStorage.setItem(POLL_EMAIL_KEY, email);
+
+            document.getElementById('pollEmailGate').style.display = 'none';
+            document.getElementById('pollContent').style.display = 'block';
+            document.getElementById('pollUserEmail').textContent = email;
+
+            // Check if already voted
+            const responses = getPollResponses();
+            const existing = responses.find(r => r.email === email);
+            if (existing) {
+                document.getElementById('pollForm').style.display = 'none';
+                document.getElementById('pollAlreadyVoted').style.display = 'block';
+            }
+
+            renderPollResults();
+        }
+
+        function resetPoll() {
+            localStorage.removeItem(POLL_EMAIL_KEY);
+            document.getElementById('pollEmailGate').style.display = 'block';
+            document.getElementById('pollContent').style.display = 'none';
+            document.getElementById('pollEmail').value = '';
+        }
+
+        // Handle form submit
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('pollForm');
+            if (form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    const email = localStorage.getItem(POLL_EMAIL_KEY);
+                    if (!email) return;
+
+                    const formData = new FormData(form);
+                    const answers = {};
+                    for (let i = 1; i <= 4; i++) {
+                        answers['q' + i] = formData.get('q' + i);
+                        if (!answers['q' + i]) {
+                            alert('Please answer all questions.');
+                            return;
+                        }
+                    }
+
+                    const responses = getPollResponses();
+                    // Remove old response from same email
+                    const filtered = responses.filter(r => r.email !== email);
+                    filtered.push({ email: email, answers: answers, timestamp: new Date().toISOString() });
+                    localStorage.setItem(POLL_STORAGE_KEY, JSON.stringify(filtered));
+
+                    document.getElementById('pollForm').style.display = 'none';
+                    document.getElementById('pollAlreadyVoted').style.display = 'block';
+                    renderPollResults();
+                });
+            }
+        });
+
+        function renderPollResults() {
+            const resultsEl = document.getElementById('pollResults');
+            const countEl = document.getElementById('pollResponseCount');
+            if (!resultsEl) return;
+
+            const responses = getPollResponses();
+            countEl.textContent = responses.length + ' response' + (responses.length !== 1 ? 's' : '');
+
+            if (responses.length === 0) {
+                resultsEl.innerHTML = '<div style="text-align:center; color:#999; padding:20px; font-size:0.9rem;">No responses yet. Be the first!</div>';
+                return;
+            }
+
+            const colors = { yes: 'var(--bh-green)', no: '#e53935', unsure: '#f59e0b' };
+            let html = '';
+
+            pollQuestions.forEach((q, i) => {
+                const key = 'q' + (i + 1);
+                const counts = { yes: 0, no: 0, unsure: 0 };
+                responses.forEach(r => {
+                    if (r.answers[key]) counts[r.answers[key]]++;
+                });
+                const total = counts.yes + counts.no + counts.unsure;
+
+                html += `<div class="poll-result-bar">
+                    <div class="poll-result-question">${i + 1}. ${q}</div>`;
+
+                ['yes', 'no', 'unsure'].forEach(opt => {
+                    const pct = total > 0 ? Math.round((counts[opt] / total) * 100) : 0;
+                    html += `<div class="poll-result-row">
+                        <div class="poll-result-label">${opt.charAt(0).toUpperCase() + opt.slice(1)}</div>
+                        <div class="poll-result-track">
+                            <div class="poll-result-fill" style="width:${Math.max(pct, 0)}%; background:${colors[opt]};">${pct > 5 ? pct + '%' : ''}</div>
+                        </div>
+                        <div style="font-size:0.75rem; color:#888; width:40px;">${counts[opt]} (${pct}%)</div>
+                    </div>`;
+                });
+
+                html += '</div>';
+            });
+
+            resultsEl.innerHTML = html;
         }
 
         // Initialize
