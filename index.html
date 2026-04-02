@@ -3695,6 +3695,19 @@
                                 </div>
                             </div>
 
+                            <!-- 1 PM Staffing Section -->
+                            <div style="margin-top:20px; margin-bottom:8px; font-size:0.8rem; font-weight:700; color:var(--bh-green-dark); text-transform:uppercase; letter-spacing:0.5px; padding-left:4px;">1 PM Shift Staffing</div>
+
+                            <div class="poll-question" id="pollQ7" style="border-left-color:var(--bh-green);">
+                                <div class="poll-question-text">3. Should the 1 PM shift be considered minimal staff?</div>
+                                <div class="poll-options">
+                                    <label class="poll-option"><input type="radio" name="q7" value="yes_always" required> <span>Yes, all the time</span></label>
+                                    <label class="poll-option"><input type="radio" name="q7" value="high_volume"> <span>Only in high volume periods</span></label>
+                                    <label class="poll-option"><input type="radio" name="q7" value="no_flex"> <span>Only when Flex not present</span></label>
+                                    <label class="poll-option"><input type="radio" name="q7" value="no"> <span>No</span></label>
+                                </div>
+                            </div>
+
                             <div style="text-align:center; margin-top:20px;">
                                 <button type="submit" id="pollSubmitBtn" style="padding:12px 40px; background:var(--bh-green); color:white; border:none; border-radius:8px; font-size:1rem; font-weight:700; cursor:pointer; transition:background 0.2s; box-shadow:0 4px 15px rgba(67,160,71,0.3);" onmouseover="this.style.background='var(--bh-green-dark)'" onmouseout="this.style.background='var(--bh-green)'">Submit</button>
                             </div>
@@ -5666,15 +5679,17 @@
         const POLL_EMAIL_KEY = 'pem_poll_email';
         let pollResponsesCache = [];
 
-        const POLL_QUESTION_COUNT = 6;
+        const POLL_QUESTION_COUNT = 7;
         const pollQuestions = [
             'Should EM PGY-1 be considered minimal staff?',
             'OK to place EM PGY-1 on 1 PM shifts?',
             'OK to place EM PGY-1 on 5 PM shifts?',
             'Should Peds PGY-2 and PGY-3 be considered minimal staff?',
             'OK to place Peds PGY-2 and PGY-3 on 1 PM shifts?',
-            'OK to place Peds PGY-2 and PGY-3 on 5 PM shifts?'
+            'OK to place Peds PGY-2 and PGY-3 on 5 PM shifts?',
+            'Should the 1 PM shift be considered minimal staff?'
         ];
+        // Q7 uses custom options: yes_always, high_volume, no_flex, no
 
         function getPollResponses() {
             try {
@@ -5808,24 +5823,30 @@
                 return;
             }
 
-            const colors = { yes: 'var(--bh-green)', no: '#e53935', unsure: '#f59e0b' };
+            const colors = { yes: 'var(--bh-green)', no: '#e53935', unsure: '#f59e0b', yes_always: 'var(--bh-green)', high_volume: 'var(--bh-blue)', no_flex: 'var(--bh-orange)' };
+            const optionLabels = { yes: 'Yes', no: 'No', unsure: 'Unsure', yes_always: 'Yes, all the time', high_volume: 'High volume only', no_flex: 'Only when no Flex' };
             let html = '';
 
             pollQuestions.forEach((q, i) => {
                 const key = 'q' + (i + 1);
-                const counts = { yes: 0, no: 0, unsure: 0 };
+                const isQ7 = (i === 6); // Q7 has custom options
+                const options = isQ7 ? ['yes_always', 'high_volume', 'no_flex', 'no'] : ['yes', 'no', 'unsure'];
+
+                const counts = {};
+                options.forEach(o => counts[o] = 0);
                 responses.forEach(r => {
-                    if (r.answers && r.answers[key]) counts[r.answers[key]]++;
+                    if (r.answers && r.answers[key] && counts.hasOwnProperty(r.answers[key])) counts[r.answers[key]]++;
                 });
-                const total = counts.yes + counts.no + counts.unsure;
+                const total = Object.values(counts).reduce((a, b) => a + b, 0);
 
                 html += `<div class="poll-result-bar">
-                    <div class="poll-result-question">${i + 1}. ${q}</div>`;
+                    <div class="poll-result-question">${q}</div>`;
 
-                ['yes', 'no', 'unsure'].forEach(opt => {
+                options.forEach(opt => {
                     const pct = total > 0 ? Math.round((counts[opt] / total) * 100) : 0;
+                    const label = optionLabels[opt] || opt;
                     html += `<div class="poll-result-row">
-                        <div class="poll-result-label">${opt.charAt(0).toUpperCase() + opt.slice(1)}</div>
+                        <div class="poll-result-label" style="width:${isQ7 ? '120px' : '50px'};">${label}</div>
                         <div class="poll-result-track">
                             <div class="poll-result-fill" style="width:${Math.max(pct, 0)}%; background:${colors[opt]};">${pct > 5 ? pct + '%' : ''}</div>
                         </div>
