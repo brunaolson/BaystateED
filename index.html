@@ -5637,8 +5637,10 @@
         }
 
         // Poll functionality
+        const POLL_API_URL = ''; // Paste your Google Apps Script web app URL here
         const POLL_STORAGE_KEY = 'pem_poll_responses';
         const POLL_EMAIL_KEY = 'pem_poll_email';
+        let pollResponsesCache = [];
 
         const pollQuestions = [
             'Should PGY-1 residents be considered minimal staff?',
@@ -5653,7 +5655,45 @@
             } catch { return []; }
         }
 
-        function unlockPoll() {
+        async function fetchPollResponses() {
+            if (!POLL_API_URL) {
+                pollResponsesCache = getPollResponses();
+                return;
+            }
+            try {
+                const res = await fetch(POLL_API_URL);
+                const data = await res.json();
+                pollResponsesCache = data.responses || [];
+                // Also cache locally
+                localStorage.setItem(POLL_STORAGE_KEY, JSON.stringify(pollResponsesCache));
+            } catch {
+                pollResponsesCache = getPollResponses();
+            }
+        }
+
+        async function submitPollToBackend(email, answers) {
+            const payload = { email, answers, timestamp: new Date().toISOString() };
+
+            // Always save locally
+            const local = getPollResponses();
+            const filtered = local.filter(r => r.email !== email);
+            filtered.push(payload);
+            localStorage.setItem(POLL_STORAGE_KEY, JSON.stringify(filtered));
+            pollResponsesCache = filtered;
+
+            if (!POLL_API_URL) return;
+
+            try {
+                await fetch(POLL_API_URL, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+            } catch { /* saved locally as fallback */ }
+        }
+
+        async function unlockPoll() {
             const emailInput = document.getElementById('pollEmail');
             const email = emailInput.value.trim().toLowerCase();
             const errorEl = document.getElementById('pollEmailError');
@@ -5672,9 +5712,11 @@
             document.getElementById('pollContent').style.display = 'block';
             document.getElementById('pollUserEmail').textContent = email;
 
+            // Fetch shared responses
+            await fetchPollResponses();
+
             // Check if already voted
-            const responses = getPollResponses();
-            const existing = responses.find(r => r.email === email);
+            const existing = pollResponsesCache.find(r => r.email === email);
             if (existing) {
                 document.getElementById('pollForm').style.display = 'none';
                 document.getElementById('pollAlreadyVoted').style.display = 'block';
@@ -5694,7 +5736,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.getElementById('pollForm');
             if (form) {
-                form.addEventListener('submit', function(e) {
+                form.addEventListener('submit', async function(e) {
                     e.preventDefault();
                     const email = localStorage.getItem(POLL_EMAIL_KEY);
                     if (!email) return;
@@ -5709,11 +5751,11 @@
                         }
                     }
 
-                    const responses = getPollResponses();
-                    // Remove old response from same email
-                    const filtered = responses.filter(r => r.email !== email);
-                    filtered.push({ email: email, answers: answers, timestamp: new Date().toISOString() });
-                    localStorage.setItem(POLL_STORAGE_KEY, JSON.stringify(filtered));
+                    const btn = document.getElementById('pollSubmitBtn');
+                    btn.textContent = 'Submitting...';
+                    btn.disabled = true;
+
+                    await submitPollToBackend(email, answers);
 
                     document.getElementById('pollForm').style.display = 'none';
                     document.getElementById('pollAlreadyVoted').style.display = 'block';
@@ -5722,12 +5764,16 @@
             }
         });
 
-        function renderPollResults() {
+        async function renderPollResults() {
             const resultsEl = document.getElementById('pollResults');
             const countEl = document.getElementById('pollResponseCount');
             if (!resultsEl) return;
 
-            const responses = getPollResponses();
+            if (pollResponsesCache.length === 0) {
+                await fetchPollResponses();
+            }
+            const responses = pollResponsesCache;
+
             countEl.textContent = responses.length + ' response' + (responses.length !== 1 ? 's' : '');
 
             if (responses.length === 0) {
@@ -5742,7 +5788,7 @@
                 const key = 'q' + (i + 1);
                 const counts = { yes: 0, no: 0, unsure: 0 };
                 responses.forEach(r => {
-                    if (r.answers[key]) counts[r.answers[key]]++;
+                    if (r.answers && r.answers[key]) counts[r.answers[key]]++;
                 });
                 const total = counts.yes + counts.no + counts.unsure;
 

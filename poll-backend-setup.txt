@@ -1,0 +1,88 @@
+POLL BACKEND SETUP INSTRUCTIONS
+================================
+
+This connects the Staff Poll to a Google Sheet so all responses
+are shared across everyone who visits the site.
+
+STEP 1: Create a Google Sheet
+------------------------------
+1. Go to https://sheets.google.com and create a new spreadsheet
+2. Name it "PEM Staff Poll Responses"
+3. In Row 1, add these headers: email | q1 | q2 | q3 | q4 | timestamp
+
+STEP 2: Add the Apps Script
+-----------------------------
+1. In the spreadsheet, go to Extensions > Apps Script
+2. Delete any existing code and paste this:
+
+------- COPY BELOW THIS LINE -------
+
+function doGet(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = sheet.getDataRange().getValues();
+  var responses = [];
+
+  for (var i = 1; i < data.length; i++) {
+    if (data[i][0]) {
+      responses.push({
+        email: data[i][0],
+        answers: { q1: data[i][1], q2: data[i][2], q3: data[i][3], q4: data[i][4] },
+        timestamp: data[i][5]
+      });
+    }
+  }
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ responses: responses }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+function doPost(e) {
+  var sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  var data = JSON.parse(e.postData.contents);
+
+  // Check if email already exists
+  var existing = sheet.getDataRange().getValues();
+  for (var i = 1; i < existing.length; i++) {
+    if (existing[i][0] === data.email) {
+      // Update existing row
+      sheet.getRange(i + 1, 2, 1, 4).setValues([[data.answers.q1, data.answers.q2, data.answers.q3, data.answers.q4]]);
+      sheet.getRange(i + 1, 6).setValue(data.timestamp);
+      return ContentService
+        .createTextOutput(JSON.stringify({ status: 'updated' }))
+        .setMimeType(ContentService.MimeType.JSON);
+    }
+  }
+
+  // Add new row
+  sheet.appendRow([data.email, data.answers.q1, data.answers.q2, data.answers.q3, data.answers.q4, data.timestamp]);
+
+  return ContentService
+    .createTextOutput(JSON.stringify({ status: 'created' }))
+    .setMimeType(ContentService.MimeType.JSON);
+}
+
+------- COPY ABOVE THIS LINE -------
+
+3. Click the save icon (or Ctrl+S)
+
+STEP 3: Deploy as Web App
+---------------------------
+1. Click "Deploy" > "New deployment"
+2. Click the gear icon next to "Select type" and choose "Web app"
+3. Set:
+   - Description: "PEM Poll API"
+   - Execute as: "Me"
+   - Who has access: "Anyone"
+4. Click "Deploy"
+5. Click "Authorize access" and allow permissions
+6. COPY the Web app URL (looks like: https://script.google.com/macros/s/XXXXX/exec)
+
+STEP 4: Add the URL to the site
+---------------------------------
+Give me the URL and I'll add it to the code. Or find this line in index.html:
+   const POLL_API_URL = '';
+and paste your URL between the quotes.
+
+Done! All poll responses will now be stored in your Google Sheet
+and visible to everyone who visits the site.
