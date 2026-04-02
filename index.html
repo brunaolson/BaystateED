@@ -3665,11 +3665,11 @@
                                 </div>
                             </div>
 
-                            <!-- Peds PGY-2 Section -->
-                            <div style="margin-top:20px; margin-bottom:8px; font-size:0.8rem; font-weight:700; color:var(--bh-orange-dark); text-transform:uppercase; letter-spacing:0.5px; padding-left:4px;">Peds PGY-2</div>
+                            <!-- Peds PGY-2 & PGY-3 Section -->
+                            <div style="margin-top:20px; margin-bottom:8px; font-size:0.8rem; font-weight:700; color:var(--bh-orange-dark); text-transform:uppercase; letter-spacing:0.5px; padding-left:4px;">Peds PGY-2 &amp; PGY-3</div>
 
                             <div class="poll-question" id="pollQ4" style="border-left-color:var(--bh-orange);">
-                                <div class="poll-question-text">2. Should Peds PGY-2 be considered minimal staff?</div>
+                                <div class="poll-question-text">2. Should Peds PGY-2 and PGY-3 be considered minimal staff?</div>
                                 <div class="poll-options">
                                     <label class="poll-option"><input type="radio" name="q4" value="yes" required> <span>Yes</span></label>
                                     <label class="poll-option"><input type="radio" name="q4" value="no"> <span>No</span></label>
@@ -3678,7 +3678,7 @@
                             </div>
 
                             <div class="poll-question" id="pollQ5" style="border-left-color:var(--bh-orange-light); margin-left:16px;">
-                                <div class="poll-question-text">2a. OK to place Peds PGY-2 on 1 PM shifts?</div>
+                                <div class="poll-question-text">2a. OK to place Peds PGY-2 and PGY-3 on 1 PM shifts?</div>
                                 <div class="poll-options">
                                     <label class="poll-option"><input type="radio" name="q5" value="yes" required> <span>Yes</span></label>
                                     <label class="poll-option"><input type="radio" name="q5" value="no"> <span>No</span></label>
@@ -3687,41 +3687,11 @@
                             </div>
 
                             <div class="poll-question" id="pollQ6" style="border-left-color:var(--bh-orange-light); margin-left:16px;">
-                                <div class="poll-question-text">2b. OK to place Peds PGY-2 on 5 PM shifts?</div>
+                                <div class="poll-question-text">2b. OK to place Peds PGY-2 and PGY-3 on 5 PM shifts?</div>
                                 <div class="poll-options">
                                     <label class="poll-option"><input type="radio" name="q6" value="yes" required> <span>Yes</span></label>
                                     <label class="poll-option"><input type="radio" name="q6" value="no"> <span>No</span></label>
                                     <label class="poll-option"><input type="radio" name="q6" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <!-- Peds PGY-3 Section -->
-                            <div style="margin-top:20px; margin-bottom:8px; font-size:0.8rem; font-weight:700; color:var(--bh-orange-dark); text-transform:uppercase; letter-spacing:0.5px; padding-left:4px;">Peds PGY-3</div>
-
-                            <div class="poll-question" id="pollQ7" style="border-left-color:var(--bh-orange);">
-                                <div class="poll-question-text">3. Should Peds PGY-3 be considered minimal staff?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q7" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q7" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q7" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <div class="poll-question" id="pollQ8" style="border-left-color:var(--bh-orange-light); margin-left:16px;">
-                                <div class="poll-question-text">3a. OK to place Peds PGY-3 on 1 PM shifts?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q8" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q8" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q8" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <div class="poll-question" id="pollQ9" style="border-left-color:var(--bh-orange-light); margin-left:16px;">
-                                <div class="poll-question-text">3b. OK to place Peds PGY-3 on 5 PM shifts?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q9" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q9" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q9" value="unsure"> <span>Unsure</span></label>
                                 </div>
                             </div>
 
@@ -5696,17 +5666,14 @@
         const POLL_EMAIL_KEY = 'pem_poll_email';
         let pollResponsesCache = [];
 
-        const POLL_QUESTION_COUNT = 9;
+        const POLL_QUESTION_COUNT = 6;
         const pollQuestions = [
             'Should EM PGY-1 be considered minimal staff?',
             'OK to place EM PGY-1 on 1 PM shifts?',
             'OK to place EM PGY-1 on 5 PM shifts?',
-            'Should Peds PGY-2 be considered minimal staff?',
-            'OK to place Peds PGY-2 on 1 PM shifts?',
-            'OK to place Peds PGY-2 on 5 PM shifts?',
-            'Should Peds PGY-3 be considered minimal staff?',
-            'OK to place Peds PGY-3 on 1 PM shifts?',
-            'OK to place Peds PGY-3 on 5 PM shifts?'
+            'Should Peds PGY-2 and PGY-3 be considered minimal staff?',
+            'OK to place Peds PGY-2 and PGY-3 on 1 PM shifts?',
+            'OK to place Peds PGY-2 and PGY-3 on 5 PM shifts?'
         ];
 
         function getPollResponses() {
