@@ -2726,7 +2726,10 @@
         <!-- Tab Navigation -->
         <div class="tab-container">
             <div class="tab-nav">
-                <button class="tab-btn active" onclick="switchTab('schedule')" id="tabSchedule">
+                <button class="tab-btn active" onclick="switchTab('poll')" id="tabPoll">
+                    <span>Staff Poll</span>
+                </button>
+                <button class="tab-btn" onclick="switchTab('schedule')" id="tabSchedule">
                     <span>Schedule</span>
                 </button>
                 <button class="tab-btn" onclick="switchTab('insights')" id="tabInsights">
@@ -2743,9 +2746,6 @@
                 </button>
                 <button class="tab-btn" onclick="switchTab('staffing')" id="tabStaffing">
                     <span>Staffing Analysis</span>
-                </button>
-                <button class="tab-btn" onclick="switchTab('poll')" id="tabPoll">
-                    <span>Staff Poll</span>
                 </button>
             </div>
         </div>
@@ -2779,7 +2779,7 @@
         </div><!-- End Insights Tab (Key Findings portion - Patient Flow added below) -->
 
         <!-- SCHEDULE TAB -->
-        <div class="tab-content active" id="contentSchedule">
+        <div class="tab-content" id="contentSchedule">
         <div class="controls">
             <button class="toggle-btn" id="pedsToggle" onclick="togglePeds()">
                 <span class="toggle-indicator"></span>
@@ -3604,7 +3604,7 @@
         </div><!-- End Staffing Analysis Tab -->
 
         <!-- POLL TAB -->
-        <div class="tab-content" id="contentPoll">
+        <div class="tab-content active" id="contentPoll">
             <div class="experimental-dashboard">
                 <div class="exp-header">
                     <span class="exp-title">PEM Staffing Survey</span>
