@@ -206,6 +206,55 @@
             display: none;
         }
 
+        .chart-wrapper {
+            position: relative;
+            margin-top: 30px;
+        }
+
+        .external-labels {
+            position: absolute;
+            top: -25px;
+            left: 25px;
+            right: 25px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .external-attending-label {
+            font-weight: 700;
+            font-size: 0.68rem;
+            color: var(--bh-green-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            width: 140px;
+            text-align: center;
+        }
+
+        .external-census-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        .external-census-header .label {
+            font-weight: 700;
+            font-size: 0.68rem;
+            color: var(--bh-purple-dark);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .external-census-header select {
+            font-size: 0.65rem;
+            padding: 2px 6px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            cursor: pointer;
+            background: white;
+        }
+
         .chart-container {
             display: flex;
             background: white;
@@ -2826,20 +2875,24 @@
             </div>
         </div>
 
-        <div class="chart-container">
-            <div class="attending-column" id="attendingColumn"></div>
-            <div class="time-axis" id="timeAxis"></div>
-            <div class="chart-area" id="chartArea">
-                <div class="current-time-line" id="currentTimeLine"></div>
-            </div>
-            <div class="census-column" id="censusColumn">
-                <div class="census-column-header">
-                    <div style="font-weight:700; font-size:0.68rem; color:var(--bh-purple-dark); text-transform:uppercase; letter-spacing:0.5px;">Check-ins/hr</div>
-                    <select id="seasonSelect" onchange="buildCensusColumn()" style="font-size:0.65rem; padding:2px 4px; border-radius:4px; border:1px solid #ccc; cursor:pointer;">
+        <div class="chart-wrapper">
+            <div class="external-labels">
+                <div class="external-attending-label">ATTENDING SHIFTS</div>
+                <div class="external-census-header">
+                    <span class="label">Check-ins/hr</span>
+                    <select id="seasonSelect" onchange="buildCensusColumn()">
                         <option value="fw">Fall/Winter</option>
                         <option value="ss">Spring/Summer</option>
                     </select>
                 </div>
+            </div>
+            <div class="chart-container">
+                <div class="attending-column" id="attendingColumn"></div>
+                <div class="time-axis" id="timeAxis"></div>
+                <div class="chart-area" id="chartArea">
+                    <div class="current-time-line" id="currentTimeLine"></div>
+                </div>
+                <div class="census-column" id="censusColumn"></div>
             </div>
         </div>
 
@@ -5541,11 +5594,7 @@
             const col = document.getElementById('attendingColumn');
             col.innerHTML = '';
 
-            // Header
-            const header = document.createElement('div');
-            header.className = 'attending-column-header';
-            header.textContent = 'Attending Shifts';
-            col.appendChild(header);
+            // Header moved outside card - see external-labels
 
             // Draw attending shift blocks
             const colWidth = 60;
