@@ -8,7 +8,7 @@ STEP 1: Create a Google Sheet
 ------------------------------
 1. Go to https://sheets.google.com and create a new spreadsheet
 2. Name it "PEM Staff Poll Responses"
-3. In Row 1, add these headers: email | q1 | q2 | q3 | q4 | timestamp
+3. In Row 1, add these headers: email | q1 | q2 | q3 | q4 | q5 | q6 | q7 | q8 | q9 | timestamp
 
 STEP 2: Add the Apps Script
 -----------------------------
@@ -26,8 +26,8 @@ function doGet(e) {
     if (data[i][0]) {
       responses.push({
         email: data[i][0],
-        answers: { q1: data[i][1], q2: data[i][2], q3: data[i][3], q4: data[i][4] },
-        timestamp: data[i][5]
+        answers: { q1: data[i][1], q2: data[i][2], q3: data[i][3], q4: data[i][4], q5: data[i][5], q6: data[i][6], q7: data[i][7], q8: data[i][8], q9: data[i][9] },
+        timestamp: data[i][10]
       });
     }
   }
@@ -46,8 +46,8 @@ function doPost(e) {
   for (var i = 1; i < existing.length; i++) {
     if (existing[i][0] === data.email) {
       // Update existing row
-      sheet.getRange(i + 1, 2, 1, 4).setValues([[data.answers.q1, data.answers.q2, data.answers.q3, data.answers.q4]]);
-      sheet.getRange(i + 1, 6).setValue(data.timestamp);
+      sheet.getRange(i + 1, 2, 1, 9).setValues([[data.answers.q1, data.answers.q2, data.answers.q3, data.answers.q4, data.answers.q5, data.answers.q6, data.answers.q7, data.answers.q8, data.answers.q9]]);
+      sheet.getRange(i + 1, 11).setValue(data.timestamp);
       return ContentService
         .createTextOutput(JSON.stringify({ status: 'updated' }))
         .setMimeType(ContentService.MimeType.JSON);
@@ -55,7 +55,7 @@ function doPost(e) {
   }
 
   // Add new row
-  sheet.appendRow([data.email, data.answers.q1, data.answers.q2, data.answers.q3, data.answers.q4, data.timestamp]);
+  sheet.appendRow([data.email, data.answers.q1, data.answers.q2, data.answers.q3, data.answers.q4, data.answers.q5, data.answers.q6, data.answers.q7, data.answers.q8, data.answers.q9, data.timestamp]);
 
   return ContentService
     .createTextOutput(JSON.stringify({ status: 'created' }))
