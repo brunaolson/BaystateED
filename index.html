@@ -2797,6 +2797,9 @@
                 <button class="tab-btn" onclick="switchTab('staffing')" id="tabStaffing">
                     <span>Staffing Analysis</span>
                 </button>
+                <button class="tab-btn" onclick="switchTab('pollSummary')" id="tabPollSummary">
+                    <span>Poll Summary</span>
+                </button>
             </div>
         </div>
 
@@ -3788,6 +3791,32 @@
                 </div>
             </div>
         </div><!-- End Poll Tab -->
+
+        <!-- POLL SUMMARY TAB -->
+        <div class="tab-content" id="contentPollSummary">
+            <div class="experimental-dashboard">
+                <div class="exp-header">
+                    <span class="exp-title">Poll Results Summary</span>
+                    <span class="exp-subtitle">Written analysis of staff survey responses</span>
+                </div>
+
+                <div class="exp-section full-width" id="pollSummaryContent" style="padding:24px;">
+                    <div style="text-align:center; color:#999; padding:40px; font-size:0.95rem;">
+                        Loading poll data...
+                    </div>
+                </div>
+
+                <div class="next-tab-container">
+                    <button class="next-tab-btn" onclick="switchTab('poll')" style="background: linear-gradient(135deg, var(--bh-purple) 0%, var(--bh-purple-dark) 100%); box-shadow: 0 4px 15px rgba(107, 78, 155, 0.3);">
+                        <span class="arrow" style="transform: rotate(180deg);">&#8594;</span>
+                        <div>
+                            <div class="next-label">Back to</div>
+                            <div class="next-title">Staff Poll</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div><!-- End Poll Summary Tab -->
 
     </div>
 
@@ -4997,6 +5026,9 @@
             } else if (tab === 'poll') {
                 document.getElementById('contentPoll').classList.add('active');
                 renderPollResults();
+            } else if (tab === 'pollSummary') {
+                document.getElementById('contentPollSummary').classList.add('active');
+                buildPollSummary();
             }
         }
 
@@ -5911,6 +5943,134 @@
             });
 
             resultsEl.innerHTML = html;
+        }
+
+        async function buildPollSummary() {
+            const el = document.getElementById('pollSummaryContent');
+            if (!el) return;
+
+            if (pollResponsesCache.length === 0) {
+                await fetchPollResponses();
+            }
+            const responses = pollResponsesCache;
+            const n = responses.length;
+
+            if (n === 0) {
+                el.innerHTML = '<div style="text-align:center; color:#999; padding:40px; font-size:0.95rem;">No poll responses yet. Results summary will appear here once staff begin voting.</div>';
+                return;
+            }
+
+            // Tally all questions
+            function tally(key, options) {
+                const counts = {};
+                options.forEach(o => counts[o] = 0);
+                responses.forEach(r => {
+                    if (r.answers && r.answers[key] && counts.hasOwnProperty(r.answers[key])) counts[r.answers[key]]++;
+                });
+                return counts;
+            }
+
+            const yesNoOpts = ['yes', 'no', 'unsure'];
+            const q7Opts = ['yes_always', 'high_volume', 'no_flex', 'no'];
+
+            const t = {};
+            for (let i = 1; i <= 6; i++) t['q' + i] = tally('q' + i, yesNoOpts);
+            t.q7 = tally('q7', q7Opts);
+
+            function pct(count) { return n > 0 ? Math.round((count / n) * 100) : 0; }
+            function majority(counts, opts) {
+                let max = 0, winner = opts[0];
+                opts.forEach(o => { if (counts[o] > max) { max = counts[o]; winner = o; } });
+                return { option: winner, count: max, pct: pct(max) };
+            }
+            function label(opt) {
+                const labels = { yes: 'Yes', no: 'No', unsure: 'Unsure', yes_always: 'Yes, all the time', high_volume: 'Only in high volume periods', no_flex: 'Only when Flex not present' };
+                return labels[opt] || opt;
+            }
+            function consensus(m) {
+                if (m.pct >= 75) return '<span style="color:var(--bh-green-dark); font-weight:700;">Strong consensus</span>';
+                if (m.pct >= 50) return '<span style="color:var(--bh-blue); font-weight:700;">Majority view</span>';
+                return '<span style="color:var(--bh-orange); font-weight:700;">Split opinion</span>';
+            }
+
+            const m1 = majority(t.q1, yesNoOpts);
+            const m2 = majority(t.q2, yesNoOpts);
+            const m3 = majority(t.q3, yesNoOpts);
+            const m4 = majority(t.q4, yesNoOpts);
+            const m5 = majority(t.q5, yesNoOpts);
+            const m6 = majority(t.q6, yesNoOpts);
+            const m7 = majority(t.q7, q7Opts);
+
+            // Build key takeaways
+            let takeaways = [];
+            if (m1.option === 'yes' && m1.pct >= 50) takeaways.push('Staff lean toward counting EM PGY-1 as minimal staff.');
+            else if (m1.option === 'no' && m1.pct >= 50) takeaways.push('Staff lean against counting EM PGY-1 as minimal staff.');
+            else takeaways.push('Opinion is divided on whether EM PGY-1 should count as minimal staff.');
+
+            if (m4.option === 'yes' && m4.pct >= 50) takeaways.push('Peds PGY-2/3 are generally viewed as appropriate for minimal staffing.');
+            else if (m4.option === 'no' && m4.pct >= 50) takeaways.push('Staff do not favor counting Peds PGY-2/3 as minimal staff.');
+            else takeaways.push('No clear consensus on Peds PGY-2/3 as minimal staff.');
+
+            const q7Yes = t.q7.yes_always + t.q7.high_volume + t.q7.no_flex;
+            if (pct(q7Yes) >= 50) takeaways.push('A majority supports the 1 PM shift as minimal staff in some form (' + pct(q7Yes) + '%).');
+            else takeaways.push('Staff are not strongly in favor of the 1 PM shift being minimal staff.');
+
+            let html = '';
+
+            // Overview
+            html += '<div style="margin-bottom:28px;">';
+            html += '<h3 style="color:var(--bh-purple-dark); margin-bottom:10px; font-size:1.1rem;">Overview</h3>';
+            html += '<p style="color:#444; line-height:1.7; font-size:0.92rem;">As of now, <strong>' + n + ' staff member' + (n !== 1 ? 's have' : ' has') + '</strong> responded to the PEM Staffing Survey. ';
+            html += 'The survey asks whether specific resident levels (EM PGY-1 and Peds PGY-2/3) should be counted toward minimum staffing requirements, ';
+            html += 'whether they can be placed on afternoon shifts (1 PM and 5 PM), and whether the 1 PM shift itself should be considered minimal staff.</p>';
+            html += '</div>';
+
+            // Key Takeaways
+            html += '<div style="margin-bottom:28px; background:linear-gradient(135deg, #f3e8ff 0%, #ede7f6 100%); border-radius:12px; padding:20px;">';
+            html += '<h3 style="color:var(--bh-purple-dark); margin-bottom:12px; font-size:1.05rem;">Key Takeaways</h3>';
+            html += '<ul style="color:#444; line-height:1.8; font-size:0.9rem; padding-left:20px;">';
+            takeaways.forEach(t => html += '<li>' + t + '</li>');
+            html += '</ul></div>';
+
+            // Detailed breakdown
+            html += '<h3 style="color:var(--bh-purple-dark); margin-bottom:16px; font-size:1.05rem;">Detailed Breakdown</h3>';
+
+            // EM PGY-1
+            html += '<div style="margin-bottom:24px; border-left:4px solid var(--bh-purple); padding-left:16px;">';
+            html += '<h4 style="color:var(--bh-purple); margin-bottom:8px;">EM PGY-1 Residents</h4>';
+            html += '<table style="width:100%; font-size:0.88rem; border-collapse:collapse;">';
+            html += '<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 0; color:#555;">Minimal staff?</td><td style="padding:6px 0; font-weight:600;">' + label(m1.option) + ' (' + m1.pct + '%)</td><td style="padding:6px 0;">' + consensus(m1) + '</td></tr>';
+            html += '<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 0; color:#555;">OK on 1 PM shifts?</td><td style="padding:6px 0; font-weight:600;">' + label(m2.option) + ' (' + m2.pct + '%)</td><td style="padding:6px 0;">' + consensus(m2) + '</td></tr>';
+            html += '<tr><td style="padding:6px 0; color:#555;">OK on 5 PM shifts?</td><td style="padding:6px 0; font-weight:600;">' + label(m3.option) + ' (' + m3.pct + '%)</td><td style="padding:6px 0;">' + consensus(m3) + '</td></tr>';
+            html += '</table></div>';
+
+            // Peds PGY-2/3
+            html += '<div style="margin-bottom:24px; border-left:4px solid var(--bh-orange); padding-left:16px;">';
+            html += '<h4 style="color:var(--bh-orange-dark); margin-bottom:8px;">Peds PGY-2 &amp; PGY-3 Residents</h4>';
+            html += '<table style="width:100%; font-size:0.88rem; border-collapse:collapse;">';
+            html += '<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 0; color:#555;">Minimal staff?</td><td style="padding:6px 0; font-weight:600;">' + label(m4.option) + ' (' + m4.pct + '%)</td><td style="padding:6px 0;">' + consensus(m4) + '</td></tr>';
+            html += '<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 0; color:#555;">OK on 1 PM shifts?</td><td style="padding:6px 0; font-weight:600;">' + label(m5.option) + ' (' + m5.pct + '%)</td><td style="padding:6px 0;">' + consensus(m5) + '</td></tr>';
+            html += '<tr><td style="padding:6px 0; color:#555;">OK on 5 PM shifts?</td><td style="padding:6px 0; font-weight:600;">' + label(m6.option) + ' (' + m6.pct + '%)</td><td style="padding:6px 0;">' + consensus(m6) + '</td></tr>';
+            html += '</table></div>';
+
+            // 1 PM Shift
+            html += '<div style="margin-bottom:24px; border-left:4px solid var(--bh-green); padding-left:16px;">';
+            html += '<h4 style="color:var(--bh-green-dark); margin-bottom:8px;">1 PM Shift Staffing</h4>';
+            html += '<table style="width:100%; font-size:0.88rem; border-collapse:collapse;">';
+            html += '<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 0; color:#555;">Yes, all the time</td><td style="padding:6px 0; font-weight:600;">' + t.q7.yes_always + ' (' + pct(t.q7.yes_always) + '%)</td></tr>';
+            html += '<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 0; color:#555;">Only in high volume periods</td><td style="padding:6px 0; font-weight:600;">' + t.q7.high_volume + ' (' + pct(t.q7.high_volume) + '%)</td></tr>';
+            html += '<tr style="border-bottom:1px solid #eee;"><td style="padding:6px 0; color:#555;">Only when Flex not present</td><td style="padding:6px 0; font-weight:600;">' + t.q7.no_flex + ' (' + pct(t.q7.no_flex) + '%)</td></tr>';
+            html += '<tr><td style="padding:6px 0; color:#555;">No</td><td style="padding:6px 0; font-weight:600;">' + t.q7.no + ' (' + pct(t.q7.no) + '%)</td></tr>';
+            html += '</table>';
+            html += '<div style="margin-top:8px; font-size:0.85rem; color:#666;">' + consensus(m7) + ' &mdash; leading answer: <strong>' + label(m7.option) + '</strong> at ' + m7.pct + '%</div>';
+            html += '</div>';
+
+            // Footer note
+            html += '<div style="margin-top:24px; padding:16px; background:#f5f5f5; border-radius:8px; font-size:0.82rem; color:#777; text-align:center;">';
+            html += 'This summary is auto-generated from live poll data. Results update as new responses come in.';
+            html += '</div>';
+
+            el.innerHTML = html;
         }
 
         // Initialize
