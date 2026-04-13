@@ -2777,10 +2777,7 @@
         <!-- Tab Navigation -->
         <div class="tab-container">
             <div class="tab-nav">
-                <button class="tab-btn active" onclick="switchTab('poll')" id="tabPoll">
-                    <span>Staff Poll</span>
-                </button>
-                <button class="tab-btn" onclick="switchTab('schedule')" id="tabSchedule">
+                <button class="tab-btn active" onclick="switchTab('schedule')" id="tabSchedule">
                     <span>Schedule</span>
                 </button>
                 <button class="tab-btn" onclick="switchTab('insights')" id="tabInsights">
@@ -2833,7 +2830,7 @@
         </div><!-- End Insights Tab (Key Findings portion - Patient Flow added below) -->
 
         <!-- SCHEDULE TAB -->
-        <div class="tab-content" id="contentSchedule">
+        <div class="tab-content active" id="contentSchedule">
         <div class="controls">
             <button class="toggle-btn" id="pedsToggle" onclick="togglePeds()">
                 <span class="toggle-indicator"></span>
@@ -3662,136 +3659,8 @@
         </div><!-- End Staffing Analysis Tab -->
 
         <!-- POLL TAB -->
-        <div class="tab-content active" id="contentPoll">
-            <div class="experimental-dashboard">
-                <div class="exp-header">
-                    <span class="exp-title">PEM Staffing Survey</span>
-                    <span class="exp-subtitle">Help us understand your preferences on resident staffing</span>
-                </div>
-
-                <!-- Email gate -->
-                <div id="pollEmailGate" class="exp-section full-width" style="text-align:center;">
-                    <div style="font-size:1rem; font-weight:600; color:var(--bh-purple-dark); margin-bottom:12px;">Enter your email to access the poll</div>
-                    <div style="display:flex; justify-content:center; gap:10px; align-items:center; flex-wrap:wrap;">
-                        <input type="email" id="pollEmail" placeholder="your.email@baystatehealth.org" style="padding:10px 16px; border:2px solid #ddd; border-radius:8px; font-size:0.9rem; width:320px; outline:none; transition:border-color 0.2s;" onfocus="this.style.borderColor='var(--bh-purple)'" onblur="this.style.borderColor='#ddd'">
-                        <button onclick="unlockPoll()" style="padding:10px 24px; background:var(--bh-purple); color:white; border:none; border-radius:8px; font-size:0.9rem; font-weight:600; cursor:pointer; transition:background 0.2s;" onmouseover="this.style.background='var(--bh-purple-dark)'" onmouseout="this.style.background='var(--bh-purple)'">Continue</button>
-                    </div>
-                    <div id="pollEmailError" style="color:#e53935; font-size:0.8rem; margin-top:8px; display:none;">Please enter a valid email address.</div>
-                </div>
-
-                <!-- Poll questions (hidden until email entered) -->
-                <div id="pollContent" style="display:none;">
-                    <div class="exp-section full-width" style="margin-bottom:16px;">
-                        <div style="font-size:0.82rem; color:#666; margin-bottom:16px; text-align:center;">
-                            Logged in as: <strong id="pollUserEmail"></strong>
-                            <span style="margin-left:12px; font-size:0.75rem; color:var(--bh-purple); cursor:pointer; text-decoration:underline;" onclick="resetPoll()">change</span>
-                        </div>
-
-                        <div id="pollAlreadyVoted" style="display:none; text-align:center; padding:20px; background:#e8f5e9; border-radius:10px; margin-bottom:16px;">
-                            <div style="font-size:1.1rem; font-weight:700; color:var(--bh-green-dark); margin-bottom:8px;">Thank you! Your response has been recorded.</div>
-                            <div style="font-size:0.85rem; color:#555;">You can view the results below.</div>
-                        </div>
-
-                        <form id="pollForm">
+        <!-- Poll Tab removed - Staff Poll no longer active -->
                             <!-- EM PGY-1 Section -->
-                            <div style="margin-bottom:8px; font-size:0.8rem; font-weight:700; color:var(--bh-purple-dark); text-transform:uppercase; letter-spacing:0.5px; padding-left:4px;">EM PGY-1</div>
-
-                            <div class="poll-question" id="pollQ1">
-                                <div class="poll-question-text">1. Should EM PGY-1 be considered minimal staff?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q1" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q1" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q1" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <div class="poll-question" id="pollQ2" style="border-left-color:var(--bh-purple-light); margin-left:16px;">
-                                <div class="poll-question-text">1a. OK to place EM PGY-1 on 1 PM shifts?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q2" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q2" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q2" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <div class="poll-question" id="pollQ3" style="border-left-color:var(--bh-purple-light); margin-left:16px;">
-                                <div class="poll-question-text">1b. OK to place EM PGY-1 on 5 PM shifts?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q3" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q3" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q3" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <!-- Peds PGY-2 & PGY-3 Section -->
-                            <div style="margin-top:20px; margin-bottom:8px; font-size:0.8rem; font-weight:700; color:var(--bh-orange-dark); text-transform:uppercase; letter-spacing:0.5px; padding-left:4px;">Peds PGY-2 &amp; PGY-3</div>
-
-                            <div class="poll-question" id="pollQ4" style="border-left-color:var(--bh-orange);">
-                                <div class="poll-question-text">2. Should Peds PGY-2 and PGY-3 be considered minimal staff?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q4" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q4" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q4" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <div class="poll-question" id="pollQ5" style="border-left-color:var(--bh-orange-light); margin-left:16px;">
-                                <div class="poll-question-text">2a. OK to place Peds PGY-2 and PGY-3 on 1 PM shifts?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q5" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q5" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q5" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <div class="poll-question" id="pollQ6" style="border-left-color:var(--bh-orange-light); margin-left:16px;">
-                                <div class="poll-question-text">2b. OK to place Peds PGY-2 and PGY-3 on 5 PM shifts?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q6" value="yes" required> <span>Yes</span></label>
-                                    <label class="poll-option"><input type="radio" name="q6" value="no"> <span>No</span></label>
-                                    <label class="poll-option"><input type="radio" name="q6" value="unsure"> <span>Unsure</span></label>
-                                </div>
-                            </div>
-
-                            <!-- 1 PM Staffing Section -->
-                            <div style="margin-top:20px; margin-bottom:8px; font-size:0.8rem; font-weight:700; color:var(--bh-green-dark); text-transform:uppercase; letter-spacing:0.5px; padding-left:4px;">1 PM Shift Staffing</div>
-
-                            <div class="poll-question" id="pollQ7" style="border-left-color:var(--bh-green);">
-                                <div class="poll-question-text">3. Should the 1 PM shift be considered minimal staff?</div>
-                                <div class="poll-options">
-                                    <label class="poll-option"><input type="radio" name="q7" value="yes_always" required> <span>Yes, all the time</span></label>
-                                    <label class="poll-option"><input type="radio" name="q7" value="high_volume"> <span>Only in high volume periods</span></label>
-                                    <label class="poll-option"><input type="radio" name="q7" value="no_flex"> <span>Only when Flex not present</span></label>
-                                    <label class="poll-option"><input type="radio" name="q7" value="no"> <span>No</span></label>
-                                </div>
-                            </div>
-
-                            <div style="text-align:center; margin-top:20px;">
-                                <button type="submit" id="pollSubmitBtn" style="padding:12px 40px; background:var(--bh-green); color:white; border:none; border-radius:8px; font-size:1rem; font-weight:700; cursor:pointer; transition:background 0.2s; box-shadow:0 4px 15px rgba(67,160,71,0.3);" onmouseover="this.style.background='var(--bh-green-dark)'" onmouseout="this.style.background='var(--bh-green)'">Submit</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <!-- Results -->
-                    <div class="exp-section full-width" style="margin-top:16px;">
-                        <div class="exp-section-title">Results</div>
-                        <div class="exp-section-subtitle" id="pollResponseCount">0 responses</div>
-                        <div id="pollResults"></div>
-                    </div>
-                </div>
-
-                <!-- Back to Schedule Button -->
-                <div class="next-tab-container">
-                    <button class="next-tab-btn" onclick="switchTab('schedule')" style="background: linear-gradient(135deg, var(--bh-green) 0%, var(--bh-green-dark) 100%); box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);">
-                        <span class="arrow" style="transform: rotate(180deg);">&#8594;</span>
-                        <div>
-                            <div class="next-label">Back to</div>
-                            <div class="next-title">Schedule</div>
-                        </div>
-                    </button>
-                </div>
-            </div>
-        </div><!-- End Poll Tab -->
 
         <!-- POLL SUMMARY TAB -->
         <div class="tab-content" id="contentPollSummary">
@@ -3808,11 +3677,11 @@
                 </div>
 
                 <div class="next-tab-container">
-                    <button class="next-tab-btn" onclick="switchTab('poll')" style="background: linear-gradient(135deg, var(--bh-purple) 0%, var(--bh-purple-dark) 100%); box-shadow: 0 4px 15px rgba(107, 78, 155, 0.3);">
+                    <button class="next-tab-btn" onclick="switchTab('schedule')" style="background: linear-gradient(135deg, var(--bh-green) 0%, var(--bh-green-dark) 100%); box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);">
                         <span class="arrow" style="transform: rotate(180deg);">&#8594;</span>
                         <div>
                             <div class="next-label">Back to</div>
-                            <div class="next-title">Staff Poll</div>
+                            <div class="next-title">Schedule</div>
                         </div>
                     </button>
                 </div>
@@ -5024,9 +4893,6 @@
             } else if (tab === 'staffing') {
                 document.getElementById('contentStaffing').classList.add('active');
                 buildStaffingChart();
-            } else if (tab === 'poll') {
-                document.getElementById('contentPoll').classList.add('active');
-                renderPollResults();
             } else if (tab === 'pollSummary') {
                 document.getElementById('contentPollSummary').classList.add('active');
                 buildPollSummary();
