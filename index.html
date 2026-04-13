@@ -5694,7 +5694,7 @@
             const pphRates = {
                 'attending': 2.5,
                 'ap': 2.0,
-                'resident': 1.5,
+                'resident': 1.44,
                 'peds-intern': 0.5,
                 'peds-senior': 1.0,
                 'em-intern': 1.0
@@ -5822,7 +5822,7 @@
                     const tooltip = document.getElementById('tooltip');
                     const byType = hourlyByType[i];
                     let typeBreakdown = '';
-                    const typeLabels = { 'attending': 'Attending', 'ap': 'APP', 'resident': 'Resident', 'peds-intern': 'Peds Intern', 'peds-senior': 'Peds Senior', 'em-intern': 'EM Intern' };
+                    const typeLabels = { 'attending': 'Attending', 'ap': 'APP', 'resident': 'EM Resident', 'peds-intern': 'Peds Intern', 'peds-senior': 'Peds Senior', 'em-intern': 'EM Intern' };
                     const typeColors = { 'attending': 'var(--bh-green)', 'ap': 'var(--bh-blue)', 'resident': 'var(--bh-purple)', 'peds-intern': 'var(--bh-orange)', 'peds-senior': 'var(--bh-orange-dark, #e65100)', 'em-intern': 'var(--bh-teal, #00897b)' };
                     Object.keys(byType).forEach(t => {
                         typeBreakdown += `<div style="display:flex;justify-content:space-between;gap:12px;"><span style="color:${typeColors[t] || '#666'};">${typeLabels[t] || t} x${byType[t].count}</span><span style="font-weight:700;">${byType[t].capacity.toFixed(1)} pts/hr</span></div>`;
