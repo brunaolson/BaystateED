@@ -2795,6 +2795,9 @@
                 <button class="tab-btn" onclick="switchTab('staffing')" id="tabStaffing">
                     <span>Staffing Analysis</span>
                 </button>
+                <button class="tab-btn" onclick="switchTab('capacity')" id="tabCapacity">
+                    <span>Hourly Capacity</span>
+                </button>
                 <button class="tab-btn" onclick="switchTab('pollSummary')" id="tabPollSummary">
                     <span>Poll Summary</span>
                 </button>
@@ -3658,9 +3661,66 @@
             </div>
         </div><!-- End Staffing Analysis Tab -->
 
-        <!-- POLL TAB -->
-        <!-- Poll Tab removed - Staff Poll no longer active -->
-                            <!-- EM PGY-1 Section -->
+        <!-- HOURLY CAPACITY TAB -->
+        <div class="tab-content" id="contentCapacity">
+            <div class="experimental-dashboard">
+                <div class="exp-header">
+                    <span class="exp-title">Hourly Capacity vs Arrivals</span>
+                    <span class="exp-subtitle">Provider throughput (pts/hr) vs patient arrivals — cumulative waiting room impact</span>
+                </div>
+
+                <!-- Toggle controls -->
+                <div style="display:flex; justify-content:center; gap:16px; margin-bottom:16px; flex-wrap:wrap;">
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; font-weight:600; color:var(--bh-orange-dark);">
+                        <input type="checkbox" id="capIncludePeds" onchange="buildCapacityTab(true)" style="cursor:pointer;"> Include Peds
+                    </label>
+                    <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; font-weight:600; color:var(--bh-teal-dark, #00695c);">
+                        <input type="checkbox" id="capIncludeEmInterns" onchange="buildCapacityTab(true)" style="cursor:pointer;"> Include EM Interns
+                    </label>
+                </div>
+
+                <!-- Summary cards -->
+                <div id="capacitySummaryCards" style="display:flex; gap:12px; flex-wrap:wrap; justify-content:center; margin-bottom:20px;"></div>
+
+                <!-- Main chart: Capacity vs Arrivals -->
+                <div class="exp-section full-width">
+                    <div class="exp-section-title">Provider Capacity vs Patient Arrivals</div>
+                    <div class="exp-section-subtitle">
+                        <span style="color:var(--bh-green); font-weight:600;">Green bars</span> = provider capacity (pts/hr) &nbsp;
+                        <span style="color:var(--bh-blue); font-weight:600;">Blue line</span> = arrivals/hr &nbsp;
+                        <span style="color:#e53935; font-weight:600;">Red</span> = arrivals exceed capacity
+                    </div>
+                    <div id="capacityChart" style="position:relative; height:300px; margin-top:12px; display:flex; align-items:flex-end; gap:2px; padding-bottom:28px; border-bottom:2px solid #e0e0e0; border-left:2px solid #e0e0e0;"></div>
+                    <!-- Hour labels -->
+                    <div id="capacityHourLabels" style="display:flex; gap:2px; margin-top:4px;"></div>
+                </div>
+
+                <!-- Cumulative surplus/deficit -->
+                <div class="exp-section full-width" style="margin-top:16px;">
+                    <div class="exp-section-title">Cumulative Surplus / Deficit</div>
+                    <div class="exp-section-subtitle">Running total of (capacity − arrivals). Negative = patients accumulating in waiting room.</div>
+                    <div id="cumulativeChart" style="position:relative; height:240px; margin-top:12px; display:flex; align-items:center; gap:2px; padding-bottom:28px; border-bottom:2px solid #e0e0e0; border-left:2px solid #e0e0e0;"></div>
+                    <div id="cumulativeHourLabels" style="display:flex; gap:2px; margin-top:4px;"></div>
+                </div>
+
+                <!-- Hourly breakdown table -->
+                <div class="exp-section full-width" style="margin-top:16px;">
+                    <div class="exp-section-title">Hourly Breakdown</div>
+                    <div id="capacityTable" style="overflow-x:auto;"></div>
+                </div>
+
+                <!-- Next tab -->
+                <div class="next-tab-container">
+                    <button class="next-tab-btn" onclick="switchTab('schedule')" style="background: linear-gradient(135deg, var(--bh-green) 0%, var(--bh-green-dark) 100%); box-shadow: 0 4px 15px rgba(67, 160, 71, 0.3);">
+                        <span class="arrow" style="transform: rotate(180deg);">&#8594;</span>
+                        <div>
+                            <div class="next-label">Back to</div>
+                            <div class="next-title">Schedule</div>
+                        </div>
+                    </button>
+                </div>
+            </div>
+        </div><!-- End Hourly Capacity Tab -->
 
         <!-- POLL SUMMARY TAB -->
         <div class="tab-content" id="contentPollSummary">
@@ -4893,6 +4953,9 @@
             } else if (tab === 'staffing') {
                 document.getElementById('contentStaffing').classList.add('active');
                 buildStaffingChart();
+            } else if (tab === 'capacity') {
+                document.getElementById('contentCapacity').classList.add('active');
+                buildCapacityTab();
             } else if (tab === 'pollSummary') {
                 document.getElementById('contentPollSummary').classList.add('active');
                 buildPollSummary();
@@ -5620,6 +5683,264 @@
             totalCell.textContent = total;
             totalCell.title = `Total check-ins/day: ${total}`;
             col.appendChild(totalCell);
+        }
+
+        // Hourly Capacity Tab
+        function buildCapacityTab(forceRebuild) {
+            const chartEl = document.getElementById('capacityChart');
+            if (!chartEl) return;
+
+            // PPH rates by provider type
+            const pphRates = {
+                'attending': 2.5,
+                'ap': 2.0,
+                'resident': 1.5,
+                'peds-intern': 0.5,
+                'peds-senior': 1.0,
+                'em-intern': 1.0
+            };
+
+            const includePeds = document.getElementById('capIncludePeds').checked;
+            const includeEmInterns = document.getElementById('capIncludeEmInterns').checked;
+
+            // Gather active shifts
+            let activeShifts = [...emShifts];
+            if (includePeds) activeShifts = activeShifts.concat(pedsShifts);
+            if (includeEmInterns) activeShifts = activeShifts.concat(emInternShifts);
+
+            // Arrivals per hour (7am = index 0, from hourlyData in Insights)
+            const arrivalsData = [2,4,5,5,6,6,5,5,6,6,6,6,6,6,6,5,4,3,2,2,2,1,1,1];
+
+            // Calculate capacity and providers per hour (7am-6am, 24 hours)
+            const hourlyCapacity = [];
+            const hourlyProviders = [];
+            const hourlyByType = [];
+
+            for (let i = 0; i < 24; i++) {
+                const hour = 7 + i; // 7am through 6am next day (7-30)
+                let totalCapacity = 0;
+                let totalProviders = 0;
+                const byType = {};
+
+                activeShifts.forEach(shift => {
+                    if (hour >= shift.startHour && hour < shift.endHour) {
+                        const pph = pphRates[shift.type] || 1.0;
+                        totalCapacity += pph;
+                        totalProviders++;
+                        if (!byType[shift.type]) byType[shift.type] = { count: 0, capacity: 0 };
+                        byType[shift.type].count++;
+                        byType[shift.type].capacity += pph;
+                    }
+                });
+
+                hourlyCapacity.push(totalCapacity);
+                hourlyProviders.push(totalProviders);
+                hourlyByType.push(byType);
+            }
+
+            // Calculate surplus/deficit and cumulative
+            const hourlyDiff = [];
+            const cumulative = [];
+            let runningTotal = 0;
+
+            for (let i = 0; i < 24; i++) {
+                const diff = hourlyCapacity[i] - arrivalsData[i];
+                hourlyDiff.push(diff);
+                runningTotal += diff;
+                cumulative.push(runningTotal);
+            }
+
+            // Summary cards
+            const cardsEl = document.getElementById('capacitySummaryCards');
+            const peakArrivalsIdx = arrivalsData.indexOf(Math.max(...arrivalsData));
+            const minCapIdx = hourlyCapacity.indexOf(Math.min(...hourlyCapacity.filter(c => c > 0)));
+            const worstDeficitIdx = hourlyDiff.indexOf(Math.min(...hourlyDiff));
+            const worstCumIdx = cumulative.indexOf(Math.min(...cumulative));
+            const totalCapacity24 = hourlyCapacity.reduce((a, b) => a + b, 0);
+            const totalArrivals24 = arrivalsData.reduce((a, b) => a + b, 0);
+
+            cardsEl.innerHTML = `
+                <div style="flex:1; min-width:140px; background:linear-gradient(135deg, #e8f5e9, #c8e6c9); border-radius:12px; padding:16px; text-align:center;">
+                    <div style="font-size:1.6rem; font-weight:800; color:#2e7d32;">${totalCapacity24.toFixed(1)}</div>
+                    <div style="font-size:0.72rem; color:#555; font-weight:600;">Total Daily Capacity</div>
+                </div>
+                <div style="flex:1; min-width:140px; background:linear-gradient(135deg, #e3f2fd, #bbdefb); border-radius:12px; padding:16px; text-align:center;">
+                    <div style="font-size:1.6rem; font-weight:800; color:#1565c0;">${totalArrivals24}</div>
+                    <div style="font-size:0.72rem; color:#555; font-weight:600;">Total Daily Arrivals</div>
+                </div>
+                <div style="flex:1; min-width:140px; background:linear-gradient(135deg, ${totalCapacity24 >= totalArrivals24 ? '#e8f5e9, #c8e6c9' : '#ffebee, #ffcdd2'}); border-radius:12px; padding:16px; text-align:center;">
+                    <div style="font-size:1.6rem; font-weight:800; color:${totalCapacity24 >= totalArrivals24 ? '#2e7d32' : '#c62828'};">${totalCapacity24 >= totalArrivals24 ? '+' : ''}${(totalCapacity24 - totalArrivals24).toFixed(1)}</div>
+                    <div style="font-size:0.72rem; color:#555; font-weight:600;">Net Surplus/Deficit</div>
+                </div>
+                <div style="flex:1; min-width:140px; background:linear-gradient(135deg, #fff3e0, #ffe0b2); border-radius:12px; padding:16px; text-align:center;">
+                    <div style="font-size:1.6rem; font-weight:800; color:#e65100;">${formatHourShort((7 + worstDeficitIdx) % 24)}</div>
+                    <div style="font-size:0.72rem; color:#555; font-weight:600;">Worst Hourly Gap (${hourlyDiff[worstDeficitIdx].toFixed(1)})</div>
+                </div>
+                <div style="flex:1; min-width:140px; background:linear-gradient(135deg, #fce4ec, #f8bbd0); border-radius:12px; padding:16px; text-align:center;">
+                    <div style="font-size:1.6rem; font-weight:800; color:#c62828;">${Math.min(...cumulative).toFixed(1)}</div>
+                    <div style="font-size:0.72rem; color:#555; font-weight:600;">Peak WR Backlog (${formatHourShort((7 + worstCumIdx) % 24)})</div>
+                </div>
+            `;
+
+            // Capacity vs Arrivals bar chart
+            const maxVal = Math.max(...hourlyCapacity, ...arrivalsData) * 1.15;
+            chartEl.innerHTML = '';
+            const labelsEl = document.getElementById('capacityHourLabels');
+            labelsEl.innerHTML = '';
+
+            for (let i = 0; i < 24; i++) {
+                const cap = hourlyCapacity[i];
+                const arr = arrivalsData[i];
+                const overloaded = arr > cap;
+                const h = formatHourShort((7 + i) % 24);
+
+                const col = document.createElement('div');
+                col.style.cssText = 'flex:1; display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; position:relative; min-width:12px;';
+
+                // Capacity bar
+                const capBar = document.createElement('div');
+                capBar.style.cssText = `width:60%; height:${(cap / maxVal) * 100}%; background:${overloaded ? 'linear-gradient(180deg, #ef5350, #c62828)' : 'linear-gradient(180deg, #66bb6a, #43a047)'}; border-radius:3px 3px 0 0; position:absolute; bottom:0; left:5%; min-height:${cap > 0 ? '3px' : '0'}; transition:all 0.3s; opacity:0.85;`;
+
+                // Arrivals bar (overlaid, thinner)
+                const arrBar = document.createElement('div');
+                arrBar.style.cssText = `width:35%; height:${(arr / maxVal) * 100}%; background:linear-gradient(180deg, #42a5f5, #1565c0); border-radius:3px 3px 0 0; position:absolute; bottom:0; right:5%; min-height:3px; transition:all 0.3s; opacity:0.9;`;
+
+                // Capacity number on top
+                if (cap > 0) {
+                    const capLabel = document.createElement('div');
+                    capLabel.style.cssText = `position:absolute; bottom:${(cap / maxVal) * 100 + 1}%; left:5%; width:60%; text-align:center; font-size:0.58rem; font-weight:700; color:${overloaded ? '#c62828' : '#2e7d32'};`;
+                    capLabel.textContent = cap.toFixed(1);
+                    col.appendChild(capLabel);
+                }
+
+                col.appendChild(capBar);
+                col.appendChild(arrBar);
+
+                // Tooltip
+                col.style.cursor = 'pointer';
+                col.addEventListener('mouseenter', function(e) {
+                    const tooltip = document.getElementById('tooltip');
+                    const byType = hourlyByType[i];
+                    let typeBreakdown = '';
+                    const typeLabels = { 'attending': 'Attending', 'ap': 'APP', 'resident': 'Resident', 'peds-intern': 'Peds Intern', 'peds-senior': 'Peds Senior', 'em-intern': 'EM Intern' };
+                    const typeColors = { 'attending': 'var(--bh-green)', 'ap': 'var(--bh-blue)', 'resident': 'var(--bh-purple)', 'peds-intern': 'var(--bh-orange)', 'peds-senior': 'var(--bh-orange-dark, #e65100)', 'em-intern': 'var(--bh-teal, #00897b)' };
+                    Object.keys(byType).forEach(t => {
+                        typeBreakdown += `<div style="display:flex;justify-content:space-between;gap:12px;"><span style="color:${typeColors[t] || '#666'};">${typeLabels[t] || t} x${byType[t].count}</span><span style="font-weight:700;">${byType[t].capacity.toFixed(1)} pts/hr</span></div>`;
+                    });
+
+                    const diff = hourlyDiff[i];
+                    tooltip.innerHTML = `
+                        <div style="font-weight:700;font-size:0.95rem;margin-bottom:8px;color:#333;">${h}</div>
+                        <div style="display:flex;gap:16px;margin-bottom:10px;">
+                            <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:${overloaded ? '#c62828' : '#2e7d32'};">${cap.toFixed(1)}</div><div style="font-size:0.65rem;color:#666;">capacity</div></div>
+                            <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:#1565c0;">${arr}</div><div style="font-size:0.65rem;color:#666;">arrivals</div></div>
+                            <div style="text-align:center;"><div style="font-size:1.3rem;font-weight:700;color:${diff >= 0 ? '#2e7d32' : '#c62828'};">${diff >= 0 ? '+' : ''}${diff.toFixed(1)}</div><div style="font-size:0.65rem;color:#666;">net</div></div>
+                        </div>
+                        <div style="font-size:0.78rem; border-top:1px solid #eee; padding-top:8px;">${typeBreakdown || '<span style="color:#999;">No providers</span>'}</div>
+                        <div style="font-size:0.72rem; color:#888; margin-top:6px;">Cumulative: <strong style="color:${cumulative[i] >= 0 ? '#2e7d32' : '#c62828'};">${cumulative[i] >= 0 ? '+' : ''}${cumulative[i].toFixed(1)}</strong></div>
+                    `;
+                    tooltip.classList.add('visible');
+                    moveTooltip(e);
+                });
+                col.addEventListener('mousemove', moveTooltip);
+                col.addEventListener('mouseleave', hideTooltip);
+
+                chartEl.appendChild(col);
+
+                // Hour label
+                const label = document.createElement('div');
+                label.style.cssText = 'flex:1; text-align:center; font-size:0.6rem; color:#888; min-width:12px;';
+                label.textContent = (7 + i) % 24;
+                labelsEl.appendChild(label);
+            }
+
+            // Cumulative surplus/deficit chart
+            const cumEl = document.getElementById('cumulativeChart');
+            const cumLabelsEl = document.getElementById('cumulativeHourLabels');
+            cumEl.innerHTML = '';
+            cumLabelsEl.innerHTML = '';
+
+            const maxAbs = Math.max(Math.abs(Math.min(...cumulative)), Math.abs(Math.max(...cumulative)), 1);
+            const chartHeight = 240;
+
+            for (let i = 0; i < 24; i++) {
+                const val = cumulative[i];
+                const isPositive = val >= 0;
+                const barHeight = (Math.abs(val) / maxAbs) * 45; // 45% of half
+
+                const col = document.createElement('div');
+                col.style.cssText = `flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; height:100%; position:relative; min-width:12px; cursor:pointer;`;
+
+                const bar = document.createElement('div');
+                bar.style.cssText = `width:70%; height:${barHeight}%; background:${isPositive ? 'linear-gradient(180deg, #66bb6a, #43a047)' : 'linear-gradient(180deg, #ef5350, #c62828)'}; border-radius:3px; position:absolute; ${isPositive ? 'bottom:50%' : 'top:50%'}; transition:all 0.3s;`;
+
+                // Value label
+                const valLabel = document.createElement('div');
+                valLabel.style.cssText = `position:absolute; ${isPositive ? `bottom:${50 + barHeight + 1}%` : `top:${50 + barHeight + 1}%`}; font-size:0.58rem; font-weight:700; color:${isPositive ? '#2e7d32' : '#c62828'}; width:100%; text-align:center;`;
+                valLabel.textContent = val.toFixed(1);
+
+                // Zero line
+                const zeroLine = document.createElement('div');
+                zeroLine.style.cssText = 'position:absolute; top:50%; width:100%; height:1px; background:#bbb;';
+
+                col.appendChild(zeroLine);
+                col.appendChild(bar);
+                col.appendChild(valLabel);
+
+                col.addEventListener('mouseenter', function(e) {
+                    const tooltip = document.getElementById('tooltip');
+                    const h = formatHourShort((7 + i) % 24);
+                    tooltip.innerHTML = `
+                        <div style="font-weight:700;margin-bottom:6px;">${h}</div>
+                        <div>Hourly: <strong style="color:${hourlyDiff[i] >= 0 ? '#2e7d32' : '#c62828'};">${hourlyDiff[i] >= 0 ? '+' : ''}${hourlyDiff[i].toFixed(1)}</strong> (${hourlyCapacity[i].toFixed(1)} cap − ${arrivalsData[i]} arr)</div>
+                        <div>Cumulative: <strong style="color:${val >= 0 ? '#2e7d32' : '#c62828'};">${val >= 0 ? '+' : ''}${val.toFixed(1)}</strong></div>
+                        ${val < 0 ? `<div style="color:#c62828; font-size:0.78rem; margin-top:4px;">≈ ${Math.abs(val).toFixed(0)} patients waiting</div>` : ''}
+                    `;
+                    tooltip.classList.add('visible');
+                    moveTooltip(e);
+                });
+                col.addEventListener('mousemove', moveTooltip);
+                col.addEventListener('mouseleave', hideTooltip);
+
+                cumEl.appendChild(col);
+
+                const label = document.createElement('div');
+                label.style.cssText = 'flex:1; text-align:center; font-size:0.6rem; color:#888; min-width:12px;';
+                label.textContent = (7 + i) % 24;
+                cumLabelsEl.appendChild(label);
+            }
+
+            // Hourly breakdown table
+            const tableEl = document.getElementById('capacityTable');
+            let tableHtml = `<table style="width:100%; border-collapse:collapse; font-size:0.78rem;">
+                <thead>
+                    <tr style="background:#f5f5f5;">
+                        <th style="padding:8px 6px; text-align:left; border-bottom:2px solid #ddd; font-weight:700; color:#555;">Hour</th>
+                        <th style="padding:8px 6px; text-align:center; border-bottom:2px solid #ddd; font-weight:700; color:var(--bh-purple);">Providers</th>
+                        <th style="padding:8px 6px; text-align:center; border-bottom:2px solid #ddd; font-weight:700; color:var(--bh-green-dark);">Capacity</th>
+                        <th style="padding:8px 6px; text-align:center; border-bottom:2px solid #ddd; font-weight:700; color:#1565c0;">Arrivals</th>
+                        <th style="padding:8px 6px; text-align:center; border-bottom:2px solid #ddd; font-weight:700; color:#555;">Hourly +/−</th>
+                        <th style="padding:8px 6px; text-align:center; border-bottom:2px solid #ddd; font-weight:700; color:#555;">Cumulative</th>
+                    </tr>
+                </thead><tbody>`;
+
+            for (let i = 0; i < 24; i++) {
+                const h = formatHourShort((7 + i) % 24);
+                const diff = hourlyDiff[i];
+                const cum = cumulative[i];
+                const overloaded = arrivalsData[i] > hourlyCapacity[i];
+                tableHtml += `<tr style="border-bottom:1px solid #eee; ${overloaded ? 'background:#fff5f5;' : ''}">
+                    <td style="padding:6px; font-weight:600;">${h}</td>
+                    <td style="padding:6px; text-align:center;">${hourlyProviders[i]}</td>
+                    <td style="padding:6px; text-align:center; font-weight:600; color:var(--bh-green-dark);">${hourlyCapacity[i].toFixed(1)}</td>
+                    <td style="padding:6px; text-align:center; font-weight:600; color:#1565c0;">${arrivalsData[i]}</td>
+                    <td style="padding:6px; text-align:center; font-weight:700; color:${diff >= 0 ? '#2e7d32' : '#c62828'};">${diff >= 0 ? '+' : ''}${diff.toFixed(1)}</td>
+                    <td style="padding:6px; text-align:center; font-weight:700; color:${cum >= 0 ? '#2e7d32' : '#c62828'};">${cum >= 0 ? '+' : ''}${cum.toFixed(1)}</td>
+                </tr>`;
+            }
+
+            tableHtml += '</tbody></table>';
+            tableEl.innerHTML = tableHtml;
         }
 
         // Poll functionality
