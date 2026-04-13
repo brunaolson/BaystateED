@@ -3670,7 +3670,11 @@
                 </div>
 
                 <!-- Toggle controls -->
-                <div style="display:flex; justify-content:center; gap:16px; margin-bottom:16px; flex-wrap:wrap;">
+                <div style="display:flex; justify-content:center; gap:16px; margin-bottom:16px; flex-wrap:wrap; align-items:center;">
+                    <select id="capSeasonSelect" onchange="buildCapacityTab(true)" style="font-size:0.85rem; padding:6px 12px; border-radius:6px; border:1px solid #ccc; cursor:pointer; font-weight:600;">
+                        <option value="fw">Fall/Winter (Oct–Mar)</option>
+                        <option value="ss">Spring/Summer (Apr–Sep)</option>
+                    </select>
                     <label style="display:flex; align-items:center; gap:6px; cursor:pointer; font-size:0.82rem; font-weight:600; color:var(--bh-orange-dark);">
                         <input type="checkbox" id="capIncludePeds" onchange="buildCapacityTab(true)" style="cursor:pointer;"> Include Peds
                     </label>
@@ -5708,8 +5712,13 @@
             if (includePeds) activeShifts = activeShifts.concat(pedsShifts);
             if (includeEmInterns) activeShifts = activeShifts.concat(emInternShifts);
 
-            // Arrivals per hour (7am = index 0, from Fall/Winter graph_data_winter.csv p75 arrivals)
-            const arrivalsData = [3,5,7,7,8,7,7,6,7,8,8,8,8,7,7,5,4,3,2,2,2,2,2,2];
+            // Arrivals per hour (7am = index 0, p75 from graph_data CSVs)
+            const arrivalsBySeason = {
+                fw: [3,5,7,7,8,7,7,6,7,8,8,8,8,7,7,5,4,3,2,2,2,2,2,2],  // Fall/Winter p75
+                ss: [2,4,5,6,6,6,6,6,6,7,8,8,8,8,7,5,4,3,2,2,1,2,1,2]   // Spring/Summer p75
+            };
+            const season = document.getElementById('capSeasonSelect').value;
+            const arrivalsData = arrivalsBySeason[season];
 
             // Calculate capacity and providers per hour (7am-6am, 24 hours)
             const hourlyCapacity = [];
