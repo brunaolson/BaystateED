@@ -5708,8 +5708,8 @@
             if (includePeds) activeShifts = activeShifts.concat(pedsShifts);
             if (includeEmInterns) activeShifts = activeShifts.concat(emInternShifts);
 
-            // Arrivals per hour (7am = index 0, from Fall/Winter graph_data_winter.csv mean arrivals)
-            const arrivalsData = [2,4,5,5,6,6,5,5,6,6,6,6,6,6,5,4,3,2,2,2,1,1,1,1];
+            // Arrivals per hour (7am = index 0, from Fall/Winter graph_data_winter.csv p75 arrivals)
+            const arrivalsData = [3,5,7,7,8,7,7,6,7,8,8,8,8,7,7,5,4,3,2,2,2,2,2,2];
 
             // Calculate capacity and providers per hour (7am-6am, 24 hours)
             const hourlyCapacity = [];
